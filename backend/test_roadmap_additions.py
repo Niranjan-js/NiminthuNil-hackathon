@@ -191,7 +191,13 @@ def test_advanced_hacking_tool_detections(client_auth):
     })
     assert res.status_code == 200
     assert "Alien Program/RAT Injection Detected" in res.json()["rule"]
-    assert "CAMERA" in res.json()["description"]
+    db = SessionLocal()
+    try:
+        incident = db.query(IncidentModel).filter(IncidentModel.id == res.json()["incident_id"]).first()
+        assert incident is not None
+        assert "CAMERA" in incident.description
+    finally:
+        db.close()
 
     # 6. Test SQLmap via Proxy Log
     res = client.post("/api/v1/ingest/telemetry", json={
