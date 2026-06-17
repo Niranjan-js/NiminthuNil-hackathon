@@ -1,0 +1,116 @@
+=== .\test_chat_flow_debug.py ===
+  22: await page.locator("text=admin@niravan.ai").click()
+  27: await page.click("#nav-ai-analyst", force=True)
+  31: is_visible = await page.locator("#chat-input").is_visible()
+  38: await page.fill("#chat-input", query1)
+  39: await page.press("#chat-input", "Enter")
+  43: is_visible = await page.locator("#chat-input").is_visible()
+  50: await page.fill("#chat-input", query2)
+  51: await page.press("#chat-input", "Enter")
+  55: is_visible = await page.locator("#chat-input").is_visible()
+  63: is_login_visible = await page.locator("#login-screen").is_visible()
+  68: messages = await page.locator("#chat-messages .message").all()
+  71: content_elem = msg.locator(".msg-content")
+=== .\test_chat_stage2.py ===
+  22: await page.locator("text=admin@niravan.ai").click()
+  27: await page.click("#nav-ai-analyst", force=True)
+  31: is_input_visible = await page.locator("#chat-input").is_visible()
+  38: await page.fill("#chat-input", query1)
+  39: await page.click("#chat-send")
+  43: is_input_visible_during = await page.locator("#chat-input").is_visible()
+  49: is_input_visible_after = await page.locator("#chat-input").is_visible()
+  57: is_login_visible = await page.locator("#login-screen").is_visible()
+=== .\test_copilot_chat.py ===
+  18: await page.locator("text=admin@niravan.ai").click()
+  24: is_visible = await page.locator("#login-screen").is_visible()
+  33: await page.click("#nav-ai-analyst")
+  39: await page.fill("#chat-input", query1)
+  40: await page.click("#chat-send")
+  48: await page.fill("#chat-input", query2)
+  49: await page.click("#chat-send")
+  57: await page.fill("#chat-input", query3)
+  58: await page.click("#chat-send")
+  65: messages = await page.locator("#chat-messages .message").all()
+  68: content_elem = msg.locator(".msg-content")
+=== .\test_copilot_chat_debug.py ===
+  19: await page.locator("text=admin@niravan.ai").click()
+  26: await page.click("#nav-ai-analyst")
+  32: await page.fill("#chat-input", query1)
+  33: await page.click("#chat-send")
+  41: await page.fill("#chat-input", query2)
+  42: await page.click("#chat-send")
+  51: is_login_visible = await page.locator("#login-screen").is_visible()
+  55: data_counts = await page.evaluate("() => { try { return { active: window.NIRAVAN_API_ACTIVE, events: window.NIRAVAN_DATA.events.length, token: !!localStorage.getItem('niravan_token') }; } catch (e) { return { error: e.message }; } }")
+=== .\test_copilot_chat_debug_v2.py ===
+  19: await page.locator("text=admin@niravan.ai").click()
+  26: await page.click("#nav-ai-analyst", force=True)
+  32: await page.fill("#chat-input", query1)
+  33: await page.click("#chat-send")
+  41: await page.fill("#chat-input", query2)
+  42: await page.click("#chat-send")
+  50: await page.fill("#chat-input", query3)
+  51: await page.click("#chat-send")
+  60: is_login_visible = await page.locator("#login-screen").is_visible()
+  64: data_counts = await page.evaluate("() => { try { return { active: window.NIRAVAN_API_ACTIVE, events: window.NIRAVAN_DATA.events.length, token: !!localStorage.getItem('niravan_token') }; } catch (e) { return { error: e.message }; } }")
+  69: messages = await page.locator("#chat-messages .message").all()
+  72: content_elem = msg.locator(".msg-content")
+=== .\test_copilot_chat_utf8.py ===
+  23: await page.locator("text=admin@niravan.ai").click()
+  30: await page.click("#nav-ai-analyst", force=True)
+  34: is_input_visible = await page.locator("#chat-input").is_visible()
+  40: await page.fill("#chat-input", query1)
+  41: await page.click("#chat-send")
+  49: await page.fill("#chat-input", query2)
+  50: await page.click("#chat-send")
+  58: await page.fill("#chat-input", query3)
+  59: await page.click("#chat-send")
+  68: is_login_visible = await page.locator("#login-screen").is_visible()
+  72: data_counts = await page.evaluate("() => { try { return { active: window.NIRAVAN_API_ACTIVE, events: window.NIRAVAN_DATA.events.length, token: !!localStorage.getItem('niravan_token') }; } catch (e) { return { error: e.message }; } }")
+  77: messages = await page.locator("#chat-messages .message").all()
+  80: content_elem = msg.locator(".msg-content")
+=== .\test_enter.py ===
+  33: await page.locator("text=admin@niravan.ai").click()
+  36: await page.click("#nav-ai-analyst", force=True)
+  40: await page.fill("#chat-input", "What is the most critical threat right now?")
+  43: await page.press("#chat-input", "Enter")
+=== .\test_frontend_stack.py ===
+  26: admin_btn = page.locator("text=admin@niravan.ai")
+  27: await admin_btn.click()
+=== .\test_layout_width.py ===
+  13: await page.locator("text=admin@niravan.ai").click()
+  16: await page.click("#nav-ai-analyst", force=True)
+  22: const el = document.getElementById(id) || document.querySelector('.' + id);
+=== .\test_login_success.py ===
+  17: is_visible_before = await page.locator("#login-screen").is_visible()
+  22: await page.locator("text=admin@niravan.ai").click()
+  28: is_visible_after = await page.locator("#login-screen").is_visible()
+  32: storage = await page.evaluate("() => ({ token: localStorage.getItem('niravan_token'), email: localStorage.getItem('niravan_user_email'), role: localStorage.getItem('niravan_user_role') })")
+=== .\test_nav.py ===
+  20: await page.locator("text=admin@niravan.ai").click()
+  29: await page.click("#nav-ai-analyst", force=True)
+  37: input_details = await page.evaluate("() => { const el = document.getElementById('chat-input'); if (!el) return 'Not found'; return { visible: el.getBoundingClientRect().width > 0, classes: el.className, display: window.getComputedStyle(el).display, parentDisplay: window.getComputedStyle(el.parentElement).display, pageDisplay: window.getComputedStyle(document.getElementById('page-ai-analyst')).display }; }")
+=== .\test_selector.py ===
+  13: await page.locator("text=admin@niravan.ai").click()
+  16: await page.click("#nav-ai-analyst", force=True)
+  21: const el = document.getElementById('chat-send');
+=== .\backend\test_core.py ===
+=== .\backend\test_defense_os.py ===
+=== .\backend\test_government_readiness.py ===
+=== .\scratch\test_copilot_direct.py ===
+=== .\scratch\test_full_trace.py ===
+  17: await page.locator("text=admin@niravan.ai").click()
+  20: await page.click("#nav-ai-analyst", force=True)
+  31: const chatInput = document.getElementById('chat-input');
+  44: await page.fill("#chat-input", "What is the most critical threat right now?")
+  45: await page.click("#chat-send")
+=== .\scratch\test_input_visibility.py ===
+  13: await page.locator("text=admin@niravan.ai").click()
+  16: await page.click("#nav-ai-analyst", force=True)
+  22: const el = idOrSelector.startsWith('.') ? document.querySelector(idOrSelector) : document.getElementById(idOrSelector);
+  54: await page.fill("#chat-input", "What is the most critical threat right now?")
+  55: await page.click("#chat-send")
+=== .\scratch\test_investigate.py ===
+  19: await page.locator("text=admin@niravan.ai").click()
+  23: await page.click("#nav-ai-analyst", force=True)
+  43: await page.fill("#chat-input", "What is the most critical threat right now?")
+  44: await page.click("#chat-send")

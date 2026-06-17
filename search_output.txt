@@ -1,0 +1,152 @@
+69: /* ── Login Page ── */
+70: #login-page {
+78: .login-wrapper {
+83: .login-gov-header {
+89: .login-gov-seal {
+96: .login-gov-seal svg { flex-shrink: 0; }
+97: .login-gov-org {
+104: .login-gov-title {
+110: .login-gov-subtitle {
+115: .login-card {
+123: .login-platform-badge {
+129: .login-platform-icon {
+135: .login-platform-name { font-size: 18px; font-weight: 700; color: var(--gray-900); }
+136: .login-platform-sub { font-size: 11px; color: var(--gray-500); }
+158: .btn-login {
+172: .btn-login:hover { background: var(--gov-maroon-light); }
+173: .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+174: .login-error {
+184: .login-footer {
+190: .login-divider {
+197: .login-divider::before {
+204: .login-divider span {
+308: .topbar-role-badge.analyst { background: var(--blue-500); color: #fff; }
+431: .page-header {
+437: .page-title { font-size: 20px; font-weight: 700; color: var(--gray-900); }
+438: .page-subtitle { font-size: 13px; color: var(--gray-500); margin-top: 2px; }
+439: .page-actions { display: flex; gap: 8px; align-items: center; }
+829: <!-- ═══ LOGIN PAGE ═══ -->
+830: <div id="login-page">
+831: <div class="login-wrapper">
+832: <div class="login-gov-header">
+833: <div class="login-gov-seal">
+844: <div class="login-gov-org">Tamil Nadu e-Governance Agency</div>
+845: <div class="login-gov-title">State Cybersecurity Operations Center</div>
+846: <div class="login-gov-subtitle">தமிழ்நாடு மின்னாட்சி முகமை</div>
+850: <div class="login-card">
+851: <div class="login-platform-badge">
+852: <div class="login-platform-icon">
+858: <div class="login-platform-name">NIRAVAN</div>
+859: <div class="login-platform-sub">Autonomous AI Cyber Defense Platform</div>
+864: <label class="form-label" for="login-email">Government Email ID</label>
+865: <input class="form-input" type="email" id="login-email" placeholder="analyst@dept.tn.gov.in" autocomplete="username">
+868: <label class="form-label" for="login-password">Password</label>
+871: <button class="btn-login" id="btn-login" onclick="doLogin()">Sign In to NIRAVAN</button>
+872: <div class="login-error" id="login-error"></div>
+874: <div class="login-divider"><span>Demo Credentials</span></div>
+881: <strong>Analyst:</strong> analyst@niravan.ai / analyst123
+886: <div class="login-footer">
+986: <!-- Analyst Nav -->
+987: <div id="analyst-nav" style="display:none">
+992: <span class="nav-badge critical" id="nb-analyst-incidents">--</span>
+1022: <div class="page active" id="page-dashboard">
+1023: <div class="page-header">
+1025: <div class="page-title" data-i18n="dashboard-title">Command Center</div>
+1028: <div class="page-actions">
+1148: <div class="page" id="page-tn-map">
+1149: <div class="page-header">
+1151: <div class="page-title">Tamil Nadu District Threat Map</div>
+1152: <div class="page-subtitle">Live cybersecurity threat levels across all 38 districts</div>
+1154: <div class="page-actions">
+1178: <div class="page" id="page-incidents">
+1179: <div class="page-header">
+1181: <div class="page-title">All Incidents & Alerts</div>
+1182: <div class="page-subtitle">Security events across all Tamil Nadu government departments</div>
+1207: <div class="page" id="page-assets">
+1208: <div class="page-header">
+1210: <div class="page-title">Asset Inventory</div>
+1211: <div class="page-subtitle">All monitored endpoints, servers, and network devices</div>
+1213: <div class="page-actions">
+1238: <div class="page" id="page-intel">
+1239: <div class="page-header">
+1241: <div class="page-title">Threat Intelligence</div>
+1242: <div class="page-subtitle">IOC feeds, CVE catalog, and threat actor attribution</div>
+1244: <div class="page-actions">
+1265: <div class="page" id="page-cases">
+1266: <div class="page-header">
+1268: <div class="page-title">Case Management</div>
+1269: <div class="page-subtitle">Investigation workbench for security incidents</div>
+1271: <div class="page-actions">
+1281: <div class="page" id="page-knowledge-graph">
+1282: <div class="page-header">
+1284: <div class="page-title">Attack Knowledge Graph</div>
+1285: <div class="page-subtitle">Entity relationships, attack paths, and blast radius analysis</div>
+1307: <div class="page" id="page-reports">
+1308: <div class="page-header">
+1310: <div class="page-title">Reports & Compliance</div>
+1311: <div class="page-subtitle">CERT-In reporting, DPDP Act compliance, IT Act obligations</div>
+1313: <div class="page-actions">
+1349: <div class="page" id="page-audit">
+1350: <div class="page-header">
+1352: <div class="page-title">Audit Trail</div>
+1353: <div class="page-subtitle">Tamper-evident log of all platform actions</div>
+1362: <div class="page" id="page-admin-users">
+1363: <div class="page-header">
+1365: <div class="page-title">User Management</div>
+1366: <div class="page-subtitle">Manage analyst accounts and department assignments</div>
+1368: <div class="page-actions">
+1369: <button class="btn btn-primary btn-sm" onclick="openCreateUserModal()">+ Add Analyst</button>
+1377: <!-- ═══ ANALYST: My Overview ═══ -->
+1378: <div class="page" id="page-my-overview">
+1379: <div class="page-header">
+1381: <div class="page-title">My Department Overview</div>
+1382: <div class="page-subtitle" id="analyst-dept-subtitle">Security status for your assigned department</div>
+1385: <!-- Same stat cards but analyst-scoped -->
+1421: <!-- ═══ ANALYST: My Scanned Assets ═══ -->
+1422: <div class="page" id="page-my-assets">
+1423: <div class="page-header">
+1425: <div class="page-title">Scanned Assets</div>
+1426: <div class="page-subtitle">All discovered and monitored assets in your department</div>
+1428: <div class="page-actions">
+1437: <!-- ═══ ANALYST: My Incidents ═══ -->
+1438: <div class="page" id="page-my-incidents">
+1439: <div class="page-header">
+1441: <div class="page-title">My Department Incidents</div>
+1442: <div class="page-subtitle">Security incidents in your assigned department only</div>
+1459: <!-- ═══ ANALYST: My Reports ═══ -->
+1460: <div class="page" id="page-my-reports">
+1461: <div class="page-header">
+1463: <div class="page-title">Department Security Report</div>
+1464: <div class="page-subtitle">Visual security summary for your department</div>
+1466: <div class="page-actions">
+1488: <!-- ═══ ANALYST: My Threat Intelligence ═══ -->
+1489: <div class="page" id="page-my-intel">
+1490: <div class="page-header">
+1492: <div class="page-title">Threat Intelligence</div>
+1493: <div class="page-subtitle">Known threat actors and IOCs relevant to your sector</div>
+1581: async function doLogin() {
+1582: const email = document.getElementById('login-email').value.trim();
+1583: const password = document.getElementById('login-password').value;
+1584: const btn = document.getElementById('btn-login');
+1585: const errEl = document.getElementById('login-error');
+1598: const res = await fetch(`${API}/api/v1/auth/login`, {
+1604: if (!res.ok) throw new Error(data.detail || 'Login failed');
+1620: document.getElementById('login-password').addEventListener('keydown', e => {
+1621: if (e.key === 'Enter') doLogin();
+1631: document.getElementById('login-page').style.display = 'flex';
+1632: document.getElementById('login-password').value = '';
+1651: document.getElementById('login-page').style.display = 'none';
+1659: roleBadge.textContent = currentRole === 'admin' ? 'Admin' : 'Analyst';
+1660: roleBadge.className = `topbar-role-badge ${currentRole === 'admin' ? 'admin' : 'analyst'}`;
+1665: document.getElementById('analyst-nav').style.display = 'none';
+1669: document.getElementById('analyst-nav').style.display = 'block';
+1692: const pageEl = document.getElementById(`page-${page}`);
+2355: <td><span class="badge ${u.role==='admin'?'critical':u.role==='analyst'?'info':'low'}">${u.role}</span></td>
+2359: <td style="font-size:12px;color:var(--gray-500)">${u.last_login ? relTime(u.last_login) : 'Never'}</td>
+2398: /* ── Analyst: My Overview ── */
+2410: const nbA = document.getElementById('nb-analyst-incidents');
+2417: /* ── Analyst: My Assets ── */
+2423: /* ── Analyst: My Incidents ── */
+2429: /* ── Analyst: My Reports ── */
+2451: /* ── Analyst: My Intel ── */
+2520: /* ── Auto-login from localStorage ── */

@@ -1,0 +1,2 @@
+278: const input = document.getElementById('chat-input');
+281: if(e.key === 'Enter') handleChatSend();

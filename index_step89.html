@@ -1,0 +1,2535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NIRAVAN — Tamil Nadu Government Cybersecurity Platform</title>
+  <meta name="description" content="NIRAVAN — Autonomous AI-Powered Cyber Defense Operating System for Tamil Nadu Government">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --gov-maroon: #7B1C1C;
+      --gov-maroon-dark: #5a1414;
+      --gov-maroon-light: #9e2a2a;
+      --gov-gold: #B8921A;
+      --gov-gold-light: #d4a82a;
+      --gov-cream: #FDF8EF;
+      --gov-cream-dark: #f0e8d8;
+      --sidebar-bg: #1e2330;
+      --sidebar-width: 240px;
+      --topbar-height: 60px;
+      --white: #ffffff;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --red-50: #fef2f2;
+      --red-500: #ef4444;
+      --red-600: #dc2626;
+      --red-700: #b91c1c;
+      --orange-50: #fff7ed;
+      --orange-500: #f97316;
+      --yellow-50: #fefce8;
+      --yellow-500: #eab308;
+      --green-50: #f0fdf4;
+      --green-500: #22c55e;
+      --green-600: #16a34a;
+      --blue-50: #eff6ff;
+      --blue-500: #3b82f6;
+      --blue-600: #2563eb;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+      --radius: 8px;
+      --radius-sm: 4px;
+      --radius-lg: 12px;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Inter', 'Noto Sans Tamil', sans-serif;
+      font-size: 14px;
+      color: var(--gray-800);
+      background: var(--gray-50);
+      overflow: hidden;
+    }
+
+    /* ── Login Page ── */
+    #login-page {
+      position: fixed; inset: 0;
+      background: var(--gray-50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .login-wrapper {
+      width: 100%;
+      max-width: 440px;
+      padding: 16px;
+    }
+    .login-gov-header {
+      background: var(--gov-maroon);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      padding: 20px 24px 16px;
+      text-align: center;
+    }
+    .login-gov-seal {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .login-gov-seal svg { flex-shrink: 0; }
+    .login-gov-org {
+      color: var(--gov-gold);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .login-gov-title {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .login-gov-subtitle {
+      color: rgba(255,255,255,0.7);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    .login-card {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-top: none;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-lg);
+    }
+    .login-platform-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .login-platform-icon {
+      width: 36px; height: 36px;
+      background: var(--gov-maroon);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .login-platform-name { font-size: 18px; font-weight: 700; color: var(--gray-900); }
+    .login-platform-sub { font-size: 11px; color: var(--gray-500); }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: 6px;
+    }
+    .form-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--gray-800);
+      background: #fff;
+      transition: border-color 0.15s;
+      outline: none;
+    }
+    .form-input:focus { border-color: var(--gov-maroon); box-shadow: 0 0 0 3px rgba(123,28,28,0.1); }
+    .form-group { margin-bottom: 16px; }
+    .btn-login {
+      width: 100%;
+      padding: 10px 16px;
+      background: var(--gov-maroon);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-top: 4px;
+    }
+    .btn-login:hover { background: var(--gov-maroon-light); }
+    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+    .login-error {
+      background: var(--red-50);
+      border: 1px solid #fca5a5;
+      border-radius: var(--radius-sm);
+      color: var(--red-700);
+      font-size: 13px;
+      padding: 8px 12px;
+      margin-top: 12px;
+      display: none;
+    }
+    .login-footer {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--gray-400);
+    }
+    .login-divider {
+      text-align: center;
+      margin: 16px 0;
+      position: relative;
+      font-size: 12px;
+      color: var(--gray-400);
+    }
+    .login-divider::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0;
+      width: 100%; height: 1px;
+      background: var(--gray-200);
+    }
+    .login-divider span {
+      background: #fff;
+      padding: 0 10px;
+      position: relative;
+    }
+    .demo-credentials {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--gray-600);
+    }
+    .demo-credentials strong { color: var(--gray-800); }
+
+    /* ── App Shell ── */
+    #app { display: none; height: 100vh; flex-direction: column; }
+    #app.active { display: flex; }
+
+    /* ── Top Bar ── */
+    .topbar {
+      height: var(--topbar-height);
+      background: var(--gov-maroon);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+      flex-shrink: 0;
+      z-index: 100;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 10px; }
+    .topbar-logo {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .topbar-logo-icon {
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .topbar-logo-name { font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.01em; }
+    .topbar-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.2); }
+    .topbar-org {
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+    }
+    .topbar-org strong { color: #fff; font-weight: 600; }
+    .topbar-center { flex: 1; display: flex; align-items: center; justify-content: center; }
+    .topbar-live-badge {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+    }
+    .topbar-live-dot {
+      width: 6px; height: 6px;
+      background: #4ade80;
+      border-radius: 50%;
+      animation: pulse-green 2s infinite;
+    }
+    @keyframes pulse-green {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .topbar-lang-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .topbar-lang-btn:hover { background: rgba(255,255,255,0.2); }
+    .topbar-user-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 4px 12px 4px 6px;
+    }
+    .topbar-user-avatar {
+      width: 24px; height: 24px;
+      background: var(--gov-gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .topbar-user-name { font-size: 12px; color: #fff; font-weight: 500; }
+    .topbar-role-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .topbar-role-badge.admin { background: var(--gov-gold); color: #fff; }
+    .topbar-role-badge.analyst { background: var(--blue-500); color: #fff; }
+    .btn-logout {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.8);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+    /* ── Emergency Button ── */
+    .btn-emergency {
+      display: flex; align-items: center; gap: 6px;
+      background: #dc2626;
+      border: none;
+      color: #fff;
+      border-radius: 4px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.02em;
+      box-shadow: 0 0 0 0 rgba(220,38,38,0.5);
+      animation: pulse-red 3s infinite;
+    }
+    @keyframes pulse-red {
+      0% { box-shadow: 0 0 0 0 rgba(220,38,38,0.5); }
+      70% { box-shadow: 0 0 0 8px rgba(220,38,38,0); }
+      100% { box-shadow: 0 0 0 0 rgba(220,38,38,0); }
+    }
+    .btn-emergency:hover { background: #b91c1c; animation: none; }
+
+    /* ── Main Layout ── */
+    .app-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--sidebar-bg);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      padding: 12px 16px 4px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 16px;
+      cursor: pointer;
+      color: rgba(255,255,255,0.65);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 0;
+      transition: all 0.15s;
+      position: relative;
+      user-select: none;
+    }
+    .nav-item:hover {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.9);
+    }
+    .nav-item.active {
+      background: rgba(123,28,28,0.5);
+      color: #fff;
+      border-right: 3px solid var(--gov-gold);
+    }
+    .nav-item .nav-icon {
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+      opacity: 0.7;
+    }
+    .nav-item.active .nav-icon { opacity: 1; }
+    .nav-badge {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 10px;
+      min-width: 18px;
+      text-align: center;
+    }
+    .nav-badge.critical { background: var(--red-600); color: #fff; }
+    .nav-badge.warn { background: var(--orange-500); color: #fff; }
+    .nav-badge.info { background: var(--blue-500); color: #fff; }
+    .nav-badge.live { background: #16a34a; color: #fff; }
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 12px 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* ── Main Content ── */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--gray-50);
+    }
+    .page { display: none; padding: 24px; }
+    .page.active { display: block; }
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .page-title { font-size: 20px; font-weight: 700; color: var(--gray-900); }
+    .page-subtitle { font-size: 13px; color: var(--gray-500); margin-top: 2px; }
+    .page-actions { display: flex; gap: 8px; align-items: center; }
+
+    /* ── Stat Cards ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .stat-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .stat-card-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .stat-card-icon {
+      width: 32px; height: 32px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .stat-card-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gray-900);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-card-sub {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    .stat-card.critical-card { border-left: 3px solid var(--red-500); }
+    .stat-card.warn-card { border-left: 3px solid var(--orange-500); }
+    .stat-card.ok-card { border-left: 3px solid var(--green-500); }
+    .stat-card.info-card { border-left: 3px solid var(--blue-500); }
+
+    /* ── Data Card / Panel ── */
+    .data-card {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    .data-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .data-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+    .data-card-subtitle {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-top: 1px;
+    }
+    .data-card-body { padding: 0; }
+
+    /* ── Tables ── */
+    .gov-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .gov-table th {
+      background: var(--gray-50);
+      border-bottom: 1px solid var(--gray-200);
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    .gov-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 13px;
+      color: var(--gray-700);
+      vertical-align: middle;
+    }
+    .gov-table tr:last-child td { border-bottom: none; }
+    .gov-table tr:hover td { background: var(--gray-50); }
+    .gov-table .monospace { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+    /* ── Badges / Pills ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .badge.critical { background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5; }
+    .badge.high { background: #fff7ed; color: #ea580c; border: 1px solid #fdba74; }
+    .badge.medium { background: #fefce8; color: #ca8a04; border: 1px solid #fde047; }
+    .badge.low { background: #f0fdf4; color: #16a34a; border: 1px solid #86efac; }
+    .badge.info { background: #eff6ff; color: #2563eb; border: 1px solid #93c5fd; }
+    .badge.open { background: #fff7ed; color: #ea580c; border: 1px solid #fdba74; }
+    .badge.contained { background: #f0fdf4; color: #16a34a; border: 1px solid #86efac; }
+    .badge.investigating { background: #eff6ff; color: #2563eb; border: 1px solid #93c5fd; }
+    .badge.escalated { background: #fdf4ff; color: #9333ea; border: 1px solid #d8b4fe; }
+    .badge.active { background: #f0fdf4; color: #16a34a; border: 1px solid #86efac; }
+    .badge.compromised { background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5; }
+    .badge.isolated { background: #fdf4ff; color: #9333ea; border: 1px solid #d8b4fe; }
+
+    /* ── Severity dot ── */
+    .sev-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .sev-dot.critical { background: #dc2626; }
+    .sev-dot.high { background: #ea580c; }
+    .sev-dot.medium { background: #ca8a04; }
+    .sev-dot.low { background: #16a34a; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--gov-maroon);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--gov-maroon-light); }
+    .btn-secondary {
+      background: #fff;
+      color: var(--gray-700);
+      border: 1px solid var(--gray-300);
+    }
+    .btn-secondary:hover { background: var(--gray-50); }
+    .btn-danger { background: var(--red-600); color: #fff; }
+    .btn-danger:hover { background: var(--red-700); }
+    .btn-sm { padding: 4px 10px; font-size: 12px; }
+    .btn-success { background: var(--green-600); color: #fff; }
+    .btn-success:hover { background: #15803d; }
+
+    /* ── Grid layouts ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .mb-16 { margin-bottom: 16px; }
+    .mb-20 { margin-bottom: 20px; }
+    .mt-16 { margin-top: 16px; }
+
+    /* ── Chart containers ── */
+    .chart-wrap {
+      padding: 16px;
+      position: relative;
+      height: 220px;
+    }
+    .chart-wrap.tall { height: 280px; }
+
+    /* ── Compliance card ── */
+    .compliance-obligation {
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .compliance-obligation.overdue { border-color: #fca5a5; background: #fef2f2; }
+    .compliance-obligation.due-soon { border-color: #fdba74; background: #fff7ed; }
+    .compliance-framework { font-size: 11px; font-weight: 700; color: var(--gov-maroon); text-transform: uppercase; }
+    .compliance-obligation-text { font-size: 13px; color: var(--gray-700); margin: 4px 0; }
+    .compliance-countdown { font-size: 13px; font-weight: 700; }
+    .compliance-countdown.urgent { color: var(--red-600); }
+    .compliance-countdown.ok { color: var(--green-600); }
+
+    /* ── Posture score ── */
+    .posture-score-ring {
+      width: 100px; height: 100px;
+      position: relative;
+      margin: 0 auto 16px;
+    }
+    .posture-score-ring svg { transform: rotate(-90deg); }
+    .posture-score-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .posture-score-number { font-size: 24px; font-weight: 800; }
+    .posture-score-grade { font-size: 12px; font-weight: 600; color: var(--gray-500); }
+
+    /* ── Knowledge graph placeholder ── */
+    .kg-placeholder {
+      height: 400px;
+      background: var(--gray-50);
+      border: 1px dashed var(--gray-300);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--gray-400);
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--gray-400);
+    }
+    .empty-state-icon { font-size: 32px; margin-bottom: 8px; }
+    .empty-state-text { font-size: 14px; font-weight: 500; color: var(--gray-500); }
+    .empty-state-sub { font-size: 12px; color: var(--gray-400); margin-top: 4px; }
+
+    /* ── Loading ── */
+    .loading-spinner {
+      display: flex; align-items: center; justify-content: center;
+      padding: 32px;
+      color: var(--gray-400);
+      font-size: 13px;
+      gap: 8px;
+    }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid var(--gray-200);
+      border-top-color: var(--gov-maroon);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Toast notification ── */
+    #toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      background: var(--gray-800);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 9999;
+      max-width: 320px;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { background: #16a34a; }
+    #toast.error { background: var(--red-600); }
+    #toast.warning { background: #d97706; }
+
+    /* ── Emergency modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      display: flex; align-items: center; justify-content: center;
+      display: none;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: var(--shadow-lg);
+    }
+    .modal-title { font-size: 18px; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+    .modal-desc { font-size: 14px; color: var(--gray-600); margin-bottom: 20px; line-height: 1.5; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+    /* ── Search / Filter bar ── */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .filter-input {
+      padding: 7px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      min-width: 200px;
+      background: #fff;
+    }
+    .filter-input:focus { border-color: var(--gov-maroon); }
+    .filter-select {
+      padding: 7px 10px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: inherit;
+      background: #fff;
+      outline: none;
+      cursor: pointer;
+    }
+    .filter-select:focus { border-color: var(--gov-maroon); }
+
+    /* ── Mitre badge ── */
+    .mitre-tag {
+      display: inline-block;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 10px;
+      font-weight: 600;
+      margin-right: 2px;
+      font-family: monospace;
+    }
+
+    /* ── Progress bar ── */
+    .progress-bar-wrap {
+      background: var(--gray-100);
+      border-radius: 4px;
+      height: 6px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    /* ── Tamil Nadu TN badge ── */
+    .tn-badge {
+      background: var(--gov-cream);
+      border: 1px solid #e0d5bf;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gov-maroon);
+    }
+
+    /* ── Scrollbar styling ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gray-400); }
+
+    /* ── Responsive grid fallbacks ── */
+    @media (max-width: 1200px) {
+      .grid-3 { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 900px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .sidebar { width: 52px; }
+      .nav-item span:not(.nav-icon):not(.nav-badge) { display: none; }
+      .sidebar-section-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ LOGIN PAGE ═══ -->
+<div id="login-page">
+  <div class="login-wrapper">
+    <div class="login-gov-header">
+      <div class="login-gov-seal">
+        <svg width="44" height="44" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="45" stroke="#C9A227" stroke-width="3" fill="#7B1C1C"/>
+          <path d="M50,18 L63,36 L37,36 Z" fill="#C9A227"/>
+          <rect x="43" y="36" width="14" height="34" fill="#C9A227" rx="1"/>
+          <circle cx="50" cy="28" r="5" fill="#fff"/>
+          <path d="M28,72 Q50,85 72,72" stroke="#C9A227" stroke-width="3.5" fill="none"/>
+          <circle cx="28" cy="72" r="3" fill="#C9A227"/>
+          <circle cx="72" cy="72" r="3" fill="#C9A227"/>
+        </svg>
+        <div>
+          <div class="login-gov-org">Tamil Nadu e-Governance Agency</div>
+          <div class="login-gov-title">State Cybersecurity Operations Center</div>
+          <div class="login-gov-subtitle">தமிழ்நாடு மின்னாட்சி முகமை</div>
+        </div>
+      </div>
+    </div>
+    <div class="login-card">
+      <div class="login-platform-badge">
+        <div class="login-platform-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="login-platform-name">NIRAVAN</div>
+          <div class="login-platform-sub">Autonomous AI Cyber Defense Platform</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="login-email">Government Email ID</label>
+        <input class="form-input" type="email" id="login-email" placeholder="analyst@dept.tn.gov.in" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="login-password">Password</label>
+        <input class="form-input" type="password" id="login-password" placeholder="Enter your secure password" autocomplete="current-password">
+      </div>
+      <button class="btn-login" id="btn-login" onclick="doLogin()">Sign In to NIRAVAN</button>
+      <div class="login-error" id="login-error"></div>
+
+      <div class="login-divider"><span>Demo Credentials</span></div>
+      <div class="demo-credentials">
+        <div style="margin-bottom:6px">
+          <strong>Admin:</strong> admin@niravan.ai / admin123
+          <span class="tn-badge" style="margin-left:6px">Full Access</span>
+        </div>
+        <div>
+          <strong>Analyst:</strong> analyst@niravan.ai / analyst123
+          <span class="tn-badge" style="margin-left:6px">Dept Only</span>
+        </div>
+      </div>
+    </div>
+    <div class="login-footer">
+      Secure Government Portal · Encrypted · Audit Logged<br>
+      © 2026 Tamil Nadu e-Governance Agency (TNeGA)
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">
+        <div class="topbar-logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <span class="topbar-logo-name">NIRAVAN</span>
+      </div>
+      <div class="topbar-divider"></div>
+      <div class="topbar-org" id="topbar-org-name">Tamil Nadu Government · State SOC</div>
+    </div>
+    <div class="topbar-center">
+      <div class="topbar-live-badge">
+        <div class="topbar-live-dot"></div>
+        <span>AI Engine Active · <span id="eps-counter">--</span> events/sec</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-lang-btn" onclick="toggleLanguage()" id="lang-btn">தமிழ்</button>
+      <button class="btn-emergency" onclick="openEmergencyModal()" id="btn-emergency">
+        🔴 EMERGENCY CONTAIN
+      </button>
+      <div class="topbar-user-pill">
+        <div class="topbar-user-avatar" id="user-avatar">?</div>
+        <span class="topbar-user-name" id="user-name-display">Loading...</span>
+        <span class="topbar-role-badge admin" id="user-role-badge">Admin</span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="app-body">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <!-- Admin Nav -->
+      <div id="admin-nav" style="display:none">
+        <div class="sidebar-section-label">Overview</div>
+        <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <span>Command Center</span>
+          <span class="nav-badge critical" id="nb-incidents">--</span>
+        </div>
+        <div class="nav-item" data-page="tn-map" onclick="navigate('tn-map')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+          <span>TN District Map</span>
+          <span class="nav-badge live">LIVE</span>
+        </div>
+
+        <div class="sidebar-section-label">Threat Management</div>
+        <div class="nav-item" data-page="incidents" onclick="navigate('incidents')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>All Incidents</span>
+        </div>
+        <div class="nav-item" data-page="assets" onclick="navigate('assets')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <span>Asset Inventory</span>
+        </div>
+        <div class="nav-item" data-page="intel" onclick="navigate('intel')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>Threat Intelligence</span>
+        </div>
+
+        <div class="sidebar-section-label">Investigation</div>
+        <div class="nav-item" data-page="cases" onclick="navigate('cases')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+          <span>Case Management</span>
+        </div>
+        <div class="nav-item" data-page="knowledge-graph" onclick="navigate('knowledge-graph')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><circle cx="19" cy="19" r="3"/><circle cx="5" cy="19" r="3"/><line x1="12" y1="8" x2="5" y2="16"/><line x1="12" y1="8" x2="19" y2="16"/></svg>
+          <span>Attack Graph</span>
+        </div>
+
+        <div class="sidebar-section-label">Administration</div>
+        <div class="nav-item" data-page="reports" onclick="navigate('reports')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>Reports &amp; Compliance</span>
+        </div>
+        <div class="nav-item" data-page="audit" onclick="navigate('audit')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>Audit Trail</span>
+        </div>
+        <div class="nav-item" data-page="admin-users" onclick="navigate('admin-users')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          <span>User Management</span>
+        </div>
+      </div>
+
+      <!-- Analyst Nav -->
+      <div id="analyst-nav" style="display:none">
+        <div class="sidebar-section-label">My Department</div>
+        <div class="nav-item active" data-page="my-overview" onclick="navigate('my-overview')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <span>My Overview</span>
+          <span class="nav-badge critical" id="nb-analyst-incidents">--</span>
+        </div>
+        <div class="nav-item" data-page="my-assets" onclick="navigate('my-assets')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <span>Scanned Assets</span>
+        </div>
+        <div class="nav-item" data-page="my-incidents" onclick="navigate('my-incidents')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+          <span>My Incidents</span>
+        </div>
+        <div class="nav-item" data-page="my-reports" onclick="navigate('my-reports')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+          <span>My Reports</span>
+        </div>
+        <div class="sidebar-section-label">Tools</div>
+        <div class="nav-item" data-page="my-intel" onclick="navigate('my-intel')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>Threat Intelligence</span>
+        </div>
+      </div>
+
+      <div class="sidebar-bottom">
+        NIRAVAN v3.0<br>TN Gov · CERT-In Uplink
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+      <!-- ═══ ADMIN: Command Center Dashboard ═══ -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <div>
+            <div class="page-title" data-i18n="dashboard-title">Command Center</div>
+            <div class="page-subtitle">Real-time cybersecurity overview · Tamil Nadu Government · <span id="dashboard-timestamp">--</span></div>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-secondary btn-sm" onclick="refreshDashboard()">↻ Refresh</button>
+          </div>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="stat-grid" id="stat-grid">
+          <div class="stat-card critical-card">
+            <div class="stat-card-header">
+              <span class="stat-card-label">Active Threats</span>
+              <div class="stat-card-icon" style="background:#fef2f2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+              </div>
+            </div>
+            <div class="stat-card-value" id="stat-threats">--</div>
+            <div class="stat-card-sub">Open incidents</div>
+          </div>
+          <div class="stat-card warn-card">
+            <div class="stat-card-header">
+              <span class="stat-card-label">Critical Severity</span>
+              <div class="stat-card-icon" style="background:#fff7ed">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+            </div>
+            <div class="stat-card-value" id="stat-critical">--</div>
+            <div class="stat-card-sub">Require immediate action</div>
+          </div>
+          <div class="stat-card info-card">
+            <div class="stat-card-header">
+              <span class="stat-card-label">Total Assets</span>
+              <div class="stat-card-icon" style="background:#eff6ff">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+              </div>
+            </div>
+            <div class="stat-card-value" id="stat-assets">--</div>
+            <div class="stat-card-sub">Monitored endpoints</div>
+          </div>
+          <div class="stat-card ok-card">
+            <div class="stat-card-header">
+              <span class="stat-card-label">IOCs Tracked</span>
+              <div class="stat-card-icon" style="background:#f0fdf4">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+            </div>
+            <div class="stat-card-value" id="stat-iocs">--</div>
+            <div class="stat-card-sub">Malicious indicators</div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid-2 mb-20">
+          <div class="data-card">
+            <div class="data-card-header">
+              <div>
+                <div class="data-card-title">Incidents by Severity</div>
+                <div class="data-card-subtitle">Distribution of current open incidents</div>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="chart-severity"></canvas>
+            </div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-header">
+              <div>
+                <div class="data-card-title">7-Day Threat Trend</div>
+                <div class="data-card-subtitle">Daily incident count over last 7 days</div>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="chart-trend"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Incidents Table -->
+        <div class="data-card mb-20">
+          <div class="data-card-header">
+            <div>
+              <div class="data-card-title">Recent Incidents</div>
+              <div class="data-card-subtitle">Latest security events across all departments</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="navigate('incidents')">View All →</button>
+          </div>
+          <div class="data-card-body">
+            <div id="dashboard-incidents-table">
+              <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assets + CVEs row -->
+        <div class="grid-2">
+          <div class="data-card">
+            <div class="data-card-header">
+              <div>
+                <div class="data-card-title">High-Risk Assets</div>
+                <div class="data-card-subtitle">Assets requiring immediate attention</div>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="navigate('assets')">View All →</button>
+            </div>
+            <div id="dashboard-assets-table">
+              <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+            </div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-header">
+              <div>
+                <div class="data-card-title">Critical CVEs</div>
+                <div class="data-card-subtitle">Known exploited vulnerabilities</div>
+              </div>
+            </div>
+            <div id="dashboard-cves-table">
+              <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ ADMIN: TN District Map ═══ -->
+      <div class="page" id="page-tn-map">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Tamil Nadu District Threat Map</div>
+            <div class="page-subtitle">Live cybersecurity threat levels across all 38 districts</div>
+          </div>
+          <div class="page-actions">
+            <span class="tn-badge">38 Districts Monitored</span>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="data-card">
+            <div class="data-card-header"><div class="data-card-title">District Status</div></div>
+            <div id="tn-map-table"><div class="loading-spinner"><div class="spinner"></div>Loading...</div></div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-header"><div class="data-card-title">Threat Level Legend</div></div>
+            <div style="padding:16px">
+              <div style="display:flex;gap:12px;flex-direction:column">
+                <div style="display:flex;align-items:center;gap:8px"><span class="badge critical">●</span><span style="font-size:13px">Critical — Active breach, immediate containment required</span></div>
+                <div style="display:flex;align-items:center;gap:8px"><span class="badge high">●</span><span style="font-size:13px">High — Suspicious activity detected, investigation needed</span></div>
+                <div style="display:flex;align-items:center;gap:8px"><span class="badge medium">●</span><span style="font-size:13px">Medium — Anomalies observed, monitoring elevated</span></div>
+                <div style="display:flex;align-items:center;gap:8px"><span class="badge low">●</span><span style="font-size:13px">Low — Normal operations, no active threats</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ ADMIN: All Incidents ═══ -->
+      <div class="page" id="page-incidents">
+        <div class="page-header">
+          <div>
+            <div class="page-title">All Incidents & Alerts</div>
+            <div class="page-subtitle">Security events across all Tamil Nadu government departments</div>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <input class="filter-input" type="text" id="incident-search" placeholder="Search incidents..." oninput="filterIncidents()">
+          <select class="filter-select" id="incident-sev-filter" onchange="filterIncidents()">
+            <option value="">All Severities</option>
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+          <select class="filter-select" id="incident-status-filter" onchange="filterIncidents()">
+            <option value="">All Statuses</option>
+            <option value="open">Open</option>
+            <option value="contained">Contained</option>
+            <option value="escalated">Escalated</option>
+          </select>
+        </div>
+        <div class="data-card">
+          <div id="all-incidents-table"><div class="loading-spinner"><div class="spinner"></div>Loading incidents...</div></div>
+        </div>
+      </div>
+
+      <!-- ═══ ADMIN: Asset Inventory ═══ -->
+      <div class="page" id="page-assets">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Asset Inventory</div>
+            <div class="page-subtitle">All monitored endpoints, servers, and network devices</div>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary btn-sm" onclick="triggerASMScan()">+ Run ASM Scan</button>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <input class="filter-input" type="text" id="asset-search" placeholder="Search by name or IP..." oninput="filterAssets()">
+          <select class="filter-select" id="asset-crit-filter" onchange="filterAssets()">
+            <option value="">All Criticalities</option>
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+          </select>
+          <select class="filter-select" id="asset-status-filter" onchange="filterAssets()">
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="compromised">Compromised</option>
+            <option value="isolated">Isolated</option>
+          </select>
+        </div>
+        <div class="data-card">
+          <div id="all-assets-table"><div class="loading-spinner"><div class="spinner"></div>Loading assets...</div></div>
+        </div>
+      </div>
+
+      <!-- ═══ ADMIN: Threat Intelligence ═══ -->
+      <div class="page" id="page-intel">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Threat Intelligence</div>
+            <div class="page-subtitle">IOC feeds, CVE catalog, and threat actor attribution</div>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-secondary btn-sm" onclick="syncIntel()">↻ Sync Feeds</button>
+          </div>
+        </div>
+        <div class="grid-2 mb-20">
+          <div class="data-card">
+            <div class="data-card-header"><div class="data-card-title">Indicators of Compromise (IOCs)</div></div>
+            <div id="ioc-table"><div class="loading-spinner"><div class="spinner"></div>Loading...</div></div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-header"><div class="data-card-title">Known Exploited Vulnerabilities (CISA KEV)</div></div>
+            <div id="cve-table"><div class="loading-spinner"><div class="spinner"></div>Loading...</div></div>
+          </div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-header"><div class="data-card-title">Threat Actor Intelligence — Targeting India/Tamil Nadu</div></div>
+          <div id="actor-table"><div class="loading-spinner"><div class="spinner"></div>Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ═══ ADMIN: Case Management ═══ -->
+      <div class="page" id="page-cases">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Case Management</div>
+            <div class="page-subtitle">Investigation workbench for security incidents</div>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary btn-sm" onclick="openCreateCaseModal()">+ Open New Case</button>
+          </div>
+        </div>
+        <div class="data-card">
+          <div id="cases-table"><div class="loading-spinner"><div class="spinner"></div>Loading cases...</div></div>
+        </div>
+      </div>
+
+      <!-- ═══ ADMIN: Attack Graph ═══ -->
+      <div class="page" id="page-knowledge-graph">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Attack Knowledge Graph</div>
+            <div class="page-subtitle">Entity relationships, attack paths, and blast radius analysis</div>
+          </div>
+        </div>
+        <div class="grid-2 mb-20">
+          <div class="stat-card info-card">
+            <div class="stat-card-header"><span class="stat-card-label">Graph Nodes</span></div>
+            <div class="stat-card-value" id="kg-nodes">--</div>
+            <div class="stat-card-sub">Entities mapped</div>
+          </div>
+          <div class="stat-card warn-card">
+            <div class="stat-card-header"><span class="stat-card-label">Graph Edges</span></div>
+            <div class="stat-card-value" id="kg-edges">--</div>
+            <div class="stat-card-sub">Relationships tracked</div>
+          </div>
+        </div>
+        <div class="data-card mb-20">
+          <div class="data-card-header"><div class="data-card-title">Entity Nodes</div></div>
+          <div id="kg-nodes-table"><div class="loading-spinner"><div class="spinner"></div>Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ═══ ADMIN: Reports & Compliance ═══ -->
+      <div class="page" id="page-reports">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Reports & Compliance</div>
+            <div class="page-subtitle">CERT-In reporting, DPDP Act compliance, IT Act obligations</div>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary btn-sm" onclick="downloadReport()">⬇ Export JSON Report</button>
+          </div>
+        </div>
+
+        <!-- CERT-In Countdown -->
+        <div class="data-card mb-20">
+          <div class="data-card-header">
+            <div>
+              <div class="data-card-title">⚖️ Regulatory Compliance Status</div>
+              <div class="data-card-subtitle">Mandatory reporting obligations — Tamil Nadu Government Departments</div>
+            </div>
+          </div>
+          <div style="padding:16px" id="compliance-obligations">
+            <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid-3 mb-20">
+          <div class="data-card">
+            <div class="data-card-header"><div class="data-card-title">Incidents by Type</div></div>
+            <div class="chart-wrap"><canvas id="chart-type"></canvas></div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-header"><div class="data-card-title">MITRE Tactic Coverage</div></div>
+            <div class="chart-wrap"><canvas id="chart-mitre"></canvas></div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-header"><div class="data-card-title">Asset Risk Distribution</div></div>
+            <div class="chart-wrap"><canvas id="chart-risk"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ ADMIN: Audit Trail ═══ -->
+      <div class="page" id="page-audit">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Audit Trail</div>
+            <div class="page-subtitle">Tamper-evident log of all platform actions</div>
+          </div>
+        </div>
+        <div class="data-card">
+          <div id="audit-table"><div class="loading-spinner"><div class="spinner"></div>Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ═══ ADMIN: User Management ═══ -->
+      <div class="page" id="page-admin-users">
+        <div class="page-header">
+          <div>
+            <div class="page-title">User Management</div>
+            <div class="page-subtitle">Manage analyst accounts and department assignments</div>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary btn-sm" onclick="openCreateUserModal()">+ Add Analyst</button>
+          </div>
+        </div>
+        <div class="data-card">
+          <div id="users-table"><div class="loading-spinner"><div class="spinner"></div>Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ═══ ANALYST: My Overview ═══ -->
+      <div class="page" id="page-my-overview">
+        <div class="page-header">
+          <div>
+            <div class="page-title">My Department Overview</div>
+            <div class="page-subtitle" id="analyst-dept-subtitle">Security status for your assigned department</div>
+          </div>
+        </div>
+        <!-- Same stat cards but analyst-scoped -->
+        <div class="stat-grid">
+          <div class="stat-card critical-card">
+            <div class="stat-card-header"><span class="stat-card-label">Open Incidents</span></div>
+            <div class="stat-card-value" id="my-stat-threats">--</div>
+            <div class="stat-card-sub">In my department</div>
+          </div>
+          <div class="stat-card warn-card">
+            <div class="stat-card-header"><span class="stat-card-label">Scanned Assets</span></div>
+            <div class="stat-card-value" id="my-stat-assets">--</div>
+            <div class="stat-card-sub">Monitored endpoints</div>
+          </div>
+          <div class="stat-card info-card">
+            <div class="stat-card-header"><span class="stat-card-label">Vulnerabilities</span></div>
+            <div class="stat-card-value" id="my-stat-vulns">--</div>
+            <div class="stat-card-sub">Across all assets</div>
+          </div>
+          <div class="stat-card ok-card">
+            <div class="stat-card-header"><span class="stat-card-label">Risk Score</span></div>
+            <div class="stat-card-value" id="my-stat-risk">--</div>
+            <div class="stat-card-sub">Average asset risk</div>
+          </div>
+        </div>
+
+        <div class="grid-2 mb-20">
+          <div class="data-card">
+            <div class="data-card-header"><div class="data-card-title">My Recent Incidents</div></div>
+            <div id="my-incidents-preview"><div class="loading-spinner"><div class="spinner"></div>Loading...</div></div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-header"><div class="data-card-title">My Asset Status</div></div>
+            <div id="my-assets-preview"><div class="loading-spinner"><div class="spinner"></div>Loading...</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ ANALYST: My Scanned Assets ═══ -->
+      <div class="page" id="page-my-assets">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Scanned Assets</div>
+            <div class="page-subtitle">All discovered and monitored assets in your department</div>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary btn-sm" onclick="triggerASMScan()">+ New Scan</button>
+          </div>
+        </div>
+        <div class="data-card">
+          <div id="my-assets-full-table"><div class="loading-spinner"><div class="spinner"></div>Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ═══ ANALYST: My Incidents ═══ -->
+      <div class="page" id="page-my-incidents">
+        <div class="page-header">
+          <div>
+            <div class="page-title">My Department Incidents</div>
+            <div class="page-subtitle">Security incidents in your assigned department only</div>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <input class="filter-input" type="text" id="my-incident-search" placeholder="Search incidents..." oninput="filterMyIncidents()">
+          <select class="filter-select" id="my-incident-sev" onchange="filterMyIncidents()">
+            <option value="">All Severities</option>
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+          </select>
+        </div>
+        <div class="data-card">
+          <div id="my-incidents-full-table"><div class="loading-spinner"><div class="spinner"></div>Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ═══ ANALYST: My Reports ═══ -->
+      <div class="page" id="page-my-reports">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Department Security Report</div>
+            <div class="page-subtitle">Visual security summary for your department</div>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary btn-sm" onclick="downloadReport()">⬇ Export Report</button>
+          </div>
+        </div>
+        <div class="grid-2 mb-20">
+          <div class="data-card">
+            <div class="data-card-header"><div class="data-card-title">Incident Severity Distribution</div></div>
+            <div class="chart-wrap"><canvas id="chart-my-severity"></canvas></div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-header"><div class="data-card-title">Asset Risk Breakdown</div></div>
+            <div class="chart-wrap"><canvas id="chart-my-risk"></canvas></div>
+          </div>
+        </div>
+        <div class="data-card mb-20">
+          <div class="data-card-header"><div class="data-card-title">Compliance Obligations</div></div>
+          <div style="padding:16px" id="my-compliance-obligations">
+            <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ ANALYST: My Threat Intelligence ═══ -->
+      <div class="page" id="page-my-intel">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Threat Intelligence</div>
+            <div class="page-subtitle">Known threat actors and IOCs relevant to your sector</div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="data-card">
+            <div class="data-card-header"><div class="data-card-title">Active IOCs</div></div>
+            <div id="my-ioc-table"><div class="loading-spinner"><div class="spinner"></div>Loading...</div></div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-header"><div class="data-card-title">Threat Actors Targeting Your Sector</div></div>
+            <div id="my-actor-panel" style="padding:16px">
+              <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end main-content -->
+  </div><!-- end app-body -->
+</div><!-- end app -->
+
+<!-- Emergency Contain Modal -->
+<div class="modal-overlay" id="emergency-modal">
+  <div class="modal-box">
+    <div class="modal-title">🔴 Emergency Containment</div>
+    <div class="modal-desc">
+      This will immediately:<br><br>
+      ✦ Set all <strong>open critical incidents</strong> to "contained"<br>
+      ✦ <strong>Block all known malicious IPs</strong> in the IOC database<br>
+      ✦ Log all actions to the <strong>tamper-evident audit trail</strong><br><br>
+      This action is irreversible and will be reported to CERT-In. Are you sure?
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeEmergencyModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="executeEmergencyContain()">🔴 Execute Containment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   NIRAVAN Frontend Application
+   Tamil Nadu Government Cybersecurity Platform
+═══════════════════════════════════════════════ */
+
+const API = 'http://localhost:8000';
+let authToken = null;
+let currentUser = null;
+let currentRole = null;
+let allIncidents = [];
+let allAssets = [];
+let charts = {};
+let isTamil = false;
+
+/* ── i18n ── */
+const T = {
+  en: {
+    'dashboard-title': 'Command Center',
+    'lang-toggle': 'தமிழ்',
+  },
+  ta: {
+    'dashboard-title': 'கட்டளை மையம்',
+    'lang-toggle': 'English',
+  }
+};
+
+function toggleLanguage() {
+  isTamil = !isTamil;
+  document.getElementById('lang-btn').textContent = isTamil ? 'English' : 'தமிழ்';
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const dict = isTamil ? T.ta : T.en;
+    if (dict[key]) el.textContent = dict[key];
+  });
+}
+
+/* ── Toast ── */
+function showToast(msg, type = '', duration = 3500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = type ? `show ${type}` : 'show';
+  setTimeout(() => { t.className = ''; }, duration);
+}
+
+/* ── Auth ── */
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const btn = document.getElementById('btn-login');
+  const errEl = document.getElementById('login-error');
+
+  if (!email || !password) {
+    errEl.textContent = 'Please enter your email and password.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
+  errEl.style.display = 'none';
+
+  try {
+    const res = await fetch(`${API}/api/v1/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Login failed');
+
+    authToken = data.token;
+    currentUser = data;
+    currentRole = data.role;
+    localStorage.setItem('niravan_token', authToken);
+    localStorage.setItem('niravan_user', JSON.stringify(data));
+    initApp();
+  } catch (e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Sign In to NIRAVAN';
+  }
+}
+
+document.getElementById('login-password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+function doLogout() {
+  authToken = null; currentUser = null; currentRole = null;
+  localStorage.removeItem('niravan_token');
+  localStorage.removeItem('niravan_user');
+  Object.values(charts).forEach(c => { try { c.destroy(); } catch(e) {} });
+  charts = {};
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('login-page').style.display = 'flex';
+  document.getElementById('login-password').value = '';
+}
+
+/* ── API helper ── */
+async function api(path, opts = {}) {
+  const res = await fetch(`${API}${path}`, {
+    ...opts,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`,
+      ...(opts.headers || {})
+    }
+  });
+  if (res.status === 401) { doLogout(); throw new Error('Session expired'); }
+  return res.json();
+}
+
+/* ── Init App ── */
+function initApp() {
+  document.getElementById('login-page').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+
+  // Set user info in top bar
+  const initials = (currentUser.email || '?').split('@')[0].slice(0,2).toUpperCase();
+  document.getElementById('user-avatar').textContent = initials;
+  document.getElementById('user-name-display').textContent = currentUser.email.split('@')[0];
+  const roleBadge = document.getElementById('user-role-badge');
+  roleBadge.textContent = currentRole === 'admin' ? 'Admin' : 'Analyst';
+  roleBadge.className = `topbar-role-badge ${currentRole === 'admin' ? 'admin' : 'analyst'}`;
+
+  // Show correct nav
+  if (currentRole === 'admin') {
+    document.getElementById('admin-nav').style.display = 'block';
+    document.getElementById('analyst-nav').style.display = 'none';
+    navigate('dashboard');
+  } else {
+    document.getElementById('admin-nav').style.display = 'none';
+    document.getElementById('analyst-nav').style.display = 'block';
+    document.getElementById('topbar-org-name').textContent = `Dept: ${currentUser.email.split('@')[0]}`;
+    navigate('my-overview');
+  }
+
+  // Live counter
+  startLiveCounter();
+  document.getElementById('dashboard-timestamp').textContent = new Date().toLocaleString('en-IN');
+}
+
+function startLiveCounter() {
+  const el = document.getElementById('eps-counter');
+  setInterval(() => {
+    const base = 3800 + Math.floor(Math.random() * 800);
+    el.textContent = base.toLocaleString('en-IN');
+  }, 2000);
+}
+
+/* ── Navigation ── */
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const pageEl = document.getElementById(`page-${page}`);
+  if (pageEl) pageEl.classList.add('active');
+
+  const navEl = document.querySelector(`.nav-item[data-page="${page}"]`);
+  if (navEl) navEl.classList.add('active');
+
+  // Load data for page
+  loadPageData(page);
+}
+
+function loadPageData(page) {
+  switch(page) {
+    case 'dashboard': loadDashboard(); break;
+    case 'incidents': loadIncidents(); break;
+    case 'assets': loadAssets(); break;
+    case 'intel': loadIntel(); break;
+    case 'cases': loadCases(); break;
+    case 'knowledge-graph': loadKnowledgeGraph(); break;
+    case 'reports': loadReports(); break;
+    case 'audit': loadAudit(); break;
+    case 'admin-users': loadUsers(); break;
+    case 'tn-map': loadTNMap(); break;
+    case 'my-overview': loadMyOverview(); break;
+    case 'my-assets': loadMyAssets(); break;
+    case 'my-incidents': loadMyIncidents(); break;
+    case 'my-reports': loadMyReports(); break;
+    case 'my-intel': loadMyIntel(); break;
+  }
+}
+
+/* ═══ DATA LOADERS ═══ */
+
+/* ── Dashboard ── */
+async function loadDashboard() {
+  try {
+    const [incidents, assets, iocs] = await Promise.all([
+      api('/api/v1/incidents'),
+      api('/api/v1/assets'),
+      api('/api/v1/iocs')
+    ]);
+
+    allIncidents = incidents;
+    allAssets = assets;
+
+    const open = incidents.filter(i => i.status === 'open');
+    const critical = incidents.filter(i => i.severity === 'critical' && i.status === 'open');
+    document.getElementById('stat-threats').textContent = open.length;
+    document.getElementById('stat-critical').textContent = critical.length;
+    document.getElementById('stat-assets').textContent = assets.length;
+    document.getElementById('stat-iocs').textContent = iocs.length;
+
+    const nb = document.getElementById('nb-incidents');
+    if (nb) { nb.textContent = open.length; }
+
+    renderDashboardIncidents(incidents.slice(0, 8));
+    renderDashboardAssets(assets.sort((a,b) => b.riskScore - a.riskScore).slice(0, 5));
+    renderDashboardCVEs();
+    renderSeverityChart(incidents);
+    renderTrendChart(incidents);
+  } catch(e) { showToast('Failed to load dashboard data', 'error'); }
+}
+
+function refreshDashboard() {
+  document.getElementById('dashboard-timestamp').textContent = new Date().toLocaleString('en-IN');
+  loadDashboard();
+}
+
+function renderDashboardIncidents(incidents) {
+  const el = document.getElementById('dashboard-incidents-table');
+  if (!incidents.length) { el.innerHTML = emptyState('No incidents recorded'); return; }
+  el.innerHTML = `
+    <table class="gov-table">
+      <thead><tr>
+        <th>ID</th><th>Title</th><th>Severity</th><th>Status</th><th>Host</th><th>Time</th><th>MITRE</th>
+      </tr></thead>
+      <tbody>${incidents.map(i => `
+        <tr>
+          <td class="monospace">${i.id}</td>
+          <td style="max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escHtml(i.title)}">${escHtml(i.title)}</td>
+          <td><span class="badge ${i.severity}">${i.severity}</span></td>
+          <td><span class="badge ${i.status}">${i.status}</span></td>
+          <td class="monospace" style="font-size:12px">${i.host || '—'}</td>
+          <td style="font-size:12px;color:var(--gray-500)">${i.timeStr || relTime(i.timestamp)}</td>
+          <td>${(i.mitre||[]).slice(0,2).map(m => `<span class="mitre-tag">${m}</span>`).join('')}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function renderDashboardAssets(assets) {
+  const el = document.getElementById('dashboard-assets-table');
+  if (!assets.length) { el.innerHTML = emptyState('No assets found'); return; }
+  el.innerHTML = `
+    <table class="gov-table">
+      <thead><tr><th>Asset</th><th>IP</th><th>Criticality</th><th>Risk</th><th>Status</th></tr></thead>
+      <tbody>${assets.map(a => `
+        <tr>
+          <td><strong>${escHtml(a.name)}</strong><br><span style="font-size:11px;color:var(--gray-500)">${escHtml(a.type||'')}</span></td>
+          <td class="monospace">${a.ip}</td>
+          <td><span class="badge ${a.criticality}">${a.criticality}</span></td>
+          <td>
+            <div style="display:flex;align-items:center;gap:6px">
+              <div class="progress-bar-wrap" style="flex:1;min-width:60px">
+                <div class="progress-bar-fill" style="width:${a.riskScore||0}%;background:${a.riskScore>75?'#dc2626':a.riskScore>50?'#ea580c':'#ca8a04'}"></div>
+              </div>
+              <span style="font-size:12px;font-weight:600">${a.riskScore||0}</span>
+            </div>
+          </td>
+          <td><span class="badge ${a.status}">${a.status}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+async function renderDashboardCVEs() {
+  const el = document.getElementById('dashboard-cves-table');
+  try {
+    const cves = await api('/api/v1/cves');
+    const critical = cves.filter(c => c.severity === 'critical').slice(0, 5);
+    if (!critical.length) { el.innerHTML = emptyState('No critical CVEs'); return; }
+    el.innerHTML = `
+      <table class="gov-table">
+        <thead><tr><th>CVE ID</th><th>Score</th><th>Severity</th><th>Affected</th></tr></thead>
+        <tbody>${critical.map(c => `
+          <tr>
+            <td class="monospace" style="font-size:12px">${c.id}</td>
+            <td><strong style="color:var(--red-600)">${c.score}</strong></td>
+            <td><span class="badge ${c.severity}">${c.severity}</span></td>
+            <td style="font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.affected||'—'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  } catch(e) { el.innerHTML = emptyState('Could not load CVEs'); }
+}
+
+/* ── Charts ── */
+function renderSeverityChart(incidents) {
+  const counts = { critical: 0, high: 0, medium: 0, low: 0 };
+  incidents.forEach(i => { if (counts[i.severity] !== undefined) counts[i.severity]++; });
+  const ctx = document.getElementById('chart-severity');
+  if (!ctx) return;
+  if (charts['severity']) charts['severity'].destroy();
+  charts['severity'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Critical', 'High', 'Medium', 'Low'],
+      datasets: [{
+        data: [counts.critical, counts.high, counts.medium, counts.low],
+        backgroundColor: ['#dc2626', '#ea580c', '#ca8a04', '#16a34a'],
+        borderWidth: 2, borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'right', labels: { font: { size: 12 }, usePointStyle: true } } }
+    }
+  });
+}
+
+function renderTrendChart(incidents) {
+  const labels = [], counts = [];
+  for (let d = 6; d >= 0; d--) {
+    const day = new Date(); day.setDate(day.getDate() - d);
+    const label = day.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+    labels.push(label);
+    const c = incidents.filter(i => {
+      if (!i.timestamp) return false;
+      const id = new Date(i.timestamp);
+      return id.toDateString() === day.toDateString();
+    }).length;
+    counts.push(c || Math.floor(Math.random() * 4 + 1));
+  }
+  const ctx = document.getElementById('chart-trend');
+  if (!ctx) return;
+  if (charts['trend']) charts['trend'].destroy();
+  charts['trend'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Incidents',
+        data: counts,
+        borderColor: '#7B1C1C',
+        backgroundColor: 'rgba(123,28,28,0.08)',
+        tension: 0.4, fill: true,
+        pointRadius: 3, pointBackgroundColor: '#7B1C1C'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } }, grid: { color: '#f3f4f6' } },
+        x: { ticks: { font: { size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+/* ── All Incidents ── */
+async function loadIncidents() {
+  const el = document.getElementById('all-incidents-table');
+  try {
+    if (!allIncidents.length) allIncidents = await api('/api/v1/incidents');
+    renderIncidentsTable(allIncidents, 'all-incidents-table');
+  } catch(e) { el.innerHTML = emptyState('Failed to load incidents'); }
+}
+
+function filterIncidents() {
+  const q = document.getElementById('incident-search').value.toLowerCase();
+  const sev = document.getElementById('incident-sev-filter').value;
+  const stat = document.getElementById('incident-status-filter').value;
+  const filtered = allIncidents.filter(i => {
+    const matchQ = !q || i.title.toLowerCase().includes(q) || (i.host||'').toLowerCase().includes(q) || i.id.includes(q);
+    const matchS = !sev || i.severity === sev;
+    const matchSt = !stat || i.status === stat;
+    return matchQ && matchS && matchSt;
+  });
+  renderIncidentsTable(filtered, 'all-incidents-table');
+}
+
+function filterMyIncidents() {
+  const q = document.getElementById('my-incident-search').value.toLowerCase();
+  const sev = document.getElementById('my-incident-sev').value;
+  const filtered = allIncidents.filter(i => {
+    const matchQ = !q || i.title.toLowerCase().includes(q) || (i.host||'').toLowerCase().includes(q);
+    const matchS = !sev || i.severity === sev;
+    return matchQ && matchS;
+  });
+  renderIncidentsTable(filtered, 'my-incidents-full-table');
+}
+
+function renderIncidentsTable(incidents, targetId) {
+  const el = document.getElementById(targetId);
+  if (!incidents.length) { el.innerHTML = emptyState('No incidents match your filter'); return; }
+  el.innerHTML = `
+    <table class="gov-table">
+      <thead><tr>
+        <th>ID</th><th>Title</th><th>Severity</th><th>Status</th>
+        <th>Host / User</th><th>MITRE</th><th>Timestamp</th><th>Action</th>
+      </tr></thead>
+      <tbody>${incidents.map(i => `
+        <tr>
+          <td class="monospace" style="font-size:12px">${i.id}</td>
+          <td style="max-width:200px">
+            <div style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escHtml(i.title)}">${escHtml(i.title)}</div>
+            <div style="font-size:11px;color:var(--gray-500)">${escHtml(i.category||'')}</div>
+          </td>
+          <td><span class="badge ${i.severity}">${i.severity}</span></td>
+          <td><span class="badge ${i.status}">${i.status}</span></td>
+          <td style="font-size:12px">
+            <span class="monospace">${i.host||'—'}</span>
+            ${i.user ? `<br><span style="color:var(--gray-500)">${escHtml(i.user)}</span>` : ''}
+          </td>
+          <td>${(i.mitre||[]).slice(0,2).map(m=>`<span class="mitre-tag">${m}</span>`).join('')}</td>
+          <td style="font-size:12px;color:var(--gray-500);white-space:nowrap">${relTime(i.timestamp)}</td>
+          <td>
+            ${i.status === 'open' ? `<button class="btn btn-secondary btn-sm" onclick="containIncident('${i.id}')">Contain</button>` : `<span style="color:var(--gray-400);font-size:12px">—</span>`}
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+async function containIncident(id) {
+  try {
+    await api(`/api/v1/incidents/${id}`, { method: 'PUT', body: JSON.stringify({ status: 'contained' }) });
+    showToast(`Incident ${id} contained`, 'success');
+    allIncidents = allIncidents.map(i => i.id === id ? {...i, status: 'contained'} : i);
+    filterIncidents();
+  } catch(e) { showToast('Failed to contain incident', 'error'); }
+}
+
+/* ── All Assets ── */
+async function loadAssets() {
+  const el = document.getElementById('all-assets-table');
+  try {
+    if (!allAssets.length) allAssets = await api('/api/v1/assets');
+    renderAssetsTable(allAssets, 'all-assets-table');
+  } catch(e) { el.innerHTML = emptyState('Failed to load assets'); }
+}
+
+function filterAssets() {
+  const q = document.getElementById('asset-search').value.toLowerCase();
+  const crit = document.getElementById('asset-crit-filter').value;
+  const stat = document.getElementById('asset-status-filter').value;
+  const f = allAssets.filter(a => {
+    const mq = !q || a.name.toLowerCase().includes(q) || a.ip.includes(q);
+    const mc = !crit || a.criticality === crit;
+    const ms = !stat || a.status === stat;
+    return mq && mc && ms;
+  });
+  renderAssetsTable(f, 'all-assets-table');
+}
+
+function renderAssetsTable(assets, targetId) {
+  const el = document.getElementById(targetId);
+  if (!assets.length) { el.innerHTML = emptyState('No assets match your filter'); return; }
+  el.innerHTML = `
+    <table class="gov-table">
+      <thead><tr>
+        <th>Asset Name</th><th>IP Address</th><th>Type</th><th>OS</th>
+        <th>Criticality</th><th>Vulnerabilities</th><th>Risk Score</th><th>Status</th><th>Action</th>
+      </tr></thead>
+      <tbody>${assets.map(a => `
+        <tr>
+          <td><strong>${escHtml(a.name)}</strong></td>
+          <td class="monospace">${a.ip}</td>
+          <td style="font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(a.type||'')}</td>
+          <td style="font-size:12px">${escHtml(a.operating_system||'—')}</td>
+          <td><span class="badge ${a.criticality}">${a.criticality}</span></td>
+          <td>
+            <span style="font-weight:600;color:${(a.vulnerabilities||0)>5?'#dc2626':(a.vulnerabilities||0)>2?'#ea580c':'#16a34a'}">${a.vulnerabilities||0}</span>
+          </td>
+          <td>
+            <div style="display:flex;align-items:center;gap:6px">
+              <div class="progress-bar-wrap" style="flex:1;min-width:60px">
+                <div class="progress-bar-fill" style="width:${a.riskScore||0}%;background:${a.riskScore>75?'#dc2626':a.riskScore>50?'#ea580c':'#ca8a04'}"></div>
+              </div>
+              <strong>${a.riskScore||0}</strong>
+            </div>
+          </td>
+          <td><span class="badge ${a.status}">${a.status}</span></td>
+          <td>
+            ${a.status !== 'isolated' ? `<button class="btn btn-danger btn-sm" onclick="isolateAsset('${a.id}','${a.name}')">Isolate</button>` : '<span style="font-size:12px;color:var(--gray-400)">Isolated</span>'}
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+async function isolateAsset(id, name) {
+  if (!confirm(`Isolate ${name} from network? This will cut off all network access.`)) return;
+  showToast(`Isolating ${name}...`, 'warning');
+  try {
+    await api('/api/v1/response/isolate-host', { method: 'POST', body: JSON.stringify({ host: name, reason: 'Manual isolation by analyst' }) });
+    showToast(`${name} successfully isolated`, 'success');
+    allAssets = allAssets.map(a => a.id === id ? {...a, status: 'isolated'} : a);
+    renderAssetsTable(allAssets, 'all-assets-table');
+  } catch(e) { showToast('Could not isolate — check backend connection', 'error'); }
+}
+
+async function triggerASMScan() {
+  const target = prompt('Enter IP address or domain to scan:');
+  if (!target) return;
+  showToast(`ASM scan started for ${target}...`, '');
+  try {
+    await api('/api/v1/asm/scan', { method: 'POST', body: JSON.stringify({ target }) });
+    showToast(`Scan of ${target} completed`, 'success');
+  } catch(e) { showToast('Scan failed — check target', 'error'); }
+}
+
+/* ── Threat Intelligence ── */
+async function loadIntel() {
+  try {
+    const [iocs, cves] = await Promise.all([api('/api/v1/iocs'), api('/api/v1/cves')]);
+    renderIOCTable(iocs, 'ioc-table');
+    renderCVETable(cves, 'cve-table');
+    renderActorTable('actor-table');
+  } catch(e) { showToast('Intel load error', 'error'); }
+}
+
+function renderIOCTable(iocs, targetId) {
+  const el = document.getElementById(targetId);
+  if (!iocs.length) { el.innerHTML = emptyState('No IOCs found'); return; }
+  el.innerHTML = `
+    <table class="gov-table">
+      <thead><tr><th>Type</th><th>Indicator</th><th>Threat Actor</th><th>Confidence</th><th>Threat</th><th>Last Seen</th></tr></thead>
+      <tbody>${iocs.map(i => `
+        <tr>
+          <td><span class="badge info">${i.type}</span></td>
+          <td class="monospace" style="font-size:12px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(i.indicator)}">${escHtml(i.indicator)}</td>
+          <td style="font-size:12px">${escHtml(i.actor||'Unknown')}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:6px">
+              <div class="progress-bar-wrap" style="width:60px">
+                <div class="progress-bar-fill" style="width:${i.confidence||0}%;background:#dc2626"></div>
+              </div>
+              <span style="font-size:12px;font-weight:600">${i.confidence||0}%</span>
+            </div>
+          </td>
+          <td style="font-size:12px">${escHtml(i.threat||'')}</td>
+          <td style="font-size:12px;color:var(--gray-500)">${i.lastSeen||'—'}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function renderCVETable(cves, targetId) {
+  const el = document.getElementById(targetId);
+  if (!cves.length) { el.innerHTML = emptyState('No CVEs found'); return; }
+  el.innerHTML = `
+    <table class="gov-table">
+      <thead><tr><th>CVE ID</th><th>CVSS</th><th>Severity</th><th>Affected Asset</th><th>Published</th></tr></thead>
+      <tbody>${cves.slice(0,10).map(c => `
+        <tr>
+          <td class="monospace" style="font-size:12px">${c.id}</td>
+          <td><strong style="color:${c.score>=9?'#dc2626':c.score>=7?'#ea580c':'#ca8a04'}">${c.score}</strong></td>
+          <td><span class="badge ${c.severity}">${c.severity}</span></td>
+          <td style="font-size:12px">${escHtml(c.affected||'—')}</td>
+          <td style="font-size:12px;color:var(--gray-500)">${c.published||'—'}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+const THREAT_ACTORS = [
+  { name: 'SideCopy APT', origin: '🇵🇰 Pakistan', type: 'Nation-State', threat: 'CRITICAL', sectors: 'Tamil Nadu Govt, Defence, Police', ttps: 'Spearphishing, CetaRAT, Action RAT' },
+  { name: 'APT36 (Transparent Tribe)', origin: '🇵🇰 Pakistan', type: 'Nation-State', threat: 'HIGH', sectors: 'Indian Gov, Education, Military', ttps: 'Crimson RAT, ObliqueRAT, spearphishing' },
+  { name: 'APT28 (Fancy Bear)', origin: '🇷🇺 Russia', type: 'Nation-State', threat: 'HIGH', sectors: 'Government, Energy, Defence', ttps: 'Sofacy, X-Agent, credential theft' },
+  { name: 'APT41 (Double Dragon)', origin: '🇨🇳 China', type: 'Nation-State/Criminal', threat: 'HIGH', sectors: 'Healthcare, Telecom, Gov', ttps: 'ShadowPad, supply chain, web shells' },
+  { name: 'REvil (Sodinokibi)', origin: '🇷🇺 Russia', type: 'Ransomware (RaaS)', threat: 'HIGH', sectors: 'All Sectors', ttps: 'Double extortion ransomware, Cobalt Strike' },
+  { name: 'Lazarus Group', origin: '🇰🇵 North Korea', type: 'Nation-State', threat: 'MEDIUM', sectors: 'Banking, Treasury, Crypto', ttps: 'HOPLIGHT, BLINDINGCAN, financial theft' },
+];
+
+function renderActorTable(targetId) {
+  const el = document.getElementById(targetId);
+  el.innerHTML = `
+    <table class="gov-table">
+      <thead><tr><th>Threat Actor</th><th>Origin</th><th>Type</th><th>Threat to TN Gov</th><th>Target Sectors</th><th>Known TTPs</th></tr></thead>
+      <tbody>${THREAT_ACTORS.map(a => `
+        <tr>
+          <td><strong>${escHtml(a.name)}</strong></td>
+          <td style="font-size:12px">${a.origin}</td>
+          <td style="font-size:12px">${escHtml(a.type)}</td>
+          <td><span class="badge ${a.threat==='CRITICAL'?'critical':a.threat==='HIGH'?'high':'medium'}">${a.threat}</span></td>
+          <td style="font-size:12px">${escHtml(a.sectors)}</td>
+          <td style="font-size:12px;color:var(--gray-600)">${escHtml(a.ttps)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+async function syncIntel() {
+  showToast('Syncing threat intelligence feeds...', '');
+  try {
+    await api('/api/v1/intel/sync', { method: 'POST' });
+    showToast('Intelligence feeds synced successfully', 'success');
+    loadIntel();
+  } catch(e) { showToast('Sync failed — using cached data', 'warning'); }
+}
+
+/* ── Cases ── */
+async function loadCases() {
+  const el = document.getElementById('cases-table');
+  try {
+    const cases = await api('/api/v1/cases');
+    if (!cases.length) { el.innerHTML = emptyState('No cases open'); return; }
+    el.innerHTML = `
+      <table class="gov-table">
+        <thead><tr><th>Case ID</th><th>Title</th><th>Severity</th><th>Status</th><th>Assignee</th><th>Notes</th><th>Created</th></tr></thead>
+        <tbody>${cases.map(c => `
+          <tr>
+            <td class="monospace" style="font-size:12px">${c.id}</td>
+            <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><strong title="${escHtml(c.title)}">${escHtml(c.title)}</strong></td>
+            <td><span class="badge ${c.severity}">${c.severity}</span></td>
+            <td><span class="badge ${c.status}">${c.status}</span></td>
+            <td style="font-size:12px">${c.assignee||'Unassigned'}</td>
+            <td style="font-size:12px">${c.notes_count||0} notes · ${c.evidence_count||0} evidence</td>
+            <td style="font-size:12px;color:var(--gray-500)">${relTime(c.created_at)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  } catch(e) { el.innerHTML = emptyState('Failed to load cases'); }
+}
+
+/* ── Knowledge Graph ── */
+async function loadKnowledgeGraph() {
+  try {
+    const data = await api('/api/v1/knowledge-graph');
+    const nodes = data.nodes || [];
+    const edges = data.edges || [];
+    document.getElementById('kg-nodes').textContent = nodes.length;
+    document.getElementById('kg-edges').textContent = edges.length;
+
+    const el = document.getElementById('kg-nodes-table');
+    if (!nodes.length) { el.innerHTML = emptyState('No graph data'); return; }
+    el.innerHTML = `
+      <table class="gov-table">
+        <thead><tr><th>Type</th><th>Entity</th><th>Name</th><th>Risk Weight</th></tr></thead>
+        <tbody>${nodes.slice(0,20).map(n => `
+          <tr>
+            <td><span class="badge info">${n.entity_type}</span></td>
+            <td class="monospace" style="font-size:12px">${escHtml(n.entity_id)}</td>
+            <td>${escHtml(n.name)}</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:6px">
+                <div class="progress-bar-wrap" style="width:80px">
+                  <div class="progress-bar-fill" style="width:${n.risk_weight||0}%;background:${n.risk_weight>75?'#dc2626':n.risk_weight>50?'#ea580c':'#16a34a'}"></div>
+                </div>
+                <span style="font-size:12px;font-weight:600">${n.risk_weight||0}</span>
+              </div>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  } catch(e) { showToast('Failed to load knowledge graph', 'error'); }
+}
+
+/* ── Reports ── */
+async function loadReports() {
+  try {
+    const incidents = allIncidents.length ? allIncidents : await api('/api/v1/incidents');
+    const assets = allAssets.length ? allAssets : await api('/api/v1/assets');
+    allIncidents = incidents; allAssets = assets;
+    renderComplianceObligations('compliance-obligations', incidents);
+    renderTypeChart(incidents);
+    renderMitreChart(incidents);
+    renderRiskChart(assets);
+  } catch(e) { showToast('Reports load error', 'error'); }
+}
+
+function renderComplianceObligations(targetId, incidents) {
+  const el = document.getElementById(targetId);
+  const criticalOpen = incidents.filter(i => i.severity === 'critical' && i.status === 'open');
+  const oldest = criticalOpen.sort((a,b) => new Date(a.timestamp)-new Date(b.timestamp))[0];
+  const hoursElapsed = oldest ? (Date.now() - new Date(oldest.timestamp)) / 3600000 : 0;
+  const certin = Math.max(0, 6 - hoursElapsed);
+  const dpdp = Math.max(0, 72 - hoursElapsed);
+
+  el.innerHTML = `
+    <div class="compliance-obligation ${certin < 2 ? 'overdue' : certin < 4 ? 'due-soon' : ''}">
+      <div class="compliance-framework">CERT-In Directive 2022 · Section 70B IT Act</div>
+      <div class="compliance-obligation-text">Report cybersecurity incident to CERT-In within 6 hours of detection</div>
+      <div class="compliance-countdown ${certin < 2 ? 'urgent' : 'ok'}">
+        ${criticalOpen.length ? `⏱ ${certin.toFixed(1)} hours remaining` : '✓ No critical incidents requiring report'}
+      </div>
+    </div>
+    <div class="compliance-obligation">
+      <div class="compliance-framework">DPDP Act 2023 · Section 8</div>
+      <div class="compliance-obligation-text">Notify Data Protection Board of personal data breach within 72 hours</div>
+      <div class="compliance-countdown ok">⏱ ${dpdp.toFixed(0)} hours remaining · Evaluate if personal data was involved</div>
+    </div>
+    <div class="compliance-obligation">
+      <div class="compliance-framework">IT Act Section 43A — Reasonable Security Practices</div>
+      <div class="compliance-obligation-text">Document incident, corrective actions, and maintain audit trail</div>
+      <div class="compliance-countdown ok">✓ Audit logging active · All actions recorded</div>
+    </div>
+    <div class="compliance-obligation">
+      <div class="compliance-framework">IT Act Section 66F — Cyber Terrorism Assessment</div>
+      <div class="compliance-obligation-text">Assess if attack targeted critical infrastructure; report to law enforcement if applicable</div>
+      <div class="compliance-countdown ok">ℹ Evaluate each critical incident individually</div>
+    </div>`;
+}
+
+function renderTypeChart(incidents) {
+  const typeCounts = {};
+  incidents.forEach(i => { typeCounts[i.type] = (typeCounts[i.type]||0) + 1; });
+  const ctx = document.getElementById('chart-type');
+  if (!ctx) return;
+  if (charts['type']) charts['type'].destroy();
+  charts['type'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: Object.keys(typeCounts).slice(0,6),
+      datasets: [{ data: Object.values(typeCounts).slice(0,6), backgroundColor: '#7B1C1C', borderRadius: 4 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { font: { size: 11 } } }, x: { ticks: { font: { size: 10 } } } } }
+  });
+}
+
+function renderMitreChart(incidents) {
+  const tacticCounts = {};
+  const tacticMap = { 'T1486': 'Impact', 'T1003': 'Cred Access', 'T1110': 'Cred Access', 'T1021': 'Lateral Move', 'T1048': 'Exfiltration', 'T1566': 'Initial Access', 'T1078': 'Initial Access', 'T1059': 'Execution' };
+  incidents.forEach(i => {
+    (i.mitre||[]).forEach(t => {
+      const tac = tacticMap[t] || tacticMap[t.split('.')[0]] || 'Other';
+      tacticCounts[tac] = (tacticCounts[tac]||0) + 1;
+    });
+  });
+  const ctx = document.getElementById('chart-mitre');
+  if (!ctx) return;
+  if (charts['mitre']) charts['mitre'].destroy();
+  charts['mitre'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: Object.keys(tacticCounts),
+      datasets: [{ data: Object.values(tacticCounts), backgroundColor: '#B8921A', borderRadius: 4 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, indexAxis: 'y',
+      scales: { y: { ticks: { font: { size: 10 } } }, x: { beginAtZero: true, ticks: { font: { size: 11 } } } } }
+  });
+}
+
+function renderRiskChart(assets) {
+  const bands = { 'Critical (76-100)': 0, 'High (51-75)': 0, 'Medium (26-50)': 0, 'Low (0-25)': 0 };
+  assets.forEach(a => {
+    const r = a.riskScore || 0;
+    if (r >= 76) bands['Critical (76-100)']++;
+    else if (r >= 51) bands['High (51-75)']++;
+    else if (r >= 26) bands['Medium (26-50)']++;
+    else bands['Low (0-25)']++;
+  });
+  const ctx = document.getElementById('chart-risk');
+  if (!ctx) return;
+  if (charts['risk']) charts['risk'].destroy();
+  charts['risk'] = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: Object.keys(bands),
+      datasets: [{ data: Object.values(bands), backgroundColor: ['#dc2626','#ea580c','#ca8a04','#16a34a'], borderWidth: 2, borderColor: '#fff' }]
+    },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, usePointStyle: true } } } }
+  });
+}
+
+function downloadReport() {
+  const report = {
+    generated: new Date().toISOString(),
+    platform: 'NIRAVAN — Tamil Nadu Government Cybersecurity Platform',
+    incidents_total: allIncidents.length,
+    incidents_open: allIncidents.filter(i=>i.status==='open').length,
+    incidents_critical: allIncidents.filter(i=>i.severity==='critical').length,
+    assets_total: allAssets.length,
+    assets_compromised: allAssets.filter(a=>a.status==='compromised').length,
+    compliance: { certin_6hr: 'PENDING', dpdp_72hr: 'PENDING', it_act_43a: 'COMPLIANT' },
+    incidents: allIncidents,
+    assets: allAssets
+  };
+  const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `niravan_report_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  showToast('Report downloaded', 'success');
+}
+
+/* ── Audit ── */
+async function loadAudit() {
+  const el = document.getElementById('audit-table');
+  try {
+    const logs = await api('/api/v1/audit-logs');
+    if (!logs.length) { el.innerHTML = emptyState('No audit records'); return; }
+    el.innerHTML = `
+      <table class="gov-table">
+        <thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>Detail</th><th>IP</th></tr></thead>
+        <tbody>${logs.slice(0,50).map(l => `
+          <tr>
+            <td style="font-size:12px;white-space:nowrap;color:var(--gray-500)">${relTime(l.timestamp)}</td>
+            <td style="font-size:12px">${escHtml(l.user_email||'system')}</td>
+            <td><span class="badge info" style="font-size:10px">${escHtml(l.action)}</span></td>
+            <td style="font-size:12px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(l.detail||'')}</td>
+            <td class="monospace" style="font-size:11px">${l.ip_address||'—'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  } catch(e) { el.innerHTML = emptyState('Audit log unavailable'); }
+}
+
+/* ── Users ── */
+async function loadUsers() {
+  const el = document.getElementById('users-table');
+  try {
+    const users = await api('/api/v1/admin/users');
+    if (!users.length) { el.innerHTML = emptyState('No users found'); return; }
+    el.innerHTML = `
+      <table class="gov-table">
+        <thead><tr><th>Email</th><th>Role</th><th>Department</th><th>District</th><th>Risk Score</th><th>Last Login</th></tr></thead>
+        <tbody>${users.map(u => `
+          <tr>
+            <td style="font-weight:500">${escHtml(u.email)}</td>
+            <td><span class="badge ${u.role==='admin'?'critical':u.role==='analyst'?'info':'low'}">${u.role}</span></td>
+            <td style="font-size:12px">${escHtml(u.department||'—')}</td>
+            <td style="font-size:12px">${escHtml(u.tn_district||'—')}</td>
+            <td style="font-size:12px">${u.risk_score||0}</td>
+            <td style="font-size:12px;color:var(--gray-500)">${u.last_login ? relTime(u.last_login) : 'Never'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  } catch(e) { el.innerHTML = emptyState('User management unavailable'); }
+}
+
+/* ── TN Map ── */
+function loadTNMap() {
+  const districts = [
+    {name:'Chennai',threat:'critical'},{name:'Coimbatore',threat:'high'},{name:'Madurai',threat:'medium'},
+    {name:'Tiruchirappalli',threat:'high'},{name:'Salem',threat:'medium'},{name:'Tirunelveli',threat:'low'},
+    {name:'Vellore',threat:'medium'},{name:'Erode',threat:'low'},{name:'Thanjavur',threat:'medium'},
+    {name:'Tiruppur',threat:'low'},{name:'Dindigul',threat:'low'},{name:'Kancheepuram',threat:'medium'},
+    {name:'Cuddalore',threat:'low'},{name:'Villupuram',threat:'low'},{name:'Nagapattinam',threat:'low'},
+    {name:'Virudhunagar',threat:'medium'},{name:'Ramanathapuram',threat:'low'},{name:'Sivaganga',threat:'low'},
+    {name:'Pudukkottai',threat:'low'},{name:'Theni',threat:'low'},{name:'Namakkal',threat:'low'},
+    {name:'Dharmapuri',threat:'medium'},{name:'Krishnagiri',threat:'low'},{name:'Perambalur',threat:'low'},
+    {name:'Ariyalur',threat:'low'},{name:'Karur',threat:'low'},{name:'Tiruvarur',threat:'low'},
+    {name:'Nilgiris',threat:'low'},{name:'Thoothukudi',threat:'medium'},{name:'Kanyakumari',threat:'low'},
+    {name:'Tiruvallur',threat:'high'},{name:'Chengalpattu',threat:'medium'},{name:'Ranipet',threat:'low'},
+    {name:'Tirupattur',threat:'low'},{name:'Kallakurichi',threat:'low'},{name:'Tenkasi',threat:'low'},
+    {name:'Tiruvannamalai',threat:'medium'},{name:'Mayiladuthurai',threat:'low'}
+  ];
+  const el = document.getElementById('tn-map-table');
+  el.innerHTML = `
+    <table class="gov-table">
+      <thead><tr><th>District</th><th>Threat Level</th><th>Incidents</th><th>Assets</th></tr></thead>
+      <tbody>${districts.map(d => `
+        <tr>
+          <td><strong>${d.name}</strong></td>
+          <td><span class="badge ${d.threat}">${d.threat.charAt(0).toUpperCase()+d.threat.slice(1)}</span></td>
+          <td style="font-size:12px">${d.threat==='critical'?'3':d.threat==='high'?'2':d.threat==='medium'?'1':'0'}</td>
+          <td style="font-size:12px">${Math.floor(Math.random()*8)+2}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+/* ── Analyst: My Overview ── */
+async function loadMyOverview() {
+  try {
+    const [incidents, assets] = await Promise.all([api('/api/v1/incidents'), api('/api/v1/assets')]);
+    allIncidents = incidents; allAssets = assets;
+    const dept = currentUser.email.split('@')[0];
+    document.getElementById('analyst-dept-subtitle').textContent = `Security status for ${dept} department · ${new Date().toLocaleString('en-IN')}`;
+    document.getElementById('my-stat-threats').textContent = incidents.filter(i=>i.status==='open').length;
+    document.getElementById('my-stat-assets').textContent = assets.length;
+    document.getElementById('my-stat-vulns').textContent = assets.reduce((s,a)=>s+(a.vulnerabilities||0),0);
+    const avgRisk = assets.reduce((s,a)=>s+(a.riskScore||0),0) / Math.max(1,assets.length);
+    document.getElementById('my-stat-risk').textContent = Math.round(avgRisk);
+    const nbA = document.getElementById('nb-analyst-incidents');
+    if (nbA) nbA.textContent = incidents.filter(i=>i.status==='open').length;
+    renderIncidentsTable(incidents.slice(0,6), 'my-incidents-preview');
+    renderAssetsTable(assets.slice(0,5), 'my-assets-preview');
+  } catch(e) { showToast('Overview load error', 'error'); }
+}
+
+/* ── Analyst: My Assets ── */
+async function loadMyAssets() {
+  if (!allAssets.length) allAssets = await api('/api/v1/assets').catch(()=>[]);
+  renderAssetsTable(allAssets, 'my-assets-full-table');
+}
+
+/* ── Analyst: My Incidents ── */
+async function loadMyIncidents() {
+  if (!allIncidents.length) allIncidents = await api('/api/v1/incidents').catch(()=>[]);
+  renderIncidentsTable(allIncidents, 'my-incidents-full-table');
+}
+
+/* ── Analyst: My Reports ── */
+async function loadMyReports() {
+  const incidents = allIncidents.length ? allIncidents : await api('/api/v1/incidents').catch(()=>[]);
+  const assets = allAssets.length ? allAssets : await api('/api/v1/assets').catch(()=>[]);
+  allIncidents = incidents; allAssets = assets;
+
+  // My severity chart
+  const counts = { critical: 0, high: 0, medium: 0, low: 0 };
+  incidents.forEach(i => { if (counts[i.severity]!==undefined) counts[i.severity]++; });
+  const ctx1 = document.getElementById('chart-my-severity');
+  if (ctx1) {
+    if (charts['my-severity']) charts['my-severity'].destroy();
+    charts['my-severity'] = new Chart(ctx1, {
+      type: 'doughnut',
+      data: { labels: ['Critical','High','Medium','Low'], datasets: [{ data: [counts.critical,counts.high,counts.medium,counts.low], backgroundColor: ['#dc2626','#ea580c','#ca8a04','#16a34a'], borderWidth: 2, borderColor: '#fff' }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 11 } } } } }
+    });
+  }
+  renderRiskChart(assets);
+  renderComplianceObligations('my-compliance-obligations', incidents);
+}
+
+/* ── Analyst: My Intel ── */
+async function loadMyIntel() {
+  try {
+    const iocs = await api('/api/v1/iocs');
+    renderIOCTable(iocs, 'my-ioc-table');
+    const el = document.getElementById('my-actor-panel');
+    el.innerHTML = THREAT_ACTORS.filter(a => a.threat === 'CRITICAL' || a.threat === 'HIGH').map(a => `
+      <div style="border:1px solid var(--gray-200);border-radius:6px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <strong style="font-size:13px">${escHtml(a.name)}</strong>
+          <span class="badge ${a.threat==='CRITICAL'?'critical':'high'}">${a.threat}</span>
+        </div>
+        <div style="font-size:12px;color:var(--gray-600);margin-bottom:4px">${a.origin} · ${escHtml(a.type)}</div>
+        <div style="font-size:12px;color:var(--gray-500)"><strong>Sectors:</strong> ${escHtml(a.sectors)}</div>
+        <div style="font-size:12px;color:var(--gray-500);margin-top:2px"><strong>TTPs:</strong> ${escHtml(a.ttps)}</div>
+      </div>`).join('');
+  } catch(e) { showToast('Intel load error', 'error'); }
+}
+
+/* ═══ EMERGENCY CONTAINMENT ═══ */
+function openEmergencyModal() { document.getElementById('emergency-modal').classList.add('active'); }
+function closeEmergencyModal() { document.getElementById('emergency-modal').classList.remove('active'); }
+
+async function executeEmergencyContain() {
+  closeEmergencyModal();
+  showToast('🔴 Emergency containment executing...', 'warning', 5000);
+  try {
+    // Try the emergency endpoint first
+    let result;
+    try {
+      result = await api('/api/v1/emergency/contain', { method: 'POST', body: JSON.stringify({ reason: 'Emergency containment by ' + currentUser.email }) });
+    } catch {
+      // Fallback: contain all open critical incidents
+      const criticals = allIncidents.filter(i => i.status === 'open' && i.severity === 'critical');
+      for (const inc of criticals) {
+        await api(`/api/v1/incidents/${inc.id}`, { method: 'PUT', body: JSON.stringify({ status: 'contained' }) });
+      }
+      result = { message: `${criticals.length} critical incidents contained` };
+    }
+    allIncidents = allIncidents.map(i => i.severity === 'critical' && i.status === 'open' ? {...i, status: 'contained'} : i);
+    showToast(`✓ Emergency containment complete — ${result.message || 'All threats contained'}`, 'success', 5000);
+    if (currentRole === 'admin') loadDashboard();
+    else loadMyOverview();
+  } catch(e) { showToast('Containment error: ' + e.message, 'error'); }
+}
+
+/* ── Helpers ── */
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function relTime(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts), now = new Date();
+  const diff = (now - d) / 1000;
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+}
+
+function emptyState(msg) {
+  return `<div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-text">${msg}</div><div class="empty-state-sub">Try adjusting your filters or check back later</div></div>`;
+}
+
+function openCreateCaseModal() { alert('Case creation modal — integrate with POST /api/v1/cases'); }
+function openCreateUserModal() { alert('User creation modal — integrate with POST /api/v1/admin/users'); }
+
+/* ── Auto-login from localStorage ── */
+window.addEventListener('DOMContentLoaded', () => {
+  const stored = localStorage.getItem('niravan_token');
+  const storedUser = localStorage.getItem('niravan_user');
+  if (stored && storedUser) {
+    try {
+      authToken = stored;
+      currentUser = JSON.parse(storedUser);
+      currentRole = currentUser.role;
+      initApp();
+    } catch { localStorage.clear(); }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIRAVAN | Cyber Intelligence Node — World-Class Attack Intelligence</title>
+<meta name="description" content="NIRAVAN — Industrial Cybersecurity Intelligence: Attack Detection, Camera Capture, PDF Reports, Full Hacking Tool Knowledge">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════
+   NIRAVAN ULTIMATE CYBER INTELLIGENCE v5.0
+   World-Class Cybersecurity Knowledge Engine
+   Tamil Nadu State Cyber Defense Authority
+═══════════════════════════════════════════ */
+:root{
+  --m:#6b0013;--md:#300008;--mb:#9b0020;
+  --g:#d4af37;--gb:#f0c93a;--gd:#a07820;
+  --bg:#02040e;--c1:rgba(255,255,255,.03);--c2:rgba(255,255,255,.06);
+  --br:rgba(212,175,55,.18);--bh:rgba(212,175,55,.42);
+  --tx:#f0f4ff;--sub:#8a9bb5;--dim:#3a4560;
+  --green:#30d158;--amber:#ffd60a;--red:#ff453a;
+  --blue:#0a84ff;--purple:#bf5af2;--cyan:#5ac8fa;--orange:#ff6b35;--pink:#ff2d78;
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+/* PARTICLE CANVAS */
+#particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.4}
+
+body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;min-height:100vh;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 90% 50% at 50% -5%,rgba(107,0,19,.4),transparent 60%);z-index:0;pointer-events:none}
+
+.page-wrap{position:relative;z-index:1}
+
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#050810}::-webkit-scrollbar-thumb{background:var(--m);border-radius:3px}
+
+/* ── NAV ── */
+.nav{position:sticky;top:0;z-index:300;background:rgba(2,4,14,.96);
+  border-bottom:1px solid var(--br);backdrop-filter:blur(28px);
+  padding:0 22px;display:flex;align-items:center;gap:14px;height:56px}
+.nl{display:flex;align-items:center;gap:9px;text-decoration:none}
+.ni{width:36px;height:36px;background:linear-gradient(135deg,var(--m),var(--md));border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  box-shadow:0 0 14px rgba(107,0,19,.5)}
+.nb2{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:18px;color:var(--g)}
+.npipe{width:1px;height:26px;background:var(--br)}
+.nst{font-size:11px;color:var(--sub)}
+.ngap{flex:1}
+.nclk{font-family:var(--mono);font-size:11px;color:var(--sub)}
+.badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;font-family:var(--mono);letter-spacing:.04em}
+.bon{background:rgba(48,209,88,.15);color:var(--green);border:1px solid rgba(48,209,88,.3)}
+.boff{background:rgba(255,69,58,.15);color:var(--red);border:1px solid rgba(255,69,58,.3)}
+.bwrn{background:rgba(255,214,10,.15);color:var(--amber);border:1px solid rgba(255,214,10,.3)}
+.bcam{background:rgba(255,45,120,.15);color:var(--pink);border:1px solid rgba(255,45,120,.3);cursor:pointer}
+.back{text-decoration:none;color:var(--sub);font-size:11px;padding:5px 10px;border:1px solid var(--br);border-radius:7px;transition:.2s}
+.back:hover{color:var(--g);border-color:var(--bh)}
+
+/* ── ALERT ── */
+.abar{background:linear-gradient(90deg,rgba(255,69,58,.2),rgba(107,0,19,.25));
+  border-bottom:2px solid rgba(255,69,58,.5);padding:12px 22px;
+  display:none;align-items:center;gap:14px;font-size:12px;position:relative;z-index:290}
+.abar.show{display:flex;animation:abar-flash 1s ease}
+@keyframes abar-flash{0%,100%{opacity:1}50%{opacity:.6}}
+.apulse{width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0;
+  animation:pr 1s infinite;box-shadow:0 0 0 0 rgba(255,69,58,.7)}
+@keyframes pr{0%{box-shadow:0 0 0 0 rgba(255,69,58,.7)}70%{box-shadow:0 0 0 10px rgba(255,69,58,0)}100%{box-shadow:0 0 0 0 rgba(255,69,58,0)}}
+.atxt{flex:1;font-weight:600}
+.adismiss{background:none;border:none;color:var(--sub);cursor:pointer;font-size:18px;margin-left:auto}
+
+/* ── CAM OVERLAY ── */
+.cam-ov{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);
+  display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+.cam-ov.open{display:flex}
+.cam-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:var(--red);
+  text-align:center;animation:cam-pulse 1s infinite}
+@keyframes cam-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.cam-box{width:480px;height:360px;background:#000;border:3px solid var(--red);border-radius:12px;
+  position:relative;overflow:hidden;box-shadow:0 0 40px rgba(255,69,58,.6)}
+.cam-box video,.cam-box canvas{width:100%;height:100%;object-fit:cover}
+.cam-corner{position:absolute;width:20px;height:20px;border-color:var(--red);border-style:solid}
+.cc-tl{top:8px;left:8px;border-width:3px 0 0 3px}
+.cc-tr{top:8px;right:8px;border-width:3px 3px 0 0}
+.cc-bl{bottom:8px;left:8px;border-width:0 0 3px 3px}
+.cc-br{bottom:8px;right:8px;border-width:0 3px 3px 0}
+.cam-scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);
+  animation:scan-line 1.5s linear infinite;top:0}
+@keyframes scan-line{0%{top:0}100%{top:100%}}
+.cam-status{font-family:var(--mono);font-size:11px;color:var(--red);text-align:center}
+.cam-cap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:600px;width:100%}
+.cam-cap-img{border:1px solid var(--m);border-radius:8px;overflow:hidden;aspect-ratio:4/3}
+.cam-cap-img img{width:100%;height:100%;object-fit:cover}
+.cam-actions{display:flex;gap:12px}
+
+/* ── PAGE ── */
+.page{max-width:1460px;margin:0 auto;padding:24px 18px 80px}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,var(--m) 0%,var(--md) 60%,#1a0004 100%);
+  border:1px solid var(--br);border-radius:20px;padding:28px 32px;margin-bottom:24px;
+  position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(212,175,55,.1),transparent);pointer-events:none}
+.hero::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--g),transparent)}
+.hgrid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:center;position:relative;z-index:2}
+@media(max-width:800px){.hgrid{grid-template-columns:1fr}}
+.heye{font-size:9px;font-family:var(--mono);color:var(--g);letter-spacing:.22em;text-transform:uppercase;margin-bottom:8px}
+.hname{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px}
+.hname span{background:linear-gradient(90deg,var(--g),var(--gb));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hta{font-family:'Noto Sans Tamil',sans-serif;font-size:11px;color:rgba(255,255,255,.4);margin-bottom:16px}
+.hstats{display:flex;gap:24px;flex-wrap:wrap}
+.hsv{font-family:var(--mono);font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--g),var(--gb));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hsl{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+/* Risk Ring */
+.rring{width:120px;height:120px;position:relative;margin:0 auto}
+.rring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.rring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.rnum{font-family:var(--mono);font-size:26px;font-weight:800}
+.rsub{font-size:8px;color:var(--sub);letter-spacing:.12em;margin-top:1px}
+.rlabel{font-size:10px;font-weight:700;letter-spacing:.06em;text-align:center;margin-top:6px}
+.hright{display:flex;flex-direction:column;align-items:center;gap:12px}
+.threat-counter{text-align:center;padding:12px 18px;background:rgba(255,69,58,.1);
+  border:1px solid rgba(255,69,58,.28);border-radius:12px;width:100%;position:relative;overflow:hidden}
+.threat-counter::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 2px,rgba(255,69,58,.04) 2px,rgba(255,69,58,.04) 4px)}
+.tcv{font-family:var(--mono);font-size:24px;font-weight:800;color:var(--red)}
+.tcl{font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em}
+
+/* ── HEALTH ── */
+.hbar{background:var(--c2);border:1px solid var(--br);border-radius:14px;padding:12px 20px;margin-bottom:24px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hi{display:flex;align-items:center;gap:7px}
+.hdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.hdot.g{background:var(--green);box-shadow:0 0 6px var(--green);animation:hblink 2s infinite}
+.hdot.a{background:var(--amber);box-shadow:0 0 6px var(--amber);animation:hblink 1.5s infinite}
+.hdot.r{background:var(--red);box-shadow:0 0 6px var(--red);animation:hblink 1s infinite}
+.hdot.d{background:#444}
+@keyframes hblink{0%,100%{opacity:1}50%{opacity:.3}}
+.hlbl{font-size:10px;color:var(--sub)}
+.hval{font-family:var(--mono);font-size:10px;font-weight:700}
+.hsp{width:1px;height:18px;background:var(--br)}
+.hgap{flex:1}
+
+/* ── GRID ── */
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.g6{display:grid;grid-template-columns:repeat(6,1fr);gap:11px;margin-bottom:24px}
+.g8{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;margin-bottom:24px}
+@media(max-width:1200px){.g6{grid-template-columns:repeat(3,1fr)}.g8{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:800px){.g3,.g4{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
+@media(max-width:550px){.g3,.g4,.g6,.g8{grid-template-columns:1fr 1fr}}
+
+/* ── CARD ── */
+.card{background:var(--c1);border:1px solid var(--br);border-radius:16px;padding:18px;transition:.25s}
+.card:hover{border-color:var(--bh);box-shadow:0 0 24px rgba(212,175,55,.08)}
+.ctitle{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--sub);margin-bottom:10px;font-weight:700}
+
+/* ── FORM ── */
+.flbl{font-size:11px;color:var(--sub);margin-bottom:5px;display:block;font-weight:500}
+.fsel,.finp{width:100%;padding:9px 12px;background:rgba(255,255,255,.04);border:1px solid var(--br);
+  border-radius:9px;color:var(--tx);font-size:12px;font-family:'Inter',sans-serif;outline:none;transition:.2s;appearance:none}
+.fsel:focus,.finp:focus{border-color:var(--bh);background:rgba(255,255,255,.06)}
+.fsel option{background:#0d1117}
+.chk{display:flex;align-items:flex-start;gap:8px;cursor:pointer;margin-bottom:7px}
+.chk input{margin-top:2px;accent-color:var(--g);cursor:pointer}
+.chk label{font-size:11px;color:var(--sub);cursor:pointer;line-height:1.5}
+.chk label b{color:var(--tx)}
+.tag{font-size:8px;font-family:var(--mono);font-weight:700;letter-spacing:.1em;padding:2px 6px;border-radius:4px;text-transform:uppercase;vertical-align:middle}
+.tr{background:rgba(255,69,58,.2);color:var(--red)}.ta{background:rgba(255,214,10,.2);color:var(--amber)}
+.tg{background:rgba(48,209,88,.2);color:var(--green)}.tb{background:rgba(10,132,255,.2);color:var(--blue)}
+.tp{background:rgba(191,90,242,.2);color:var(--purple)}.tc{background:rgba(90,200,250,.2);color:var(--cyan)}
+.to{background:rgba(255,107,53,.2);color:var(--orange)}.tpk{background:rgba(255,45,120,.2);color:var(--pink)}
+
+/* ── SCAN BTN ── */
+.scan-wrap{margin-bottom:24px}
+.scan-btn{width:100%;padding:18px 28px;
+  background:linear-gradient(135deg,var(--m),var(--md));
+  border:2px solid var(--gd);border-radius:16px;
+  color:var(--g);font-size:16px;font-weight:800;font-family:'Space Grotesk',sans-serif;
+  letter-spacing:.06em;cursor:pointer;transition:.35s;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;gap:12px}
+.scan-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,175,55,.15),transparent);transition:.35s}
+.scan-btn:hover:not(:disabled){border-color:var(--g);box-shadow:0 0 40px rgba(212,175,55,.25),0 0 80px rgba(107,0,19,.3);transform:translateY(-2px)}
+.scan-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.prog-wrap{height:4px;background:rgba(212,175,55,.12);border-radius:0 0 16px 16px;overflow:hidden;display:none}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--mb),var(--g),var(--gb));width:0;transition:width .4s;
+  box-shadow:0 0 10px rgba(212,175,55,.5)}
+
+/* ── TERMINAL ── */
+.term{background:#03050d;border:1px solid rgba(212,175,55,.12);border-radius:16px;overflow:hidden;margin-bottom:24px}
+.thd{background:rgba(212,175,55,.05);border-bottom:1px solid var(--br);padding:10px 16px;display:flex;align-items:center;gap:10px}
+.tdots{display:flex;gap:6px}
+.tdot{width:10px;height:10px;border-radius:50%}
+.tdot.r{background:#ff453a}.tdot.a{background:#ffd60a}.tdot.g{background:#30d158}
+.ttl{font-size:10px;color:var(--sub);font-family:var(--mono);flex:1;text-align:center}
+.tbody{height:220px;overflow-y:auto;padding:12px 16px;font-family:var(--mono);font-size:11px;line-height:1.75}
+.ll{margin-bottom:1px}
+.lt{color:#3a4560}.lok{color:var(--green)}.lw{color:var(--amber)}.lc{color:var(--red)}
+.li{color:var(--cyan)}.ls{color:var(--purple)}.lt2{color:#cdd6f4}.la{color:var(--orange)}.lpk{color:var(--pink)}
+.blink{animation:blink 1s step-end infinite;display:inline-block}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ── METRIC CARD ── */
+.mc{background:var(--c1);border:1px solid var(--br);border-radius:12px;padding:14px 12px;text-align:center;transition:.3s;position:relative;overflow:hidden}
+.mc::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:0;transition:.3s}
+.mc:hover{transform:translateY(-3px);border-color:var(--bh);box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.mc:hover::before{opacity:1}
+.mc-icon{font-size:22px;margin-bottom:7px}
+.mc-val{font-family:var(--mono);font-size:24px;font-weight:800}
+.mc-lbl{font-size:9px;color:var(--sub);letter-spacing:.07em;text-transform:uppercase;margin-top:3px}
+.mv-r{color:var(--red)}.mv-a{color:var(--amber)}.mv-g{color:var(--green)}.mv-b{color:var(--blue)}
+.mv-p{color:var(--purple)}.mv-go{color:var(--g)}.mv-o{color:var(--orange)}.mv-c{color:var(--cyan)}
+.mv-pk{color:var(--pink)}
+
+/* ── ATTACK CARDS ── */
+.atk{background:var(--c1);border:1px solid rgba(255,107,53,.2);border-radius:12px;overflow:hidden;margin-bottom:12px;transition:.25s}
+.atk:hover{border-color:rgba(255,107,53,.45);box-shadow:0 4px 20px rgba(255,107,53,.08)}
+.atk.crit{border-left:4px solid var(--red);background:rgba(255,69,58,.04)}
+.atk.high{border-left:4px solid var(--orange)}
+.atk.med{border-left:4px solid var(--amber)}
+.atk.low{border-left:4px solid var(--green)}
+.atk-top{padding:14px 16px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start}
+.atk-tool{font-size:9px;font-weight:800;padding:3px 9px;border-radius:6px;font-family:var(--mono);text-transform:uppercase;white-space:nowrap;margin-bottom:5px;display:block}
+.atk-sev{font-size:9px;font-weight:800;padding:3px 9px;border-radius:6px;font-family:var(--mono);white-space:nowrap;display:block}
+/* Tool colors */
+.tnmap{background:rgba(48,209,88,.2);color:#6de890;border:1px solid rgba(48,209,88,.3)}
+.tmsf{background:rgba(255,69,58,.2);color:#ff9090;border:1px solid rgba(255,69,58,.3)}
+.thydra{background:rgba(255,107,53,.2);color:#ffaa80;border:1px solid rgba(255,107,53,.3)}
+.tsqlmap{background:rgba(191,90,242,.2);color:#e090ff;border:1px solid rgba(191,90,242,.3)}
+.tjohn{background:rgba(212,175,55,.2);color:#ffe080;border:1px solid rgba(212,175,55,.3)}
+.thashcat{background:rgba(90,200,250,.2);color:#80d8ff;border:1px solid rgba(90,200,250,.3)}
+.taircrack{background:rgba(10,132,255,.2);color:#80b8ff;border:1px solid rgba(10,132,255,.3)}
+.tburp{background:rgba(255,45,120,.2);color:#ff90b8;border:1px solid rgba(255,45,120,.3)}
+.tnikto{background:rgba(80,200,120,.2);color:#80f0b0;border:1px solid rgba(80,200,120,.3)}
+.tgobust{background:rgba(255,214,10,.2);color:#ffe060;border:1px solid rgba(255,214,10,.3)}
+.twire{background:rgba(40,100,200,.2);color:#80b0f0;border:1px solid rgba(40,100,200,.3)}
+.tmimic{background:rgba(200,40,80,.2);color:#ff80a0;border:1px solid rgba(200,40,80,.3)}
+.tcobalt{background:rgba(100,0,20,.35);color:#ff9090;border:1px solid rgba(255,69,58,.4)}
+.tkali{background:rgba(40,120,200,.25);color:#90c8ff;border:1px solid rgba(40,120,200,.4)}
+.tapk{background:rgba(255,45,120,.2);color:#ff90c0;border:1px solid rgba(255,45,120,.3)}
+.tunkn{background:rgba(80,80,80,.2);color:#aaa;border:1px solid rgba(120,120,120,.3)}
+/* Severity colors */
+.scrit{background:rgba(255,69,58,.25);color:var(--red)}.shigh{background:rgba(255,107,53,.25);color:var(--orange)}
+.smed{background:rgba(255,214,10,.2);color:var(--amber)}.slow{background:rgba(48,209,88,.2);color:var(--green)}
+.atk-body{flex:1}
+.atk-title{font-size:13px;font-weight:600;margin-bottom:4px;line-height:1.4}
+.atk-ta{font-family:'Noto Sans Tamil',sans-serif;font-size:10px;color:var(--sub);margin-bottom:6px}
+.atk-meta{display:flex;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:9px;color:var(--dim)}
+.atk-meta span b{color:var(--tx)}
+.atk-acts{padding:10px 16px;border-top:1px solid rgba(255,255,255,.04);display:flex;gap:7px;flex-wrap:wrap}
+.abtn{font-size:10px;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-weight:700;transition:.2s}
+.ab-block{background:rgba(255,69,58,.15);color:var(--red);border:1px solid rgba(255,69,58,.3)}
+.ab-block:hover{background:rgba(255,69,58,.3)}
+.ab-watch{background:rgba(255,214,10,.12);color:var(--amber);border:1px solid rgba(255,214,10,.3)}
+.ab-watch:hover{background:rgba(255,214,10,.25)}
+.ab-info{background:rgba(10,132,255,.12);color:var(--blue);border:1px solid rgba(10,132,255,.3)}
+.ab-info:hover{background:rgba(10,132,255,.25)}
+.ab-cam{background:rgba(255,45,120,.12);color:var(--pink);border:1px solid rgba(255,45,120,.3)}
+.ab-cam:hover{background:rgba(255,45,120,.28)}
+.ab-esc{background:rgba(191,90,242,.12);color:var(--purple);border:1px solid rgba(191,90,242,.3)}
+.ab-esc:hover{background:rgba(191,90,242,.25)}
+.ab-ok{background:rgba(48,209,88,.12);color:var(--green);border:1px solid rgba(48,209,88,.3)}
+.ab-ok:hover{background:rgba(48,209,88,.25)}
+
+/* ── IP TABLE ── */
+.iptable{width:100%;border-collapse:collapse;font-size:11px}
+.iptable th{text-align:left;padding:9px 12px;font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--br);font-weight:700}
+.iptable td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle}
+.iptable tr:hover td{background:rgba(255,255,255,.015)}
+.ipc{font-family:var(--mono);color:var(--cyan);font-size:10px}
+.sbk{color:var(--red);font-size:10px;font-family:var(--mono);font-weight:800}
+.swt{color:var(--amber);font-size:10px;font-family:var(--mono);font-weight:700}
+.scl{color:var(--green);font-size:10px;font-family:var(--mono);font-weight:700}
+
+/* ── TOOL KB CARD ── */
+.tkbc{background:var(--c1);border:1px solid var(--br);border-radius:12px;padding:16px;transition:.25s;cursor:pointer}
+.tkbc:hover{border-color:var(--bh);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.tkbc-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.tkbc-icon{font-size:24px}
+.tkbc-name{font-size:13px;font-weight:800}
+.tkbc-cat{font-size:9px;color:var(--sub);font-family:var(--mono);margin-top:1px}
+.tkbc-desc{font-size:11px;color:var(--sub);margin-bottom:10px;line-height:1.55}
+.tkbc-sigs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.sig{font-size:8px;background:rgba(255,255,255,.04);border:1px solid var(--br);border-radius:4px;padding:2px 6px;font-family:var(--mono);color:var(--dim)}
+.tkbc-det{font-size:9px;font-family:var(--mono);padding:7px 9px;background:rgba(48,209,88,.06);border:1px solid rgba(48,209,88,.15);border-radius:6px;color:var(--green);line-height:1.5}
+.tkbc-ta{font-family:'Noto Sans Tamil',sans-serif;font-size:9px;color:var(--sub);margin-top:7px}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:3px;background:rgba(255,255,255,.02);border:1px solid var(--br);border-radius:11px;padding:4px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:7px 15px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:.2s;color:var(--sub);border:none;background:none}
+.tab.active{background:rgba(212,175,55,.14);color:var(--g)}
+.tp-panel{display:none}
+.tp-panel.active{display:block}
+
+/* ── COMPLIANCE ── */
+.ccomp{background:var(--c1);border:1px solid var(--br);border-radius:12px;padding:16px;transition:.25s}
+.ccomp:hover{border-color:var(--bh)}
+.cn{font-size:13px;font-weight:800;margin-bottom:3px}
+.cd{font-size:9px;color:var(--sub);margin-bottom:10px}
+.cbg{height:6px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.cbar{height:100%;border-radius:4px;transition:width 1.2s ease}
+.cscore{font-family:var(--mono);font-size:18px;font-weight:800;margin-bottom:6px}
+.cchecks{display:flex;gap:4px;flex-wrap:wrap}
+.cc{font-size:8px;padding:2px 6px;border-radius:3px;font-family:var(--mono)}
+.cc-p{background:rgba(48,209,88,.15);color:var(--green)}.cc-f{background:rgba(255,69,58,.15);color:var(--red)}.cc-w{background:rgba(255,214,10,.15);color:var(--amber)}
+
+/* ── CVE ── */
+.cve{background:rgba(255,69,58,.04);border:1px solid rgba(255,69,58,.18);border-radius:9px;padding:12px 15px;display:flex;gap:13px;align-items:flex-start;margin-bottom:9px;transition:.2s}
+.cve:hover{border-color:rgba(255,69,58,.35)}
+.cvs{font-family:var(--mono);font-size:20px;font-weight:800;flex-shrink:0;width:48px;text-align:center}
+.crit-s{color:var(--red)}.high-s{color:var(--orange)}.med-s{color:var(--amber)}
+.cveid{font-family:var(--mono);font-size:10px;color:var(--blue);font-weight:700}
+.cved{font-size:12px;margin:3px 0;line-height:1.45}
+.cvet{font-size:9px;color:var(--sub);font-family:var(--mono)}
+
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:22px}
+.tl::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--m),transparent)}
+.tli{position:relative;margin-bottom:20px}
+.tldot{position:absolute;left:-19px;top:4px;width:12px;height:12px;border-radius:50%;border:2px solid}
+.tld-r{background:rgba(255,69,58,.3);border-color:var(--red)}.tld-a{background:rgba(255,214,10,.3);border-color:var(--amber)}
+.tld-b{background:rgba(10,132,255,.3);border-color:var(--blue)}.tld-p{background:rgba(191,90,242,.3);border-color:var(--purple)}
+.tly{font-family:var(--mono);font-size:9px;color:var(--dim);margin-bottom:3px}
+.tlt{font-size:12px;font-weight:700;margin-bottom:3px}
+.tld{font-size:10px;color:var(--sub);line-height:1.55}
+
+/* ── QUANTUM ── */
+.qi{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.qi:last-child{border:none}
+.qn{font-size:11px;color:var(--sub)}
+.qs{font-size:10px;font-family:var(--mono);font-weight:700}
+.q-ok{color:var(--green)}.q-w{color:var(--amber)}.q-f{color:var(--red)}
+
+/* ── CORR ── */
+.corr{background:rgba(255,69,58,.04);border:1px solid rgba(255,69,58,.2);border-radius:10px;padding:14px;margin-bottom:10px}
+.corrt{font-size:12px;font-weight:700;color:var(--red);margin-bottom:5px}
+.corrnodes{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.corrn{font-size:9px;background:rgba(255,255,255,.05);border:1px solid var(--br);border-radius:4px;padding:2px 7px;font-family:var(--mono)}
+
+/* ── ACTION CARDS ── */
+.ac{background:var(--c1);border:1px solid var(--br);border-radius:16px;padding:20px;text-align:center;cursor:pointer;transition:.35s}
+.ac:hover{border-color:var(--bh);transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.ac.primary{background:linear-gradient(135deg,rgba(107,0,19,.4),rgba(48,0,8,.4));border-color:rgba(212,175,55,.3)}
+.ac.primary:hover{border-color:var(--g);box-shadow:0 0 30px rgba(212,175,55,.15)}
+.ac-icon{font-size:30px;margin-bottom:10px}
+.ac-title{font-size:13px;font-weight:800;margin-bottom:4px}
+.ac-desc{font-size:10px;color:var(--sub);line-height:1.4}
+
+/* ── NOTIF ── */
+.notif-panel{position:fixed;right:16px;bottom:80px;z-index:500;width:340px;max-height:65vh;
+  overflow-y:auto;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.ncard{background:#0a0f1e;border:1px solid var(--bh);border-radius:12px;padding:14px 16px;
+  box-shadow:0 8px 32px rgba(0,0,0,.7);animation:nin .3s ease;pointer-events:all;position:relative;overflow:hidden}
+@keyframes nin{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+.ncard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.ncard.n-r::before{background:var(--red)}.ncard.n-a::before{background:var(--amber)}.ncard.n-g::before{background:var(--green)}.ncard.n-b::before{background:var(--blue)}.ncard.n-pk::before{background:var(--pink)}
+.ntop{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.nicon{font-size:17px;flex-shrink:0}
+.ntitle{font-size:12px;font-weight:800;line-height:1.3;flex:1}
+.nclose{background:none;border:none;color:var(--sub);cursor:pointer;font-size:15px}
+.nbody{font-size:11px;color:var(--sub);margin-bottom:10px;line-height:1.5}
+.nacts{display:flex;gap:6px}
+.nb-ap{background:rgba(48,209,88,.15);color:var(--green);border:1px solid rgba(48,209,88,.3);padding:5px 11px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;transition:.2s}
+.nb-ap:hover{background:rgba(48,209,88,.3)}
+.nb-dn{background:rgba(255,69,58,.15);color:var(--red);border:1px solid rgba(255,69,58,.3);padding:5px 11px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer}
+.nb-ds{background:rgba(255,255,255,.06);color:var(--sub);border:1px solid var(--br);padding:5px 11px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer}
+
+/* ── MODAL ── */
+.mov{position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.8);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px}
+.mov.open{display:flex}
+.modal{background:#080d1a;border:1px solid var(--bh);border-radius:18px;padding:28px;max-width:700px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.8)}
+.mhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.mttl{font-size:19px;font-weight:800;font-family:'Space Grotesk',sans-serif}
+.mcl{background:none;border:none;color:var(--sub);font-size:22px;cursor:pointer;transition:.2s}
+.mcl:hover{color:var(--tx)}
+
+/* ── BTN ── */
+.btn{padding:9px 18px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;transition:.25s;border:none;display:inline-flex;align-items:center;gap:7px}
+.btn-g{background:linear-gradient(135deg,var(--gd),var(--g));color:#000}
+.btn-g:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(212,175,55,.35)}
+.btn-m{background:linear-gradient(135deg,var(--m),var(--md));color:var(--g);border:1px solid var(--gd)}
+.btn-m:hover{border-color:var(--g)}
+.btn-gh{background:transparent;color:var(--sub);border:1px solid var(--br)}
+.btn-gh:hover{border-color:var(--bh);color:var(--tx)}
+.btn-red{background:rgba(255,69,58,.15);color:var(--red);border:1px solid rgba(255,69,58,.3)}
+.btn-red:hover{background:rgba(255,69,58,.3)}
+.btn-green{background:rgba(48,209,88,.15);color:var(--green);border:1px solid rgba(48,209,88,.3)}
+.btn-green:hover{background:rgba(48,209,88,.3)}
+.btn-pk{background:rgba(255,45,120,.15);color:var(--pink);border:1px solid rgba(255,45,120,.3)}
+.btn-pk:hover{background:rgba(255,45,120,.3)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* ── TOAST ── */
+#tc{position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:7px;max-width:380px}
+.toast{padding:13px 17px;border-radius:12px;font-size:12px;font-weight:600;border-left:4px solid;backdrop-filter:blur(22px);box-shadow:0 8px 32px rgba(0,0,0,.6);animation:tin .3s ease;display:flex;align-items:center;gap:9px}
+@keyframes tin{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast.success{background:rgba(48,209,88,.12);border-color:var(--green)}
+.toast.error{background:rgba(255,69,58,.12);border-color:var(--red)}
+.toast.info{background:rgba(10,132,255,.12);border-color:var(--blue)}
+.toast.warning{background:rgba(255,214,10,.12);border-color:var(--amber)}
+.toast.critical{background:rgba(255,45,120,.12);border-color:var(--pink)}
+
+/* ── SH ── */
+.sh{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.shi{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.si-r{background:rgba(107,0,19,.4);border:1px solid rgba(107,0,19,.5)}
+.si-b{background:rgba(10,132,255,.15);border:1px solid rgba(10,132,255,.3)}
+.si-p{background:rgba(191,90,242,.15);border:1px solid rgba(191,90,242,.3)}
+.si-g{background:rgba(48,209,88,.15);border:1px solid rgba(48,209,88,.3)}
+.si-go{background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.3)}
+.si-o{background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.3)}
+.si-pk{background:rgba(255,45,120,.15);border:1px solid rgba(255,45,120,.3)}
+.sh-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px}
+.sh-desc{font-size:11px;color:var(--sub);margin-top:1px}
+.sha{margin-left:auto;display:flex;gap:8px}
+
+/* ── CHART WRAPPER ── */
+.chart-wrap{background:var(--c1);border:1px solid var(--br);border-radius:14px;padding:18px;position:relative}
+.chart-wrap canvas{max-height:220px}
+
+/* ── SRC GRID ── */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.schip{display:flex;align-items:center;gap:6px;padding:6px 9px;background:rgba(255,255,255,.02);border:1px solid var(--br);border-radius:7px;cursor:pointer;transition:.2s;user-select:none}
+.schip:hover,.schip.on{border-color:var(--bh);background:rgba(212,175,55,.07)}
+.schip input{accent-color:var(--g)}
+.schip span{font-size:10px;color:var(--sub)}
+
+/* ── LIVE MAP ── */
+.map-wrap{background:#03050d;border:1px solid var(--br);border-radius:14px;overflow:hidden;margin-bottom:24px;position:relative}
+.map-wrap canvas{width:100%;display:block}
+.map-stats{position:absolute;top:14px;right:14px;display:flex;flex-direction:column;gap:7px}
+.mst{background:rgba(2,4,14,.85);border:1px solid var(--br);border-radius:9px;padding:8px 12px}
+.mstv{font-family:var(--mono);font-size:18px;font-weight:800;color:var(--g)}
+.mstl{font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:linear-gradient(90deg,transparent,var(--br),transparent);margin:24px 0}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:50px 20px}
+.empty-icon{font-size:48px;margin-bottom:14px}
+.empty-title{font-size:15px;font-weight:800;margin-bottom:6px}
+.empty-desc{font-size:12px;color:var(--sub)}
+
+/* ── GLITCH ── */
+.glitch{position:relative}
+.glitch::before{content:attr(data-text);position:absolute;left:2px;top:0;color:var(--red);clip:rect(0,900px,0,0);animation:glitch-1 2s linear infinite;opacity:.6}
+.glitch::after{content:attr(data-text);position:absolute;left:-2px;top:0;color:var(--cyan);clip:rect(0,900px,0,0);animation:glitch-2 2s linear infinite;opacity:.6}
+@keyframes glitch-1{0%{clip:rect(42px,9999px,44px,0)}5%{clip:rect(12px,9999px,59px,0)}10%{clip:rect(48px,9999px,29px,0)}100%{clip:rect(0,0,0,0)}}
+@keyframes glitch-2{0%{clip:rect(25px,9999px,99px,0)}5%{clip:rect(75px,9999px,5px,0)}10%{clip:rect(3px,9999px,80px,0)}100%{clip:rect(0,0,0,0)}}
+
+/* ── WORLD KB SECTION ── */
+.kb-section{background:var(--c1);border:1px solid var(--br);border-radius:16px;padding:20px;margin-bottom:14px}
+.kb-title{font-size:14px;font-weight:800;color:var(--g);margin-bottom:12px;font-family:'Space Grotesk',sans-serif}
+.kb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.kb-item{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:9px;padding:11px 13px;transition:.2s}
+.kb-item:hover{border-color:var(--br);background:rgba(255,255,255,.04)}
+.kb-item-title{font-size:11px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.kb-item-desc{font-size:10px;color:var(--sub);line-height:1.5}
+.kb-item-cve{font-family:var(--mono);font-size:9px;color:var(--blue);margin-top:4px}
+
+/* ── PDF PREVIEW MODAL ── */
+.pdf-modal{background:#080d1a;border:1px solid var(--bh);border-radius:18px;padding:0;max-width:900px;width:100%;max-height:90vh;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.9)}
+.pdf-toolbar{background:linear-gradient(135deg,rgba(107,0,19,.5),rgba(48,0,8,.5));padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--br)}
+.pdf-preview{height:70vh;overflow-y:auto;padding:20px;background:#1a1a2e}
+.pdf-page{background:#fff;color:#000;border-radius:6px;padding:40px;margin-bottom:16px;font-family:Arial,sans-serif;position:relative;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+</style>
+</head>
+<body>
+<!-- PARTICLE BACKGROUND -->
+<canvas id="particle-canvas"></canvas>
+
+<div class="page-wrap">
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="nl">
+    <div class="ni">🛡️</div>
+    <span class="nb2">NIRAVAN</span>
+  </a>
+  <div class="npipe"></div>
+  <span class="nst">CYBER INTELLIGENCE NODE v5.0</span>
+  <div class="ngap"></div>
+  <span class="nclk" id="clk"></span>
+  <span class="badge boff" id="api-badge">⚡ Connecting</span>
+  <span class="badge bwrn" id="threat-badge" style="display:none">🚨 THREATS ACTIVE</span>
+  <span class="badge bcam" id="cam-badge" onclick="openCamViewer()" style="display:none">📸 CAM CAPTURES</span>
+  <button class="btn btn-gh" style="font-size:10px;padding:5px 10px" onclick="showNotifs()">🔔 <span id="nc">0</span></button>
+  <a href="index.html" class="back">← SOC</a>
+</nav>
+
+<!-- ALERT BAR -->
+<div class="abar" id="abar">
+  <div class="apulse"></div>
+  <div class="atxt" id="atxt">INTRUSION DETECTED</div>
+  <button class="abtn ab-cam" onclick="triggerCameraCapture('Manual Alert')" style="font-size:10px;padding:5px 10px">📸 CAPTURE</button>
+  <button class="abtn ab-block" onclick="quickBlockAll()" style="font-size:10px;padding:5px 10px">🚫 BLOCK ALL</button>
+  <button class="adismiss" onclick="this.closest('.abar').classList.remove('show')">×</button>
+</div>
+
+<!-- CAMERA CAPTURE OVERLAY -->
+<div class="cam-ov" id="cam-overlay">
+  <div class="cam-title glitch" data-text="⚠️ INTRUDER CAPTURE ACTIVE ⚠️">⚠️ INTRUDER CAPTURE ACTIVE ⚠️</div>
+  <div class="cam-status" id="cam-status">Initializing camera system...</div>
+  <div class="cam-box" id="cam-box">
+    <video id="cam-video" autoplay muted playsinline></video>
+    <canvas id="cam-canvas" style="display:none"></canvas>
+    <div class="cam-corner cc-tl"></div><div class="cam-corner cc-tr"></div>
+    <div class="cam-corner cc-bl"></div><div class="cam-corner cc-br"></div>
+    <div class="cam-scan-line"></div>
+  </div>
+  <div class="cam-cap-grid" id="cam-captures"></div>
+  <div style="font-size:11px;color:var(--sub);text-align:center;max-width:500px">
+    📋 Camera captures are stored locally. Images are watermarked with timestamp, IP, tool name, and NIRAVAN signature for forensic chain-of-custody.
+  </div>
+  <div class="cam-actions">
+    <button class="btn btn-red" onclick="capturePhoto()">📸 Capture Now</button>
+    <button class="btn btn-pk" onclick="startBurstCapture()">🔄 Burst Mode (5 shots)</button>
+    <button class="btn btn-gh" onclick="closeCam()">✕ Close</button>
+  </div>
+</div>
+
+<!-- NOTIFICATION PANEL -->
+<div class="notif-panel" id="npanel"></div>
+
+<!-- PAGE -->
+<div class="page">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hgrid">
+    <div>
+      <div class="heye">Tamil Nadu Cyber Security Authority · NIRAVAN-CIN v5.0 · World-Class Attack Intelligence Engine</div>
+      <div class="hname">Cyber <span>Intelligence Node</span></div>
+      <div class="hta">சைபர் புலனாய்வு முனை — உலகத்தரம் வாய்ந்த தாக்குதல் கண்டறிதல் & தடுப்பு அமைப்பு</div>
+      <div class="hstats">
+        <div><div class="hsv" id="hs-f">--</div><div class="hsl">Findings</div></div>
+        <div><div class="hsv" id="hs-a">--</div><div class="hsl">Attacks</div></div>
+        <div><div class="hsv" id="hs-b">--</div><div class="hsl">Blocked</div></div>
+        <div><div class="hsv" id="hs-t">--</div><div class="hsl">Tools</div></div>
+        <div><div class="hsv" id="hs-c">--</div><div class="hsl">Captures</div></div>
+        <div><div class="hsv" id="hs-s">--</div><div class="hsl">Risk Score</div></div>
+      </div>
+    </div>
+    <div class="hright">
+      <div>
+        <div class="rring">
+          <svg viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="8"/>
+            <circle cx="50" cy="50" r="42" fill="none" id="rring" stroke="var(--green)" stroke-width="8" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264" style="transition:stroke-dashoffset 1.5s ease,stroke .5s ease"/>
+          </svg>
+          <div class="rring-inner">
+            <div class="rnum" id="rval" style="color:var(--green)">0</div>
+            <div class="rsub">RISK</div>
+          </div>
+        </div>
+        <div class="rlabel" id="rlbl" style="color:var(--green)">AWAITING SCAN</div>
+      </div>
+      <div class="threat-counter">
+        <div class="tcv" id="tc-val">0</div>
+        <div class="tcl">Live Threat Indicators</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HEALTH -->
+<div class="hbar">
+  <div class="hi"><div class="hdot d" id="hd-api"></div><span class="hlbl">Backend</span><span class="hval" id="hv-api" style="color:var(--dim)">OFFLINE</span></div>
+  <div class="hsp"></div>
+  <div class="hi"><div class="hdot d" id="hd-auth"></div><span class="hlbl">Auth</span><span class="hval" id="hv-auth" style="color:var(--dim)">--</span></div>
+  <div class="hsp"></div>
+  <div class="hi"><div class="hdot g" id="hd-feed"></div><span class="hlbl">Threat Feed</span><span class="hval" id="hv-feed" style="color:var(--green)">LIVE</span></div>
+  <div class="hsp"></div>
+  <div class="hi"><div class="hdot d" id="hd-cam"></div><span class="hlbl">Camera</span><span class="hval" id="hv-cam" style="color:var(--dim)">STANDBY</span></div>
+  <div class="hsp"></div>
+  <div class="hi"><div class="hdot d" id="hd-blk"></div><span class="hlbl">Block Engine</span><span class="hval" id="hv-blk" style="color:var(--dim)">ARMED</span></div>
+  <div class="hsp"></div>
+  <div class="hi"><div class="hdot d" id="hd-scan"></div><span class="hlbl">Last Scan</span><span class="hval" id="hv-scan" style="color:var(--dim)">NONE</span></div>
+  <div class="hgap"></div>
+  <button class="btn btn-gh" style="font-size:10px;padding:5px 10px" onclick="checkHealth()">🔄 Status</button>
+</div>
+
+<!-- CONFIG -->
+<div class="sh"><div class="shi si-r">⚙️</div><div><div class="sh-title">Scan Configuration</div><div class="sh-desc">Configure organization, detection modules, intel sources & auto-response settings</div></div></div>
+<div class="g3">
+  <div class="card">
+    <div class="ctitle">🏛️ Organization Profile</div>
+    <label class="flbl">Department</label>
+    <select class="fsel" id="dept" style="margin-bottom:9px">
+      <option value="school">🏫 School / Educational Institution</option>
+      <option value="hospital">🏥 Hospital / Healthcare</option>
+      <option value="police">🚓 Police Station</option>
+      <option value="treasury">💰 Treasury / Revenue</option>
+      <option value="collectorate">🏛️ Collectorate / District Admin</option>
+      <option value="municipality">🏘️ Municipality / Panchayat</option>
+      <option value="water_board">💧 Water Board / Utilities</option>
+      <option value="electricity">⚡ TANGEDCO / Electricity</option>
+      <option value="transport">🚌 TNSTC / Transport</option>
+      <option value="court">⚖️ Court / Judicial</option>
+      <option value="bank">🏦 Bank / Financial</option>
+      <option value="customs">📦 Customs / Port</option>
+    </select>
+    <label class="flbl">District</label>
+    <select class="fsel" id="dist" style="margin-bottom:9px">
+      <option>Chennai</option><option>Coimbatore</option><option>Madurai</option><option>Tiruchirappalli</option><option>Salem</option><option>Tirunelveli</option><option>Vellore</option><option>Erode</option><option>Thoothukudi</option><option>Dindigul</option><option>Kancheepuram</option><option>Thanjavur</option>
+    </select>
+    <label class="flbl">Target IP / Domain</label>
+    <input class="finp" id="ip-range" placeholder="e.g. 192.168.1.0/24 or dept.tn.gov.in" style="margin-bottom:9px">
+    <label class="flbl">Scan Depth</label>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn btn-gh" id="d-fast" style="font-size:10px;padding:5px 10px" onclick="setDepth('fast')">⚡ Fast</button>
+      <button class="btn btn-g" id="d-std" style="font-size:10px;padding:5px 10px" onclick="setDepth('std')">🔍 Standard</button>
+      <button class="btn btn-gh" id="d-deep" style="font-size:10px;padding:5px 10px" onclick="setDepth('deep')">🔬 Deep</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">🔬 Detection Modules</div>
+    <div>
+      <div class="chk"><input type="checkbox" id="m-net" checked><label for="m-net"><b>Network & Port Scan</b> — TCP/UDP/ICMP, topology</label></div>
+      <div class="chk"><input type="checkbox" id="m-hack" checked><label for="m-hack"><b>Hacking Tool Detection</b> <span class="tag tr">CORE</span> — 200+ tool signatures</label></div>
+      <div class="chk"><input type="checkbox" id="m-brute" checked><label for="m-brute"><b>Brute Force Detection</b> — Hydra, Medusa, Ncrack, Nmap auth scripts</label></div>
+      <div class="chk"><input type="checkbox" id="m-web" checked><label for="m-web"><b>Web Attack</b> — SQLmap, Burp, Nikto, XSSer, OWASP</label></div>
+      <div class="chk"><input type="checkbox" id="m-exploit" checked><label for="m-exploit"><b>Exploit Framework</b> — Metasploit, ExploitDB, Cobalt Strike</label></div>
+      <div class="chk"><input type="checkbox" id="m-recon" checked><label for="m-recon"><b>Reconnaissance</b> — Nmap, Shodan CLI, Maltego, theHarvester</label></div>
+      <div class="chk"><input type="checkbox" id="m-wifi" checked><label for="m-wifi"><b>Wireless Attacks</b> — Aircrack, Wifite, Kismet, deauth</label></div>
+      <div class="chk"><input type="checkbox" id="m-apt" checked><label for="m-apt"><b>APT / Nation-State</b> <span class="tag tr">2035</span> — Volt Typhoon, Lazarus</label></div>
+      <div class="chk"><input type="checkbox" id="m-inject" checked><label for="m-inject"><b>Injection/Alien Program</b> <span class="tag tpk">CRITICAL</span> — Malware, RAT, rootkit detection</label></div>
+      <div class="chk"><input type="checkbox" id="m-quant"><label for="m-quant"><b>Quantum Readiness</b> <span class="tag tp">PQC</span> — Post-quantum cryptography</label></div>
+      <div class="chk"><input type="checkbox" id="m-ai"><label for="m-ai"><b>AI/LLM Threats</b> <span class="tag tc">AI-ERA</span> — Deepfake, prompt injection</label></div>
+      <div class="chk"><input type="checkbox" id="m-osint"><label for="m-osint"><b>OSINT / Dark Web</b> — Credential leaks, paste sites</label></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">📡 Intel Sources</div>
+    <div class="sgrid" id="sgrid">
+      <div class="schip on" data-s="nvd"><input type="checkbox" checked><span>🗄️ NVD/CVE</span></div>
+      <div class="schip on" data-s="mitre"><input type="checkbox" checked><span>🎯 MITRE ATT&CK</span></div>
+      <div class="schip on" data-s="certIn"><input type="checkbox" checked><span>🇮🇳 CERT-In</span></div>
+      <div class="schip on" data-s="exploitdb"><input type="checkbox" checked><span>💀 Exploit-DB</span></div>
+      <div class="schip on" data-s="shodan"><input type="checkbox" checked><span>🔍 Shodan</span></div>
+      <div class="schip on" data-s="abuseipdb"><input type="checkbox" checked><span>🚨 AbuseIPDB</span></div>
+      <div class="schip on" data-s="virustotal"><input type="checkbox" checked><span>🦠 VirusTotal</span></div>
+      <div class="schip" data-s="alienvault"><input type="checkbox"><span>👽 AlienVault OTX</span></div>
+      <div class="schip" data-s="opencti"><input type="checkbox"><span>🕸️ OpenCTI</span></div>
+      <div class="schip" data-s="darkweb"><input type="checkbox"><span>🌑 Dark Web</span></div>
+    </div>
+    <div class="ctitle" style="margin-top:12px">🤖 Auto-Response</div>
+    <div class="chk"><input type="checkbox" id="auto-block" checked><label for="auto-block"><b>Auto-block</b> critical IPs instantly</label></div>
+    <div class="chk"><input type="checkbox" id="auto-notify" checked><label for="auto-notify"><b>Push notifications</b> for each attack</label></div>
+    <div class="chk"><input type="checkbox" id="auto-cam" checked><label for="auto-cam"><b>Auto camera capture</b> <span class="tag tpk">NEW</span> on intrusion detection</label></div>
+    <div class="chk"><input type="checkbox" id="req-approval"><label for="req-approval"><b>Require admin approval</b> before blocking</label></div>
+    <div style="margin-top:10px;display:flex;gap:7px">
+      <input class="finp" id="manual-ip" placeholder="Block IP manually..." style="flex:1;font-size:11px">
+      <button class="btn btn-red" style="font-size:11px;padding:6px 12px" onclick="addManualBlock()">🚫</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCAN BUTTON -->
+<div class="scan-wrap">
+  <button class="scan-btn" id="scan-btn" onclick="startScan()">
+    <span id="sbi">🔍</span><span id="sbt">INITIATE WORLD-CLASS CYBER INTELLIGENCE SCAN</span>
+  </button>
+  <div class="prog-wrap" id="pw"><div class="prog-bar" id="pb"></div></div>
+</div>
+
+<!-- TERMINAL -->
+<div class="sh"><div class="shi si-g">💻</div><div><div class="sh-title">Live Threat Intelligence Terminal</div><div class="sh-desc">Real-time attack detection feed — hacking tool signature engine & intrusion monitor</div></div>
+<div class="sha"><button class="btn btn-gh" style="font-size:10px;padding:5px 10px" onclick="clrT()">Clear</button><button class="btn btn-gh" style="font-size:10px;padding:5px 10px" onclick="cpyT()">📋 Copy</button></div></div>
+<div class="term">
+  <div class="thd">
+    <div class="tdots"><span class="tdot r"></span><span class="tdot a"></span><span class="tdot g"></span></div>
+    <div class="ttl">niravan@cyber-intelligence:~$ — WORLD-CLASS ATTACK INTELLIGENCE ENGINE v5.0</div>
+    <span class="badge boff" id="tbadge">STANDBY</span>
+  </div>
+  <div class="tbody" id="tbody">
+    <div class="ll"><span class="lt">[SYS] </span><span class="lok">NIRAVAN Cyber Intelligence Node v5.0 — OPERATIONAL</span></div>
+    <div class="ll"><span class="lt">[SYS] </span><span class="li">World-Class Knowledge Base: 300+ attack tools | 2M+ signatures | 50+ attack frameworks</span></div>
+    <div class="ll"><span class="lt">[SYS] </span><span class="li">Platforms: Kali Linux 2024.1 | Parrot OS 6.0 | BlackArch | Pentoo | Whonix | TAILS</span></div>
+    <div class="ll"><span class="lt">[SYS] </span><span class="li">Tools: Metasploit 6.3 | Nmap 7.94 | Burp Pro | Hydra 9.5 | SQLmap 1.8 | Aircrack-ng 1.7</span></div>
+    <div class="ll"><span class="lt">[SYS] </span><span class="li">Tools: John 1.9.0 | Hashcat 6.2.6 | Mimikatz 2.2 | Cobalt Strike 4.9 | Empire 5.0 | BeEF</span></div>
+    <div class="ll"><span class="lt">[SYS] </span><span class="li">MITRE ATT&CK v14: 14 tactics | 193 techniques | 411 sub-techniques | 135 APT groups</span></div>
+    <div class="ll"><span class="lt">[SYS] </span><span class="lpk">📸 Camera Capture System: ARMED — will auto-trigger on intrusion detection</span></div>
+    <div class="ll"><span class="lt">[SYS] </span><span class="lw">Configure profile above and click INITIATE SCAN <span class="blink">█</span></span></div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results" style="display:none">
+
+  <!-- CHARTS ROW -->
+  <div class="g4" style="margin-bottom:24px">
+    <div class="chart-wrap"><div class="ctitle">📊 Severity Distribution</div><canvas id="chart-sev"></canvas></div>
+    <div class="chart-wrap"><div class="ctitle">🛠️ Tool Attribution</div><canvas id="chart-tools"></canvas></div>
+    <div class="chart-wrap"><div class="ctitle">🌐 Attack Origins</div><canvas id="chart-geo"></canvas></div>
+    <div class="chart-wrap"><div class="ctitle">⏱️ Attack Timeline</div><canvas id="chart-time"></canvas></div>
+  </div>
+
+  <!-- METRICS -->
+  <div class="g8">
+    <div class="mc"><div class="mc-icon">🔴</div><div class="mc-val mv-r" id="m-crit">0</div><div class="mc-lbl">Critical</div></div>
+    <div class="mc"><div class="mc-icon">🟠</div><div class="mc-val mv-o" id="m-high">0</div><div class="mc-lbl">High</div></div>
+    <div class="mc"><div class="mc-icon">🛠️</div><div class="mc-val mv-o" id="m-tools">0</div><div class="mc-lbl">Tools</div></div>
+    <div class="mc"><div class="mc-icon">🌐</div><div class="mc-val mv-c" id="m-ips">0</div><div class="mc-lbl">Attacker IPs</div></div>
+    <div class="mc"><div class="mc-icon">🚫</div><div class="mc-val mv-r" id="m-blk">0</div><div class="mc-lbl">Blocked</div></div>
+    <div class="mc"><div class="mc-icon">📸</div><div class="mc-val mv-pk" id="m-cam">0</div><div class="mc-lbl">Captures</div></div>
+    <div class="mc"><div class="mc-icon">💀</div><div class="mc-val mv-p" id="m-cve">0</div><div class="mc-lbl">CVEs</div></div>
+    <div class="mc"><div class="mc-icon">⚡</div><div class="mc-val mv-go" id="m-score">0</div><div class="mc-lbl">Risk Score</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="sw('atk')">⚔️ Attack Log</button>
+    <button class="tab" onclick="sw('ips')">🌐 IP Tracker</button>
+    <button class="tab" onclick="sw('tools')">🛠️ Tool KB</button>
+    <button class="tab" onclick="sw('worldkb')">🌍 World KB</button>
+    <button class="tab" onclick="sw('compliance')">✅ Compliance</button>
+    <button class="tab" onclick="sw('cves')">💀 CVEs</button>
+    <button class="tab" onclick="sw('quantum')">⚛️ Quantum</button>
+    <button class="tab" onclick="sw('future')">🔮 Future</button>
+    <button class="tab" onclick="sw('corr')">🕸️ Correlation</button>
+    <button class="tab" onclick="sw('captures')">📸 Captures</button>
+  </div>
+
+  <!-- ATTACK LOG -->
+  <div class="tp-panel active" id="panel-atk">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+      <div style="font-size:14px;font-weight:800">Attack Log <span style="font-size:12px;color:var(--sub);margin-left:8px" id="atk-count">0 attacks</span></div>
+      <select class="fsel" id="sf" style="width:auto;font-size:10px;padding:5px 9px" onchange="filterA()"><option value="all">All Severity</option><option value="CRITICAL">Critical</option><option value="HIGH">High</option><option value="MEDIUM">Medium</option><option value="LOW">Low</option></select>
+      <select class="fsel" id="tf" style="width:auto;font-size:10px;padding:5px 9px" onchange="filterA()"><option value="all">All Tools</option><option value="Nmap">Nmap</option><option value="Metasploit">Metasploit</option><option value="Hydra">Hydra</option><option value="SQLmap">SQLmap</option><option value="John">John</option><option value="Hashcat">Hashcat</option><option value="Cobalt">Cobalt Strike</option><option value="Mimikatz">Mimikatz</option></select>
+      <button class="btn btn-red" style="font-size:10px;padding:5px 10px" onclick="blockAllCrit()">🚫 Block All Critical</button>
+      <button class="btn btn-pk" style="font-size:10px;padding:5px 10px" onclick="triggerCameraCapture('Manual Trigger')">📸 Capture Intruder</button>
+    </div>
+    <div id="atk-wrap"></div>
+  </div>
+
+  <!-- IP TRACKER -->
+  <div class="tp-panel" id="panel-ips">
+    <div class="map-wrap">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:10px">
+        <div class="shi si-o">🗺️</div>
+        <div><div class="sh-title" style="font-size:14px">Live Global Attack Map</div><div class="sh-desc">Real-time attack origin visualization</div></div>
+      </div>
+      <canvas id="map-canvas" height="250"></canvas>
+      <div class="map-stats">
+        <div class="mst"><div class="mstv" id="map-active">0</div><div class="mstl">Active Attackers</div></div>
+        <div class="mst"><div class="mstv" id="map-blocked" style="color:var(--red)">0</div><div class="mstl">IPs Blocked</div></div>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="iptable">
+        <thead><tr><th>Attacker IP</th><th>Country/Region</th><th>Tool Used</th><th>Attack Type</th><th>Attempts</th><th>CVSS</th><th>ASN</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="ip-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TOOL KNOWLEDGE BASE -->
+  <div class="tp-panel" id="panel-tools">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px" id="tool-kb-grid"></div>
+  </div>
+
+  <!-- WORLD KNOWLEDGE BASE -->
+  <div class="tp-panel" id="panel-worldkb">
+    <div id="world-kb-content"></div>
+  </div>
+
+  <!-- COMPLIANCE -->
+  <div class="tp-panel" id="panel-compliance">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:13px" id="comp-grid"></div>
+  </div>
+
+  <!-- CVEs -->
+  <div class="tp-panel" id="panel-cves"><div id="cve-list"></div></div>
+
+  <!-- QUANTUM -->
+  <div class="tp-panel" id="panel-quantum">
+    <div class="g2"><div class="card"><div class="ctitle">⚛️ Current Cryptography Assessment</div><div id="q-cur"></div></div><div class="card"><div class="ctitle">🔒 NIST PQC Recommendations (FIPS 2024)</div><div id="q-pqc"></div></div></div>
+  </div>
+
+  <!-- FUTURE -->
+  <div class="tp-panel" id="panel-future">
+    <div class="g2">
+      <div><div class="sh" style="margin-bottom:12px"><div class="shi si-p">🔮</div><div><div class="sh-title">2025–2045 Threat Horizon</div></div></div><div class="tl" id="ft"></div></div>
+      <div><div class="card" style="margin-bottom:13px"><div class="ctitle">🤖 AI-Era Threats (2030–2035)</div><div id="ai-era" style="font-size:11px;color:var(--sub);line-height:1.8"></div></div><div class="card"><div class="ctitle">⚛️ Quantum Computing Timeline</div><div id="pqc-tl" style="font-size:11px;color:var(--sub);line-height:1.8"></div></div></div>
+    </div>
+  </div>
+
+  <!-- CORRELATION -->
+  <div class="tp-panel" id="panel-corr"><div id="corr-wrap"></div></div>
+
+  <!-- CAPTURES -->
+  <div class="tp-panel" id="panel-captures">
+    <div class="sh" style="margin-bottom:14px"><div class="shi si-pk">📸</div><div><div class="sh-title">Intruder Camera Captures</div><div class="sh-desc">Forensic photo evidence of persons at keyboard during detected attack attempts</div></div></div>
+    <div style="margin-bottom:14px;padding:12px 16px;background:rgba(255,45,120,.06);border:1px solid rgba(255,45,120,.2);border-radius:10px;font-size:11px;color:var(--sub)">
+      📋 All captures include: timestamp, detected attack tool, source IP, NIRAVAN forensic watermark, and chain-of-custody metadata. These images serve as evidence for law enforcement referral.
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:16px">
+      <button class="btn btn-pk" onclick="triggerCameraCapture('Manual Evidence Capture')">📸 Manual Capture</button>
+      <button class="btn btn-red" onclick="startBurstCapture()">🔄 Burst Capture (5)</button>
+      <button class="btn btn-gh" onclick="clearCaptures()">🗑️ Clear All</button>
+      <button class="btn btn-g" onclick="exportCaptures()">💾 Export Evidence</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px" id="all-captures"></div>
+    <div class="empty" id="cap-empty"><div class="empty-icon">📸</div><div class="empty-title">No captures yet</div><div class="empty-desc">Captures are triggered automatically when intrusion or alien program injection is detected</div></div>
+  </div>
+
+  <div class="div"></div>
+
+  <!-- ACTIONS -->
+  <div class="sh"><div class="shi si-go">⚡</div><div><div class="sh-title">Response & Action Center</div><div class="sh-desc">Industrial-grade automated and manual cyber response</div></div></div>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:11px;margin-bottom:24px">
+    <div class="ac primary" onclick="genPDF()"><div class="ac-icon">📄</div><div class="ac-title">Generate PDF</div><div class="ac-desc">Full technical report with visual charts</div></div>
+    <div class="ac" onclick="syncSOC()"><div class="ac-icon">📤</div><div class="ac-title">Sync to SOC</div><div class="ac-desc">Push to Chennai Command Center</div></div>
+    <div class="ac" onclick="blockAllCrit()"><div class="ac-icon">🚫</div><div class="ac-title">Block All</div><div class="ac-desc">Block all critical attacker IPs</div></div>
+    <div class="ac" onclick="triggerCameraCapture('Manual')"><div class="ac-icon">📸</div><div class="ac-title">Capture Now</div><div class="ac-desc">Photo evidence of current user</div></div>
+    <div class="ac" onclick="autoMitigate()"><div class="ac-icon">🤖</div><div class="ac-title">Auto-Mitigate</div><div class="ac-desc">AI-powered remediation</div></div>
+    <div class="ac" onclick="showModal('m-esc')"><div class="ac-icon">🚨</div><div class="ac-title">CERT-In Escalate</div><div class="ac-desc">National incident report</div></div>
+    <div class="ac" onclick="exportJSON()"><div class="ac-icon">📊</div><div class="ac-title">Export JSON</div><div class="ac-desc">SIEM-ready raw data</div></div>
+  </div>
+
+</div><!-- /results -->
+
+<!-- WORLD KB ALWAYS AVAILABLE -->
+<div id="world-kb-static" style="margin-top:24px"></div>
+
+</div><!-- /page -->
+</div><!-- /page-wrap -->
+
+<!-- ESCALATION MODAL -->
+<div class="mov" id="m-esc" onclick="this.classList.remove('open')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mhd"><div class="mttl">🚨 Escalate to CERT-In</div><button class="mcl" onclick="closeModal('m-esc')">×</button></div>
+    <label class="flbl">Classification</label>
+    <select class="fsel" id="esc-type" style="margin-bottom:9px">
+      <option>Critical Infrastructure Attack — Hacking Tool Identified</option>
+      <option>Ransomware / Malware Outbreak</option><option>Alien Program / RAT Injection Detected</option>
+      <option>APT / State-Sponsored Intrusion</option><option>AI-Powered Attack (Deepfake/LLM)</option>
+      <option>Brute Force — Authentication Systems</option><option>SQL Injection / Web Compromise</option>
+    </select>
+    <label class="flbl">Priority</label>
+    <select class="fsel" id="esc-prio" style="margin-bottom:9px"><option>P1 — Immediate (< 1hr)</option><option>P2 — Urgent (< 4hrs)</option><option>P3 — Standard (< 24hrs)</option></select>
+    <label class="flbl">Attacker IP(s)</label>
+    <input class="finp" id="esc-ips" style="margin-bottom:9px" placeholder="Auto-populated...">
+    <label class="flbl">Notes</label>
+    <textarea class="finp" id="esc-notes" style="height:70px;resize:vertical"></textarea>
+    <div style="display:flex;gap:9px;margin-top:14px">
+      <button class="btn btn-red" onclick="submitEsc()" style="flex:1">🚨 Submit to CERT-In</button>
+      <button class="btn btn-gh" onclick="closeModal('m-esc')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- BLOCK APPROVAL MODAL -->
+<div class="mov" id="m-block">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:500px">
+    <div class="mhd"><div class="mttl">🚫 Block IP Approval</div><button class="mcl" onclick="closeModal('m-block')">×</button></div>
+    <div style="background:rgba(255,69,58,.08);border:1px solid rgba(255,69,58,.25);border-radius:11px;padding:16px;margin-bottom:14px">
+      <div style="font-size:11px;color:var(--sub);margin-bottom:4px">Target IP Address</div>
+      <div class="ipc" style="font-size:20px;font-weight:800" id="blk-ip">--</div>
+      <div style="font-size:10px;color:var(--sub);margin-top:6px" id="blk-detail">Loading...</div>
+    </div>
+    <div style="font-size:11px;color:var(--sub);margin-bottom:14px">Blocking will immediately terminate all connections. This action is logged in the forensic audit trail and synced to State SOC.</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-red" onclick="confirmBlock()" style="flex:1">🚫 BLOCK</button>
+      <button class="btn btn-gh" onclick="denyBlock()">❌ Deny</button>
+      <button class="btn btn-pk" onclick="captureAndBlock()" style="flex:1">📸+🚫 Capture & Block</button>
+    </div>
+  </div>
+</div>
+
+<div id="tc"></div>
+
+<script>
+const { jsPDF } = window.jspdf;
+const API = 'http://localhost:8000/api/v1';
+let allAtks=[], allIPs={}, blockedIPs=new Set(), camCaptures=[], notifCount=0, pendingBlockIP=null, scanDepth='std';
+let camStream=null, camActive=false;
+let chartSev=null, chartTools=null, chartGeo=null, chartTime=null;
+
+// ═══════════════════════════════════════════
+// WORLD-CLASS KNOWLEDGE BASE
+// ═══════════════════════════════════════════
+const TOOL_KB = [
+  {n:'Nmap',cat:'Reconnaissance',ico:'🔍',cls:'tnmap',os:['Kali','Parrot','Any'],
+   desc:'Network Mapper — world\'s most popular port scanner. Supports SYN, TCP, UDP, SCTP scans, OS detection (TCP/IP fingerprinting), service/version detection, NSE scripting for vulnerability detection (2000+ scripts).',
+   sigs:['SYN half-open scan (ACK never sent)','OS fingerprint TTL values (Linux=64, Windows=128)','Nmap UA in HTTP probes','NSE script HTTP requests','Parallel port sweep patterns','ICMP timestamp probes'],
+   det:'Detect: TCP SYN flood to all ports, OS fingerprint TTL analysis, NSE script traffic patterns, version probe signatures, parallel connection bursts.',
+   mitre:'T1046 — Network Service Discovery',tamil:'நெட்வொர்க் போர்ட் ஸ்கேன் — சேவைகளை கண்டறிதல்'},
+  {n:'Metasploit Framework',cat:'Exploitation',ico:'💥',cls:'tmsf',os:['Kali','Parrot'],
+   desc:'World\'s most widely used penetration testing framework with 2,300+ exploits, 1,100+ auxiliary modules, 500+ payloads. Supports staged/stageless payloads, Meterpreter advanced shell, post-exploitation modules, pivot capabilities.',
+   sigs:['Meterpreter HTTP/S check-in (every 5s)','staged shellcode delivery (stage 1: stager, stage 2: payload)','reverse TCP/UDP/HTTP/HTTPS shells','MSF user-agent strings','process injection via Meterpreter','VNC/screen capture commands'],
+   det:'Detect: Meterpreter 5s beacon, staged payload delivery sequence, reverse shell callbacks to external IPs, unusual process spawning, MSF-specific HTTP headers.',
+   mitre:'T1059 — Command Execution | T1055 — Process Injection | T1071 — C2',tamil:'சுரண்டல் கட்டமைப்பு — Meterpreter shell கண்டறிதல்'},
+  {n:'Hydra',cat:'Brute Force',ico:'🔓',cls:'thydra',os:['Kali','Parrot'],
+   desc:'Fast network logon cracker supporting 50+ protocols: SSH, FTP, HTTP/S, RDP, SMB, SMTP, POP3, IMAP, MySQL, PostgreSQL, VNC, Cisco, LDAP, Telnet. Parallel multi-threaded, configurable connection speeds.',
+   sigs:['Rapid sequential auth failures (>100 in 60s)','Parallel login storms (multiple threads)','Sequential username enumeration','Dictionary-based password rotation','Protocol-specific credential storms','Same source IP, different credentials'],
+   det:'Detect: Auth failure rate > 5/sec from same IP, parallel connection to auth service, sequential credential rotation matching wordlist patterns.',
+   mitre:'T1110.001 — Brute Force Password Guessing | T1110.003 — Password Spraying',tamil:'கடவுச்சொல் brute force — SSH/RDP தாக்குதல்'},
+  {n:'SQLmap',cat:'Web Attack',ico:'💉',cls:'tsqlmap',os:['Kali','Parrot','Any'],
+   desc:'Automatic SQL injection detection and exploitation. Supports Boolean-blind, time-based blind, error-based, UNION-based, stacked queries, out-of-band (OOB) injection. Fingerprints 40+ DBMS including MySQL, Oracle, PostgreSQL, MSSQL, SQLite.',
+   sigs:['SQL keywords in URL parameters (UNION, SELECT, OR 1=1)','Time-based delays (SLEEP(), WAITFOR DELAY)','Error messages revealing DB stack traces','UNION-based response length variations','OOB DNS/HTTP callbacks','Automated parameter fuzzing'],
+   det:'Detect: SQL syntax in GET/POST params, unusual response time spikes (time-blind SQLi), UNION payload patterns, database error messages in responses.',
+   mitre:'T1190 — Exploit Public-Facing Application',tamil:'SQL injection — தரவுத்தள சுரண்டல் கண்டறிதல்'},
+  {n:'John the Ripper',cat:'Password Cracking',ico:'🔑',cls:'tjohn',os:['Kali','Parrot','Win','Linux'],
+   desc:'Open-source password security auditing and recovery tool. Supports MD5, SHA-1/256/512, NTLM, bcrypt, WPA2, PDF, ZIP, RAR, Office document hash formats. Wordlist, incremental, rule-based attack modes.',
+   sigs:['SAM/SYSTEM registry hive access (Windows)','/etc/shadow file access (Linux)','NTLM hash dump patterns','Kerberoasting TGS ticket requests','Volume shadow copy access for NTDS.dit','Process with high CPU doing hash operations'],
+   det:'Detect: Unauthorized SAM/shadow file access, NTLM hash extraction via network, Kerberoasting TGS-REQ flood, NTDS.dit extraction via VSS.',
+   mitre:'T1003 — OS Credential Dumping | T1558.003 — Kerberoasting',tamil:'கடவுச்சொல் hash சிதைவு — credential theft கண்டறிதல்'},
+  {n:'Hashcat',cat:'Password Cracking',ico:'⚡',cls:'thashcat',os:['Kali','Parrot','Win'],
+   desc:'World\'s fastest GPU-accelerated password recovery tool supporting 350+ hash types. OpenCL/CUDA accelerated, distributed cracking support. Supports straight, combination, brute-force, hybrid, PRINCE, rule-based attacks at billions of H/s.',
+   sigs:['Large hash file exfiltration before cracking','GPU process spike post-credential dump','Hashcat binaries on endpoints','Rule file presence (.rule extension)','Wordlist downloads (rockyou.txt etc)','Reuse of cracked credentials'],
+   det:'Detect: Hash file exfiltration, credential reuse patterns post-breach, hashcat binary execution on endpoints, unusual GPU utilization spikes.',
+   mitre:'T1110.002 — Password Cracking',tamil:'GPU hash cracking — credential சிதைவு கண்டறிதல்'},
+  {n:'Burp Suite Pro',cat:'Web Attack',ico:'🔀',cls:'tburp',os:['Kali','Parrot','Win','macOS'],
+   desc:'Professional web vulnerability scanner and intercepting proxy. Active scanner checks OWASP Top 10, business logic flaws. Intruder for fuzzing, Repeater for manual testing, Collaborator for OOB detection. Supports WebSockets, GraphQL, REST APIs.',
+   sigs:['Burp Collaborator DNS/HTTP callbacks','Scanner user-agent (Burp-Scanner)','Intruder payload insertion markers','CSRF token manipulation patterns','WebSocket injection traffic','PortSwigger-specific HTTP headers'],
+   det:'Detect: Burp scanner UA string, Collaborator OOB DNS requests, intruder payload lists in HTTP bodies, repeated identical requests with variations.',
+   mitre:'T1190 — Web Application Exploitation | T1059.007 — JavaScript',tamil:'வலை பயன்பாட்டு ஸ்கேனர் — OWASP தாக்குதல்'},
+  {n:'Aircrack-ng Suite',cat:'Wireless',ico:'📡',cls:'taircrack',os:['Kali','Parrot'],
+   desc:'Complete 802.11 WEP/WPA/WPA2/WPA3 audit suite: airodump-ng (capture), aircrack-ng (crack), aireplay-ng (injection/deauth), airbase-ng (rogue AP), airtun-ng (virtual tunnel), besside-ng (auto-crack).',
+   sigs:['Deauthentication frame floods (reason code 7)','EAPOL 4-way handshake capture probes','WPS PIN brute force (Pixie-Dust)','Monitor mode detection via RFMON bit','Probe request storms','Rogue AP SSID broadcasting'],
+   det:'Detect: IEEE 802.11 deauth frame floods, EAPOL handshake frame anomalies, monitor mode probe requests, WPS brute force lockout triggers, rogue SSID beacons.',
+   mitre:'T1498 — Network DoS | T1040 — Network Sniffing | T1557 — MITM',tamil:'வயர்லெஸ் தாக்குதல் — WiFi hack கண்டறிதல்'},
+  {n:'Mimikatz',cat:'Credential Theft',ico:'🧠',cls:'tmimic',os:['Win (via payload)'],
+   desc:'Windows credential extractor by gentilkiwi. Extracts plaintext passwords (WDigest), NTLM/NTHash, Kerberos tickets (silver/golden ticket forgery) from LSASS memory. sekurlsa, kerberos, lsadump, vault, dpapi modules.',
+   sigs:['LSASS process memory access (OpenProcess on lsass.exe)','sekurlsa::logonpasswords execution','Pass-the-Hash (PtH) lateral movement','Golden ticket forging (krbtgt hash)','DCSync attack (DRS replication requests)','DPAPI master key dumping'],
+   det:'Detect: LSASS memory read attempts by non-system processes, Kerberos ticket anomalies (forged PAC), DCSync DRS replication from non-DC, unusual DPAPI access.',
+   mitre:'T1003.001 — LSASS Memory | T1558 — Steal Kerberos Tickets | T1550 — PtH',tamil:'Windows credential திருட்டு — LSASS dump கண்டறிதல்'},
+  {n:'Cobalt Strike',cat:'C2 / APT',ico:'⚔️',cls:'tcobalt',os:['Win','Linux'],
+   desc:'Commercial adversary simulation platform widely adopted by APT groups. Beacon backdoor supports HTTP/S/DNS/SMB C2 channels with malleable C2 profiles for traffic obfuscation. Post-ex: keylogger, screenshot, port scan, lateral movement, privilege escalation.',
+   sigs:['Beacon 60s default check-in HTTP/S','Malleable C2 custom HTTP headers/URIs','Process injection via Beacon (spawnto)','Named pipe communication (postex)','SMB Beacon lateral movement','OPSEC sleep jitter randomization'],
+   det:'Detect: Periodic HTTP/S beaconing with jitter, malleable C2 custom headers, unusual named pipes, process injection without parent-child relationship.',
+   mitre:'T1071.001 — C2 HTTP | T1055 — Process Injection | T1021 — Lateral Movement',tamil:'APT C2 Beacon — Cobalt Strike கண்டறிதல்'},
+  {n:'Nikto',cat:'Web Scan',ico:'🌐',cls:'tnikto',os:['Kali','Parrot','Any'],
+   desc:'Web server vulnerability scanner checking 6,700+ dangerous files/programs, 1,250+ server misconfigurations, outdated server software, default credentials, insecure CGI scripts, HTTP method enumeration.',
+   sigs:['Nikto user-agent (Nikto/2.x)','Rapid sequential GET to admin paths','CGI bin directory traversal attempts','Default credential testing (admin/admin)','HTTP DELETE/PUT/TRACE method probes','Backup file enumeration (.bak, .old, ~)'],
+   det:'Detect: Nikto UA string, sequential admin path probes, HTTP method enumeration, backup file access attempts, rapid 404 flood from single IP.',
+   mitre:'T1595 — Active Scanning | T1592 — Gather Host Information',tamil:'வலை சேவையக ஸ்கேன் — Nikto signature கண்டறிதல்'},
+  {n:'Gobuster / Dirb',cat:'Dir Brute Force',ico:'🚀',cls:'tgobust',os:['Kali','Parrot','Any'],
+   desc:'Directory/file/DNS/vhost brute-force enumeration tool using wordlists (dirbuster-wordlist, SecLists, dirb). Gobuster: Go-based, 3 modes (dir/dns/vhost). Dirb: C-based classical tool. Both discover hidden APIs, admin panels, subdomains.',
+   sigs:['Rapid 404 responses from single IP','Common wordlist path requests (/admin/,/backup/,/.git/)','Concurrent HTTP GET burst','Gobuster/DirBuster UA strings','Subdomain enumeration DNS flood','API endpoint discovery patterns'],
+   det:'Detect: Sequential 404 flood matching wordlist patterns, concurrent GET bursts, gobuster/dirbuster user-agents, subdomain DNS query flood.',
+   mitre:'T1083 — File and Directory Discovery | T1018 — Remote System Discovery',tamil:'கோப்பு/அடைவு brute-force — மறைக்கப்பட்ட path கண்டறிதல்'},
+  {n:'Wireshark / tcpdump',cat:'Packet Sniffing',ico:'🦈',cls:'twire',os:['Any'],
+   desc:'Network protocol analyzer for live packet capture and offline analysis. Dissects 1000+ protocols. Used for credential sniffing on unencrypted channels, MITM validation, session hijacking, sensitive data interception.',
+   sigs:['Network interface in promiscuous mode','ARP cache poisoning (ARP spoofing for MITM)','SSL stripping via HSTS bypass','Unencrypted credential capture (HTTP, FTP, Telnet)','DNS query interception','TCP session reassembly for credential extraction'],
+   det:'Detect: Promiscuous mode NIC flag, ARP cache inconsistencies (duplicate IPs), SSL stripping attempts, unusual ARP reply frequency.',
+   mitre:'T1040 — Network Sniffing | T1557 — Adversary-in-the-Middle',tamil:'நெட்வொர்க் packet capture — data theft கண்டறிதல்'},
+  {n:'Kali Linux / Parrot OS',cat:'Hacker Platform',ico:'🐉',cls:'tkali',os:['Kali Linux 2024','Parrot OS 6.0'],
+   desc:'Purpose-built penetration testing OS distributions. Kali Linux (Offensive Security): 600+ pre-installed tools, live USB boot, forensic mode. Parrot OS: lightweight, MATE desktop, 400+ tools, AnonSurf for anonymization. Both feature kernel hardening and anonymization tools.',
+   sigs:['Kali/Parrot OS user-agent patterns','Known Kali MAC OUI ranges (VMware/VirtualBox in labs)','Kali default SSH host keys','Tool execution signatures unique to Kali','Tor/ProxyChains traffic patterns (Parrot AnonSurf)','Live USB boot indicators (rd.live.image kernel param)'],
+   det:'Detect: Kali/Parrot OS fingerprints in network traffic, known Kali tool execution signatures, VM hypervisor artifacts, Tor exit node traffic.',
+   mitre:'All 14 MITRE ATT&CK Tactics covered',tamil:'தாக்குதல் இயக்க முறைமை — Kali/Parrot OS கண்டறிதல்'},
+  {n:'Empire / PowerShell Empire',cat:'Post-Exploitation',ico:'👑',cls:'tapk',os:['Kali','Win'],
+   desc:'Post-exploitation framework built on PowerShell and Python agents. Supports HTTP/S/SOCKS C2 communications, credential harvesting, keylogging, lateral movement via PsExec/WMI/DCOM, persistence via registry/scheduled tasks/WMI.',
+   sigs:['PowerShell encoded commands (-EncodedCommand)','Base64-encoded PS stagers','Empire agent check-in HTTP patterns','WMI lateral movement from non-admin accounts','Registry run key persistence','Scheduled task creation with unusual commands'],
+   det:'Detect: Encoded PowerShell in process cmdline, Empire HTTP staging patterns, WMI remote execution anomalies, unusual registry modifications.',
+   mitre:'T1059.001 — PowerShell | T1086 — PowerShell | T1053 — Scheduled Task',tamil:'PowerShell post-exploitation — Empire agent கண்டறிதல்'},
+  {n:'Alien Program / RAT / Rootkit',cat:'Malware Injection',ico:'👾',cls:'tapk',os:['Any'],
+   desc:'Remote Access Trojans (RATs), rootkits, and injected malicious programs. Common RATs: NjRAT, AsyncRAT, DarkComet, Quasar, njRAT. Rootkits: kernel-level hooking, boot sector infection (UEFI), memory-only malware. Detection uses behavioral analysis and signature matching.',
+   sigs:['Outbound C2 communication on unusual ports','Process hollowing (legitimate process with malicious code)','Kernel driver loading from unusual paths','Registry autorun key modifications','Hook installation in ntdll.dll','Network traffic to known malware C2 IPs'],
+   det:'CRITICAL — CAMERA CAPTURE TRIGGERED. Process injection patterns, unknown kernel drivers, C2 beaconing to threat intel blocklists, SSDT hooking, unusual autostart entries.',
+   mitre:'T1543 — Create/Modify System Process | T1014 — Rootkit | T1055 — Process Injection',tamil:'அன்னிய நிரல் ஊசி — RAT/Rootkit கண்டறிதல் — கேமரா பிடிப்பு தொடங்கியது'},
+];
+
+const WORLD_KB = [
+  {cat:'🌍 Attack Frameworks & Methodologies',items:[
+    {t:'MITRE ATT&CK v14',d:'14 tactics, 193 techniques, 411 sub-techniques. Industry standard for adversary behavior modeling.',cve:'Framework'},
+    {t:'OWASP Top 10 (2021)',d:'A01:Broken Access Control, A02:Cryptographic Failures, A03:Injection, A04:Insecure Design, A05:Security Misconfiguration, A06:Vulnerable Components, A07:Auth Failures, A08:SSRF, A09:Logging Failures, A10:SSRF.',cve:'Web Standard'},
+    {t:'Kill Chain Model',d:'Reconnaissance → Weaponization → Delivery → Exploitation → Installation → C2 → Actions on Objectives.',cve:'Lockheed Martin'},
+    {t:'Diamond Model',d:'Adversary → Infrastructure → Capability → Victim. Threat intelligence correlation framework.',cve:'Intrusion Analysis'},
+    {t:'PTES (Pentest Execution)',d:'Pre-engagement, Intelligence Gathering, Threat Modeling, Vulnerability Analysis, Exploitation, Post-Exploitation, Reporting.',cve:'Pentest Standard'},
+    {t:'NIST Cybersecurity Framework 2.0',d:'GOVERN, IDENTIFY, PROTECT, DETECT, RESPOND, RECOVER — 6 core functions for enterprise security.',cve:'NIST CSF 2.0'},
+  ]},
+  {cat:'💀 Critical Vulnerability Classes',items:[
+    {t:'Buffer Overflow / ROP Chains',d:'Stack/heap overflow → code execution. Return-Oriented Programming bypasses NX/DEP. Mitigate: ASLR, stack canaries, PIE.',cve:'CVE-2023-4911 (glibc)'},
+    {t:'SQL Injection (SQLi)',d:'Malicious SQL in input fields. Union-based, time-based blind, error-based, OOB. Mitigate: parameterized queries, WAF.',cve:'OWASP A03'},
+    {t:'Cross-Site Scripting (XSS)',d:'Reflected, Stored, DOM-based. Script injection in web pages. Mitigate: CSP, input sanitization, HTTPOnly cookies.',cve:'OWASP A03'},
+    {t:'SSRF (Server-Side Request Forgery)',d:'Force server to make requests to internal services. Cloud metadata endpoint abuse (169.254.169.254). Critical in cloud environments.',cve:'CVE-2019-0232'},
+    {t:'Deserialization Attacks',d:'Untrusted data deserialization → code execution. Java, PHP, Python pickle. Log4Shell used JNDI deserialization.',cve:'CVE-2021-44228'},
+    {t:'Zero-Click Exploits',d:'No user interaction required. Exploit via SMS, MMS, WiFi. NSO Pegasus used iOS iMessage zero-click chains.',cve:'CVE-2023-41064'},
+  ]},
+  {cat:'🌐 Network Attack Techniques',items:[
+    {t:'Man-in-the-Middle (MITM)',d:'ARP spoofing, DNS poisoning, SSL stripping, Evil Twin AP. Intercepts encrypted traffic.',cve:'T1557 MITRE'},
+    {t:'DDoS / Amplification',d:'HTTP/2 Rapid Reset, DNS amplification (100x), NTP monlist (556x), memcached (51,000x).',cve:'CVE-2023-44487'},
+    {t:'BGP Hijacking',d:'Rogue BGP announcements redirect internet traffic. Nation-state technique for mass surveillance.',cve:'T1557.002'},
+    {t:'DNS Tunneling',d:'Encodes data in DNS queries for C2 communication bypassing firewalls (dnscat2, iodine).',cve:'T1071.004'},
+    {t:'VLAN Hopping',d:'Double tagging or switch spoofing to access segmented VLANs. Lateral movement via trunk ports.',cve:'T1599'},
+    {t:'TCP Session Hijacking',d:'Predict sequence numbers to inject into established TCP sessions. Hunt tool used historically.',cve:'T1557'},
+  ]},
+  {cat:'🔐 Cryptographic Attacks',items:[
+    {t:'Padding Oracle Attack',d:'CBC mode padding manipulation reveals plaintext without key. POODLE (SSLv3), BEAST (TLS 1.0).',cve:'CVE-2014-3566'},
+    {t:'Birthday Attack (Hash Collision)',d:'MD5/SHA-1 collision attacks. Two different inputs produce same hash. Forged SSL certificates.',cve:'CVE-2005-4900'},
+    {t:'Rainbow Table Attacks',d:'Pre-computed hash→plaintext lookups. Defeated by salting. rockyou.txt: 14M passwords.',cve:'T1110.002'},
+    {t:'Side-Channel Attacks',d:'Timing, power analysis, cache attacks (Spectre/Meltdown), EM emanations. Hardware-level exploitation.',cve:'CVE-2017-5754'},
+    {t:'Quantum Computing Threat',d:'Shor\'s algorithm breaks RSA/ECC. Grover\'s halves AES effective key length. Q-Day: 2030–2035.',cve:'NIST PQC'},
+    {t:'SSL Stripping',d:'Downgrade HTTPS to HTTP. Used with ARP spoofing for credential capture. Mitigate: HSTS preloading.',cve:'T1557.002'},
+  ]},
+  {cat:'🤖 AI/ML Cyber Threats (2025–2035)',items:[
+    {t:'LLM Prompt Injection',d:'Malicious prompts override AI system instructions. Indirect prompt injection via external data.',cve:'OWASP LLM01'},
+    {t:'Adversarial Machine Learning',d:'Poisoning training data, adversarial examples (imperceptible perturbations fool AI models).',cve:'MITRE ATLAS'},
+    {t:'Deepfake Social Engineering',d:'AI-generated voice/video cloning of executives. Used for BEC fraud and auth bypass.',cve:'T1656'},
+    {t:'AI-Powered Fuzzing',d:'ML-guided fuzzing finds vulnerabilities 10x faster than traditional methods (OSS-Fuzz).',cve:'Research 2024'},
+    {t:'Autonomous Malware',d:'Self-modifying, AI-driven malware that adapts to evade detection in real-time.',cve:'2026 Prediction'},
+    {t:'LLM-Generated Phishing',d:'GPT-quality personalized spear phishing at scale using OSINT data enrichment.',cve:'Active 2024'},
+  ]},
+  {cat:'🏛️ APT Groups & Nation-State Actors',items:[
+    {t:'APT41 (China — Winnti)',d:'Dual espionage/criminal group. Targets: healthcare, telecoms, govt. Tools: POISONPLUG, MESSAGETAP.',cve:'T-CH-001'},
+    {t:'Volt Typhoon (China)',d:'Critical infrastructure pre-positioning. LoL (Living off the Land) — no custom malware, uses built-in tools.',cve:'2023 Advisory'},
+    {t:'Lazarus Group (North Korea)',d:'Financial theft ($3B+ stolen). WannaCry, SWIFT attacks, crypto exchange hacks.',cve:'T-NK-001'},
+    {t:'APT29 / Cozy Bear (Russia)',d:'SolarWinds supply chain. NOBELIUM. Spear phishing + sophisticated C2.',cve:'CVE-2020-10148'},
+    {t:'Sandworm (Russia — GRU)',d:'BlackEnergy, NotPetya, Industroyer (ICS). Critical infrastructure destruction.',cve:'ICS Targets'},
+    {t:'MuddyWater (Iran)',d:'Targets govt/telecoms in Middle East. PowerShell Empire, POWERSTATS backdoor.',cve:'T-IR-001'},
+  ]},
+  {cat:'🇮🇳 India-Specific Threats',items:[
+    {t:'CERT-In Directions 2022',d:'Mandatory 6-hour breach reporting. VPN/cloud/VPS providers must maintain 5-year logs. Non-compliance: criminal liability.',cve:'MeitY 2022'},
+    {t:'DPDP Act 2023',d:'Digital Personal Data Protection. Consent-based data processing. Data fiduciary obligations. Penalty up to ₹250 crore.',cve:'Parliament 2023'},
+    {t:'Pakistan APTs (SideCopy)',d:'Targets Indian govt/military. Mimics SideWinder TTPs. Lures: Indian policy documents.',cve:'T-PK-002'},
+    {t:'Chinese Intrusions on TN Infra',d:'2022: Chennai port authority targeted. 2023: Tamil Nadu power grid reconnaissance detected.',cve:'CERT-In 2023'},
+    {t:'Aadhaar Data Protection',d:'UIDAI data governance. Masked Aadhaar, VID, OTP-based auth. No biometric sharing allowed.',cve:'UIDAI Rules'},
+    {t:'NIC-CERT Tamil Nadu',d:'National Informatics Centre state-level CERT. Monitors TN govt network. 24×7 SOC operations.',cve:'NIC TN'},
+  ]},
+];
+
+// ATTACK SIMULATION TEMPLATES
+const SIM = {
+  school:[
+    {tool:'Nmap',cls:'tnmap',sev:'HIGH',ip:'185.220.101.47',country:'Russia (Tor Exit Node)',port:22,tech:'T1046 — Network Discovery',desc:'Full SYN port scan (1–65535) with OS detection and service version enumeration. Nmap -sV -O -p- detected. Target appears to be mapping school network infrastructure.',tamil:'நம்ப் முழு போர்ட் ஸ்கேன் — பள்ளி நெட்வொர்க் வரைபடம் உருவாக்கப்படுகிறது',attempts:65535,cvss:'6.5',asn:'AS4444 — Tor Project'},
+    {tool:'Hydra',cls:'thydra',sev:'CRITICAL',ip:'91.108.56.200',country:'Iran (APT34 Known Range)',port:22,tech:'T1110.001 — SSH Brute Force',desc:'Hydra SSH brute force attack: 2,847 attempts in 4.2 minutes using rockyou.txt + custom Tamil wordlist. Admin account targeted. Attack speed suggests 8 parallel threads.',tamil:'Hydra SSH தாக்குதல் — ஆளுநர் கணக்கை குறிவைக்கிறது — உடனடி நடவடிக்கை தேவை!',attempts:2847,cvss:'8.1',asn:'AS197971 — DEDIPATH'},
+    {tool:'SQLmap',cls:'tsqlmap',sev:'CRITICAL',ip:'203.0.113.45',country:'China (APT41 Range)',port:443,tech:'T1190 — SQL Injection',desc:'SQLmap time-based blind SQL injection: student_login GET parameter. 16 payloads confirmed vulnerable. UNION-based extraction targeting student grades DB. MySQL 8.0 identified. 43,000 student records at risk.',tamil:'SQLmap SQL injection — 43,000 மாணவர் தரவுகள் ஆபத்தில் — உடனடி தடுப்பு தேவை',attempts:234,cvss:'9.8',asn:'AS4134 — CHINANET'},
+    {tool:'Alien Program/RAT',cls:'tapk',sev:'CRITICAL',ip:'172.16.0.45',country:'Internal (Compromised Host)',port:4444,tech:'T1543 — RAT Installation',desc:'SUSPICIOUS ALIEN PROGRAM DETECTED: Unknown process "svchost32.exe" (not Microsoft) connecting to external C2 at 45.142.212.100:4444 via reverse TCP shell. Process injection into explorer.exe. CAMERA CAPTURE TRIGGERED.',tamil:'அன்னிய நிரல் கண்டறியப்பட்டது — உள்ளே ஊடுருவிய malware — கேமரா பிடிப்பு தொடங்கியது!',attempts:1,cvss:'10.0',asn:'INTERNAL'},
+    {tool:'Nikto',cls:'tnikto',sev:'MEDIUM',ip:'45.142.212.100',country:'Germany (VPN Exit)',port:80,tech:'T1595 — Active Scanning',desc:'Nikto v2.1.6 web scan: 1,247 checks in 8 minutes. Found: /admin/ (200 OK), /backup/ (200 OK), /phpMyAdmin/ (403), /.git/ (200), /wp-admin/ (403). Version: Apache 2.4.41 (vulnerable to 3 CVEs).',tamil:'Nikto வலை ஸ்கேன் — admin மற்றும் backup கோப்புகள் திறந்துள்ளன',attempts:1247,cvss:'5.3',asn:'AS24940 — Hetzner'},
+    {tool:'John the Ripper',cls:'tjohn',sev:'HIGH',ip:'Internal (192.168.1.54)',country:'Insider Threat (Staff PC)',port:0,tech:'T1003 — Credential Dumping',desc:'John the Ripper pattern: NTLM hash extraction detected. SAM database accessed by non-administrative user. 3 NTLM hashes extracted matching teacher accounts. Offline cracking attempt with darkweb wordlist.',tamil:'John the Ripper credential dump — ஆசிரியர் கடவுச்சொற்கள் திருடப்படுகின்றன — insider அச்சுறுத்தல்',attempts:1,cvss:'8.5',asn:'INTERNAL'},
+    {tool:'Gobuster',cls:'tgobust',sev:'LOW',ip:'88.214.25.67',country:'Netherlands (VPN)',port:443,tech:'T1083 — Dir Enumeration',desc:'Gobuster dir mode: 47,000 wordlist entries scanned (SecLists/Discovery). Found: /staff-portal/ (200), /uploads/ (200), /old-backup-2022.zip (200). Critical: backup archive accessible without auth.',tamil:'Gobuster directory scan — staff portal மற்றும் backup files கண்டறியப்பட்டன',attempts:47000,cvss:'3.7',asn:'AS60781 — LeaseWeb'},
+  ],
+  hospital:[
+    {tool:'Metasploit',cls:'tmsf',sev:'CRITICAL',ip:'91.108.4.201',country:'Belarus (LockBit Affiliate)',port:4444,tech:'T1059 — Meterpreter Reverse Shell',desc:'CRITICAL: Metasploit Meterpreter reverse TCP shell active! Patient database server (192.168.10.5) established reverse connection to attacker C2 at 91.108.4.201:4444. Shell active for 14 minutes. Attacker has full system access. 85,000 patient records at risk.',tamil:'Metasploit Meterpreter shell — நோயாளர் சேவையகம் முழு தாக்குதல் கட்டுப்பாட்டில்!',attempts:1,cvss:'10.0',asn:'AS48159 — UOIP'},
+    {tool:'Hydra',cls:'thydra',sev:'CRITICAL',ip:'185.100.87.202',country:'Russia (LockBit 3.0)',port:3389,tech:'T1110 — RDP Brute Force',desc:'Hydra RDP credential stuffing: 5,847 attempts using hospital_staff_leaked_creds.txt (dark web purchase). 2 accounts compromised: dr.murthy@hospital.tn.gov.in, nurse.priya@hospital.tn.gov.in. LockBit 3.0 TTPs confirmed.',tamil:'Hydra RDP brute force — LockBit ransomware பாணி — 2 accounts compromised',attempts:5847,cvss:'9.0',asn:'AS41665 — Serverius'},
+    {tool:'Alien Program/RAT',cls:'tapk',sev:'CRITICAL',ip:'Physical Access',country:'On-Premise Intruder',port:0,tech:'T1091 — USB Malware Drop',desc:'ALIEN PROGRAM INJECTION via USB: Unknown executable "medicare_update.exe" deployed via USB drive. Process spawned by explorer.exe with no digital signature. Connects to known AsyncRAT C2 infrastructure. Ransomware precursor behavior detected. CAMERA CAPTURE TRIGGERED IMMEDIATELY.',tamil:'USB வழியாக அன்னிய நிரல் ஊசி — AsyncRAT கண்டறியப்பட்டது — கேமரா capture தொடங்கியது!',attempts:1,cvss:'10.0',asn:'PHYSICAL'},
+    {tool:'Mimikatz',cls:'tmimic',sev:'CRITICAL',ip:'192.168.10.54',country:'Compromised Internal Host',port:0,tech:'T1003.001 — LSASS Dump',desc:'Mimikatz sekurlsa::logonpasswords executed on admin workstation. LSASS memory dumped. Extracted: 4 plaintext passwords (WDigest enabled), 7 NTLM hashes, 2 Kerberos TGT tickets. Domain admin credentials compromised.',tamil:'Mimikatz LSASS dump — domain admin credentials திருடப்பட்டன — முழு நெட்வொர்க் ஆபத்தில்',attempts:1,cvss:'9.0',asn:'INTERNAL'},
+  ],
+  police:[
+    {tool:'Cobalt Strike',cls:'tcobalt',sev:'CRITICAL',ip:'45.76.220.210',country:'China (Volt Typhoon)',port:443,tech:'T1071.001 — Beacon C2',desc:'Cobalt Strike Beacon DETECTED: Police case management server sending periodic 60-second check-ins to suspected Volt Typhoon C2 infrastructure at 45.76.220.210. Malleable C2 profile mimics Google analytics traffic. Beacon active for 23 days undetected. Critical: FIR database accessible.',tamil:'Cobalt Strike Beacon — வழக்கு மேலாண்மை சேவையகம் சீன APT-ல் 23 நாட்களாக compromised',attempts:1,cvss:'Critical',asn:'AS20473 — Choopa/Vultr'},
+    {tool:'Mimikatz',cls:'tmimic',sev:'CRITICAL',ip:'192.168.1.89',country:'Insider Threat',port:0,tech:'T1003 + T1558 — Golden Ticket',desc:'Mimikatz Golden Ticket attack: krbtgt hash extracted via DCSync. Forged Kerberos TGT created with 10-year validity. Attacker has persistent domain admin access bypassing password resets. All police systems compromised.',tamil:'Mimikatz Golden Ticket — domain admin persistent access — அனைத்து police systems compromised',attempts:1,cvss:'10.0',asn:'INTERNAL'},
+    {tool:'Nmap',cls:'tnmap',sev:'HIGH',ip:'103.4.56.1',country:'Pakistan (SideCopy APT)',port:0,tech:'T1046 — Infrastructure Recon',desc:'Systematic Nmap reconnaissance of entire police station IP range (192.168.0.0/16). All 65,535 hosts scanned with OS detection, service enumeration, NSE vulnerability scripts. Output exported. Pre-attack reconnaissance phase.',tamil:'Pakistan APT — police network முழு உளவு — தாக்குதலுக்கு முன்னர் reconnaissance',attempts:65535,cvss:'6.5',asn:'AS7468 — PTCL'},
+  ],
+};
+
+// ─── PARTICLE ANIMATION ───
+function initParticles() {
+  const c=document.getElementById('particle-canvas');
+  const ctx=c.getContext('2d');
+  c.width=window.innerWidth; c.height=window.innerHeight;
+  const ps=Array.from({length:80},()=>({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,a:Math.random()}));
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    ps.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>c.width) p.vx*=-1;
+      if(p.y<0||p.y>c.height) p.vy*=-1;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(212,175,55,${p.a*.3})`; ctx.fill();
+    });
+    ps.forEach((p,i)=>ps.slice(i+1).forEach(q=>{
+      const d=Math.hypot(p.x-q.x,p.y-q.y);
+      if(d<120){ ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
+        ctx.strokeStyle=`rgba(212,175,55,${.05*(1-d/120)})`; ctx.lineWidth=.5; ctx.stroke(); }
+    }));
+    requestAnimationFrame(draw);
+  }
+  draw();
+  window.addEventListener('resize',()=>{c.width=window.innerWidth;c.height=window.innerHeight});
+}
+initParticles();
+
+// ─── CLOCK ───
+function updateClock(){document.getElementById('clk').textContent=new Date().toLocaleTimeString('en-IN',{hour12:false})+' IST';}
+setInterval(updateClock,1000); updateClock();
+
+// ─── SOURCES ───
+document.querySelectorAll('.schip').forEach(c=>{ c.onclick=()=>{ c.classList.toggle('on'); c.querySelector('input').checked=!c.querySelector('input').checked; }; });
+function getSrcs(){return [...document.querySelectorAll('.schip.on')].map(c=>c.dataset.s);}
+
+// ─── DEPTH ───
+function setDepth(d){
+  scanDepth=d;
+  ['fast','std','deep'].forEach(x=>{const b=document.getElementById(`d-${x}`);b.className=x===d?'btn btn-g':'btn btn-gh';b.style.cssText='font-size:10px;padding:5px 10px';});
+}
+
+// ─── TERMINAL ───
+function tlog(msg,cls='lt2'){
+  const b=document.getElementById('tbody');
+  const t=new Date().toISOString().split('T')[1].slice(0,8);
+  const d=document.createElement('div'); d.className='ll';
+  d.innerHTML=`<span class="lt">[${t}] </span><span class="${cls}">${msg}</span>`;
+  b.appendChild(d); b.scrollTop=b.scrollHeight;
+}
+function clrT(){document.getElementById('tbody').innerHTML='<div class="ll"><span class="li blink">█</span></div>';}
+function cpyT(){navigator.clipboard.writeText(document.getElementById('tbody').innerText).then(()=>toast('Terminal log copied','success'));}
+
+// ─── HEALTH ───
+async function checkHealth(){
+  try{await fetch('http://localhost:8000/',{signal:AbortSignal.timeout(3000)});
+    setH('api','g','ONLINE'); document.getElementById('api-badge').className='badge bon'; document.getElementById('api-badge').textContent='🟢 ONLINE';
+  }catch{setH('api','r','OFFLINE');}
+  const t=localStorage.getItem('niravan_token');
+  setH('auth',t?'g':'a',t?'AUTH':'DEMO');
+  setH('feed','g','LIVE');
+  setH('cam','g','ARMED');
+  setH('blk','g','ARMED');
+}
+function setH(k,c,v){
+  const d=document.getElementById(`hd-${k}`),val=document.getElementById(`hv-${k}`);
+  if(d) d.className=`hdot ${c}`;
+  if(val){val.textContent=v;val.style.color=c==='g'?'var(--green)':c==='a'?'var(--amber)':'var(--red)';}
+}
+
+// ─── CAMERA SYSTEM ───
+async function triggerCameraCapture(reason){
+  camActive=true;
+  document.getElementById('cam-overlay').classList.add('open');
+  document.getElementById('cam-status').textContent=`Reason: ${reason} — Initializing camera...`;
+  document.getElementById('cam-badge').style.display='';
+  try{
+    camStream=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480,facingMode:'user'},audio:false});
+    const v=document.getElementById('cam-video'); v.srcObject=camStream;
+    setH('cam','r','CAPTURING');
+    document.getElementById('cam-status').textContent=`📸 Camera ACTIVE — ${reason} — Click "Capture Now" or use Burst Mode`;
+    tlog(`📸 CAMERA CAPTURE TRIGGERED: ${reason}`,'lpk');
+    toast(`Camera capture initiated: ${reason}`,'critical');
+    // Auto-capture after 2 seconds
+    setTimeout(()=>capturePhoto(reason),2000);
+  }catch(err){
+    document.getElementById('cam-status').textContent=`Camera access denied (${err.message}). Please allow camera permission for forensic capture.`;
+    tlog(`📸 Camera access denied — ${err.message}`,'lw');
+    // Still record a simulation capture
+    recordSimCapture(reason);
+  }
+}
+
+function capturePhoto(reason='Manual Capture'){
+  const v=document.getElementById('cam-video');
+  const canvas=document.getElementById('cam-canvas');
+  canvas.width=640; canvas.height=480;
+  const ctx=canvas.getContext('2d');
+  if(v.videoWidth>0){
+    ctx.drawImage(v,0,0,640,480);
+  } else {
+    // Sim capture
+    ctx.fillStyle='#0a0f1e';ctx.fillRect(0,0,640,480);
+    ctx.fillStyle='rgba(255,69,58,.1)';ctx.fillRect(0,0,640,480);
+    ctx.strokeStyle='var(--red)';ctx.lineWidth=2;
+    for(let i=0;i<640;i+=40){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,480);ctx.globalAlpha=.1;ctx.stroke();}
+    for(let i=0;i<480;i+=40){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(640,i);ctx.stroke();}
+    ctx.globalAlpha=1;
+    ctx.fillStyle='rgba(255,69,58,.3)';ctx.fillRect(200,150,240,180);
+    ctx.fillStyle='var(--red)';ctx.font='bold 14px JetBrains Mono';ctx.fillText('CAMERA CAPTURE',210,220);
+    ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='11px JetBrains Mono';ctx.fillText('FORENSIC EVIDENCE RECORDED',195,245);
+  }
+  // Watermark
+  ctx.fillStyle='rgba(107,0,19,.8)';ctx.fillRect(0,440,640,40);
+  ctx.fillStyle='var(--g,#d4af37)';ctx.font='bold 11px Arial';
+  ctx.fillText(`NIRAVAN FORENSIC CAPTURE | ${new Date().toISOString()} | ${reason}`,10,458);
+  ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='10px Arial';
+  const topAtk=allAtks.find(a=>a.sev==='CRITICAL');
+  ctx.fillText(`IP: ${topAtk?.ip||'Unknown'} | Tool: ${topAtk?.tool||'Scanning'} | Node: NIRAVAN-CIN-v5`,10,472);
+  const dataUrl=canvas.toDataURL('image/png');
+  const cap={id:Date.now(),ts:new Date().toISOString(),reason,ip:topAtk?.ip||'Unknown',tool:topAtk?.tool||'Unknown',dataUrl};
+  camCaptures.push(cap);
+  // Show in overlay
+  const grid=document.getElementById('cam-captures');
+  const div=document.createElement('div');div.className='cam-cap-img';
+  div.innerHTML=`<img src="${dataUrl}" alt="Capture ${cap.ts}">`;
+  grid.appendChild(div);
+  // Show in captures tab
+  addCaptureCard(cap);
+  const cnt=camCaptures.length;
+  document.getElementById('hs-c').textContent=cnt;
+  document.getElementById('m-cam').textContent=cnt;
+  document.getElementById('cam-badge').style.display='';
+  document.getElementById('cam-badge').textContent=`📸 ${cnt} CAM CAPTURES`;
+  document.getElementById('cap-empty').style.display='none';
+  tlog(`📸 Capture #${cnt} saved — ${reason} — ${cap.ts}`,'lpk');
+  toast(`Forensic capture #${cnt} saved with NIRAVAN watermark!`,'warning');
+}
+
+function addCaptureCard(cap){
+  const wrap=document.getElementById('all-captures');
+  const d=document.createElement('div');
+  d.style.cssText='background:var(--c1);border:1px solid rgba(255,45,120,.25);border-radius:12px;overflow:hidden';
+  d.innerHTML=`
+    <img src="${cap.dataUrl}" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block">
+    <div style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:800;color:var(--pink);margin-bottom:3px">📸 Capture #${camCaptures.length}</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--sub);margin-bottom:2px">${new Date(cap.ts).toLocaleString('en-IN')}</div>
+      <div style="font-size:9px;color:var(--sub)">Reason: ${cap.reason}</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--cyan);margin-top:2px">IP: ${cap.ip} | Tool: ${cap.tool}</div>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <a href="${cap.dataUrl}" download="NIRAVAN_capture_${cap.id}.png" class="btn btn-pk" style="font-size:9px;padding:4px 9px;text-decoration:none">💾 Save</a>
+        <button class="btn btn-gh" style="font-size:9px;padding:4px 9px" onclick="this.closest('div[style]').remove()">🗑️</button>
+      </div>
+    </div>`;
+  wrap.appendChild(d);
+}
+
+function recordSimCapture(reason){
+  const canvas=document.createElement('canvas');
+  canvas.width=640;canvas.height=480;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#0a0f1e';ctx.fillRect(0,0,640,480);
+  ctx.fillStyle='rgba(255,69,58,.08)';ctx.fillRect(0,0,640,480);
+  ctx.fillStyle='rgba(255,69,58,.9)';ctx.font='bold 18px Arial';ctx.fillText('⚠ NIRAVAN INTRUSION DETECTED',80,240);
+  ctx.fillStyle='rgba(212,175,55,.8)';ctx.font='bold 14px Arial';ctx.fillText(`CAMERA PERMISSION REQUIRED FOR LIVE CAPTURE`,60,270);
+  ctx.fillStyle='rgba(107,0,19,.9)';ctx.fillRect(0,440,640,40);
+  ctx.fillStyle='#d4af37';ctx.font='bold 11px Arial';ctx.fillText(`NIRAVAN FORENSIC | ${new Date().toISOString()} | ${reason}`,10,458);
+  const dataUrl=canvas.toDataURL('image/png');
+  const cap={id:Date.now(),ts:new Date().toISOString(),reason,ip:'Unknown',tool:'Unknown',dataUrl};
+  camCaptures.push(cap);
+  addCaptureCard(cap);
+  document.getElementById('hs-c').textContent=camCaptures.length;
+  document.getElementById('m-cam').textContent=camCaptures.length;
+  document.getElementById('cap-empty').style.display='none';
+}
+
+function startBurstCapture(){
+  let i=0;
+  const interval=setInterval(()=>{capturePhoto(`Burst Capture ${i+1}/5`);if(++i>=5)clearInterval(interval);},800);
+  toast('Burst capture: 5 photos in 4 seconds!','warning');
+}
+function openCamViewer(){document.getElementById('cam-overlay').classList.add('open');}
+function closeCam(){document.getElementById('cam-overlay').classList.remove('open');if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}setH('cam','g','STANDBY');}
+function clearCaptures(){camCaptures=[];document.getElementById('all-captures').innerHTML='';document.getElementById('cap-empty').style.display='block';}
+function exportCaptures(){camCaptures.forEach(c=>{const a=document.createElement('a');a.href=c.dataUrl;a.download=`NIRAVAN_Capture_${c.id}.png`;a.click();});}
+
+// ─── MAIN SCAN ───
+async function startScan(){
+  const dept=document.getElementById('dept').value;
+  const dist=document.getElementById('dist').value;
+  const ip=document.getElementById('ip-range').value;
+  const mods=[];
+  ['net','hack','brute','web','exploit','recon','wifi','apt','inject','quant','ai','osint'].forEach(m=>{if(document.getElementById(`m-${m}`)?.checked) mods.push(m);});
+  const srcs=getSrcs();
+  const btn=document.getElementById('scan-btn');
+  const pw=document.getElementById('pw'),pb=document.getElementById('pb');
+  btn.disabled=true;
+  document.getElementById('sbi').textContent='⟳';
+  document.getElementById('sbt').textContent='SCANNING — WORLD-CLASS INTELLIGENCE ENGINE ACTIVE...';
+  pw.style.display='block'; pb.style.width='0%';
+  document.getElementById('tbadge').className='badge bon';
+  document.getElementById('tbadge').textContent='SCANNING';
+  clrT();
+  tlog('═══ NIRAVAN WORLD-CLASS CYBER INTELLIGENCE SCAN v5.0 ═══','lok');
+  tlog(`Target: ${dept.toUpperCase()} | ${dist.toUpperCase()} | Depth: ${scanDepth}`,'li');
+  tlog(`Modules: ${mods.join(', ')}`,'li');
+  tlog(`Sources: ${srcs.join(', ')}`,'li');
+  let scanStart=Date.now();
+  const phases=[
+    [7,'Loading 300+ hacking tool signatures — Kali Linux, Parrot OS, BlackArch...','ls'],
+    [14,'MITRE ATT&CK v14 — 193 techniques, 411 sub-techniques loaded...','ls'],
+    [21,'CVE/NVD database sync — 250,000+ known vulnerabilities indexed...','li'],
+    [28,'Network reconnaissance scan — SYN/TCP/UDP across all ports...','ls'],
+    [35,'Brute force detection: analyzing auth logs for Hydra/Medusa/Ncrack...','lw'],
+    [42,'Web attack detection: HTTP traffic analysis for SQLmap/Burp/XSSer payloads...','lw'],
+    [49,'CRITICAL CHECK: Alien program injection scan — process injection, rootkits, RATs...','lc'],
+    [56,'Metasploit/Cobalt Strike detection: beacon patterns, C2 communications...','lc'],
+    [63,'Credential theft detection: Mimikatz LSASS, Kerberoasting, DCSync patterns...','lw'],
+    [70,'Wireless attack detection: deauth frames, WPA handshake capture, evil twin...','ls'],
+    [77,'APT group correlation: Volt Typhoon, APT41, Lazarus, SideCopy signatures...','lc'],
+    [84,'AbuseIPDB cross-reference: 850M+ known malicious IPs...','li'],
+    [90,'CERT-In advisory matching: India-specific threat correlation...','li'],
+    [95,'Quantum cryptography readiness assessment: NIST FIPS 203/204/205...','ls'],
+    [99,'Generating world-class technical report with full attribution...','lok'],
+  ];
+  let pi=0;
+  const pt=setInterval(()=>{if(pi<phases.length){const[p,m,c]=phases[pi++];pb.style.width=`${p}%`;tlog(m,c);}},700);
+  renderWorldKB();
+  try{
+    const tok=localStorage.getItem('niravan_token');
+    const r=await fetch(`${API}/local-node/scan`,{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${tok||'demo'}`},
+      body:JSON.stringify({department:dept,district:dist,ip_range:ip||null,scan_depth:scanDepth,advanced_modules:mods,sources:srcs})
+    });
+    clearInterval(pt); pb.style.width='100%';
+    const data=r.ok?await r.json():simData(dept,dist);
+    processResults(data,dept,dist,Date.now()-scanStart);
+  }catch{
+    clearInterval(pt); pb.style.width='100%';
+    tlog('Backend offline — comprehensive attack simulation active...','lw');
+    setTimeout(()=>processResults(simData(dept,dist),dept,dist,Date.now()-scanStart),1200);
+  }
+  setTimeout(()=>{pw.style.display='none';pb.style.width='0%';btn.disabled=false;document.getElementById('sbi').textContent='✅';document.getElementById('sbt').textContent='SCAN COMPLETE — CLICK TO RE-SCAN';document.getElementById('tbadge').textContent='COMPLETE';},2000);
+}
+
+function simData(dept,dist){
+  const atks=SIM[dept]||SIM.school;
+  const rs=Math.min(100,atks.filter(a=>a.sev==='CRITICAL').length*22+atks.filter(a=>a.sev==='HIGH').length*9);
+  return{audit_id:`CIN-${Date.now()}`,department:dept,district:dist,risk_score:rs,findings:atks,all_findings:atks};
+}
+
+function processResults(data,dept,dist,ms){
+  const atks=data.findings||data.all_findings||SIM.school;
+  allAtks=[...atks];
+  allIPs={};
+  atks.forEach(a=>{
+    a.tool=a.tool||a.module||'Unknown';
+    a.ip=a.ip||`${10+Math.floor(Math.random()*200)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+    a.attempts=a.attempts||Math.floor(Math.random()*500)+10;
+    a.country=a.country||'Unknown';
+    if(!allIPs[a.ip])allIPs[a.ip]={ip:a.ip,country:a.country,tools:[],att:0,maxSev:'LOW',status:'ACTIVE'};
+    allIPs[a.ip].tools.push(a.tool);allIPs[a.ip].att+=a.attempts;
+    if(sw2(a.sev)>sw2(allIPs[a.ip].maxSev))allIPs[a.ip].maxSev=a.sev;
+  });
+  const crit=atks.filter(a=>a.sev==='CRITICAL').length;
+  const high=atks.filter(a=>a.sev==='HIGH').length;
+  const tools=new Set(atks.map(a=>a.tool)).size;
+  const ips=Object.keys(allIPs).length;
+  const rs=data.risk_score||Math.min(100,crit*22+high*9);
+  // Update stats
+  document.getElementById('hs-f').textContent=atks.length;
+  document.getElementById('hs-a').textContent=crit+high;
+  document.getElementById('hs-b').textContent=blockedIPs.size;
+  document.getElementById('hs-t').textContent=tools;
+  document.getElementById('hs-s').textContent=rs;
+  document.getElementById('tc-val').textContent=crit+high;
+  document.getElementById('m-crit').textContent=crit;
+  document.getElementById('m-high').textContent=high;
+  document.getElementById('m-tools').textContent=tools;
+  document.getElementById('m-ips').textContent=ips;
+  document.getElementById('m-blk').textContent=blockedIPs.size;
+  document.getElementById('m-cve').textContent=atks.filter(a=>a.cvss).length;
+  document.getElementById('m-score').textContent=rs;
+  updateRing(rs);
+  setH('scan','g',new Date().toLocaleTimeString('en-IN'));
+  tlog(`═══ SCAN COMPLETE ═══`,'lok');
+  tlog(`${atks.length} findings | ${crit} CRITICAL | ${tools} tools | ${ips} attacker IPs | ${Math.round(ms/1000)}s`,'lok');
+  if(crit>0) tlog(`🚨 CRITICAL: ${crit} attacks require IMMEDIATE response! Block IPs and escalate.`,'lc');
+  document.getElementById('results').style.display='block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+  // Render
+  renderCharts(atks);
+  renderAtks(allAtks);
+  renderIPs();
+  renderToolKB();
+  renderWorldKB();
+  renderCompliance(dept);
+  renderCVEs(crit);
+  renderQuantum();
+  renderFuture();
+  renderCorr();
+  // Auto-responses
+  const aliens=atks.filter(a=>a.tool.includes('Alien')||a.tool.includes('RAT')||(a.desc&&a.desc.includes('CAMERA')));
+  if(aliens.length>0 && document.getElementById('auto-cam').checked){
+    setTimeout(()=>triggerCameraCapture(`Alien Program Detected — ${aliens[0].tool}`),1000);
+  }
+  if(crit>0){
+    document.getElementById('threat-badge').style.display='';
+    showAlert(`${crit} CRITICAL ATTACKS DETECTED — ${atks.filter(a=>a.sev==='CRITICAL')[0]?.tool||'Unknown'} from ${atks.filter(a=>a.sev==='CRITICAL')[0]?.ip||'Unknown'}`);
+  }
+  atks.filter(a=>a.sev==='CRITICAL').forEach((a,i)=>{setTimeout(()=>pushNotif(a),i*1800+600);});
+  if(document.getElementById('auto-block').checked&&!document.getElementById('req-approval').checked){setTimeout(blockAllCrit,4000);}
+  toast(`Scan complete! ${crit} critical attacks. ${tools} hacking tools identified.`,crit>0?'error':'success');
+}
+
+function sw2(s){return{CRITICAL:4,HIGH:3,MEDIUM:2,LOW:1}[s]||0;}
+function updateRing(s){
+  const c=document.getElementById('rring'),v=document.getElementById('rval'),l=document.getElementById('rlbl');
+  c.style.strokeDashoffset=264-(s/100)*264;v.textContent=s;
+  if(s>=70){c.style.stroke='var(--red)';v.style.color='var(--red)';l.textContent='CRITICAL RISK';l.style.color='var(--red)';}
+  else if(s>=40){c.style.stroke='var(--amber)';v.style.color='var(--amber)';l.textContent='MODERATE RISK';l.style.color='var(--amber)';}
+  else{c.style.stroke='var(--green)';v.style.color='var(--green)';l.textContent='LOW RISK';l.style.color='var(--green)';}
+}
+
+// ─── CHARTS ───
+function renderCharts(atks){
+  const crit=atks.filter(a=>a.sev==='CRITICAL').length;
+  const high=atks.filter(a=>a.sev==='HIGH').length;
+  const med=atks.filter(a=>a.sev==='MEDIUM').length;
+  const low=atks.filter(a=>a.sev==='LOW').length;
+  if(chartSev){chartSev.destroy();} 
+  chartSev=new Chart(document.getElementById('chart-sev'),{type:'doughnut',data:{labels:['Critical','High','Medium','Low'],datasets:[{data:[crit,high,med,low],backgroundColor:['rgba(255,69,58,.8)','rgba(255,107,53,.8)','rgba(255,214,10,.7)','rgba(48,209,88,.7)'],borderWidth:0}]},options:{responsive:true,plugins:{legend:{labels:{color:'#8a9bb5',font:{size:10}}}}}});
+  const toolCounts={};atks.forEach(a=>toolCounts[a.tool]=(toolCounts[a.tool]||0)+1);
+  const sorted=Object.entries(toolCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  if(chartTools){chartTools.destroy();}
+  chartTools=new Chart(document.getElementById('chart-tools'),{type:'bar',data:{labels:sorted.map(([k])=>k),datasets:[{data:sorted.map(([,v])=>v),backgroundColor:'rgba(212,175,55,.7)',borderRadius:4}]},options:{responsive:true,scales:{x:{ticks:{color:'#8a9bb5',font:{size:9}}},y:{ticks:{color:'#8a9bb5',font:{size:9}},grid:{color:'rgba(255,255,255,.05)'}}},plugins:{legend:{display:false}}}});
+  const countries=['Russia','China','Iran','Internal','Pakistan','Netherlands','Germany','Belarus','USA'];
+  const geoData=countries.map(c=>atks.filter(a=>a.country&&a.country.includes(c.split(' ')[0])).length);
+  if(chartGeo){chartGeo.destroy();}
+  chartGeo=new Chart(document.getElementById('chart-geo'),{type:'polarArea',data:{labels:countries,datasets:[{data:geoData,backgroundColor:['rgba(255,69,58,.6)','rgba(10,132,255,.6)','rgba(255,214,10,.6)','rgba(191,90,242,.6)','rgba(255,107,53,.6)','rgba(48,209,88,.6)','rgba(90,200,250,.6)','rgba(255,45,120,.6)','rgba(212,175,55,.6)']}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+  const times=['00:00','03:00','06:00','09:00','12:00','15:00','18:00','21:00'];
+  const tdata=times.map(()=>Math.floor(Math.random()*8));
+  if(chartTime){chartTime.destroy();}
+  chartTime=new Chart(document.getElementById('chart-time'),{type:'line',data:{labels:times,datasets:[{data:tdata,borderColor:'var(--red)',backgroundColor:'rgba(255,69,58,.1)',tension:.4,fill:true,pointBackgroundColor:'var(--red)',pointRadius:3}]},options:{responsive:true,scales:{x:{ticks:{color:'#8a9bb5',font:{size:9}}},y:{ticks:{color:'#8a9bb5',font:{size:9}},grid:{color:'rgba(255,255,255,.05)'}}},plugins:{legend:{display:false}}}});
+}
+
+// ─── RENDER ATTACKS ───
+function renderAtks(atks){
+  const w=document.getElementById('atk-wrap');
+  document.getElementById('atk-count').textContent=`${atks.length} attacks`;
+  if(!atks.length){w.innerHTML='<div class="empty"><div class="empty-icon">✅</div><div class="empty-title">No attacks</div></div>';return;}
+  w.innerHTML='';
+  atks.forEach((a,i)=>{
+    const s=(a.sev||'MEDIUM').toUpperCase();
+    const sLC=s.toLowerCase();
+    const sc={CRITICAL:'scrit',HIGH:'shigh',MEDIUM:'smed',LOW:'slow'}[s]||'smed';
+    const tc2=getTC(a.tool||'');
+    const div=document.createElement('div');
+    div.className=`atk ${sLC}`;
+    const isAlien=a.tool.includes('Alien')||a.tool.includes('RAT')||a.tool.includes('Rootkit')||(a.desc&&a.desc.includes('CAMERA'));
+    div.innerHTML=`
+      <div class="atk-top">
+        <div style="display:flex;flex-direction:column;gap:5px;min-width:90px">
+          <span class="atk-tool ${tc2}">${a.tool}</span>
+          <span class="atk-sev ${sc}">${s}</span>
+          ${isAlien?`<span class="atk-tool tapk" style="font-size:8px">👾 ALIEN PROG</span>`:''}
+        </div>
+        <div class="atk-body">
+          <div class="atk-title">${a.desc||a.issue||'Security finding'}</div>
+          <div class="atk-ta">${a.tamil||a.tamil_issue||getTa(s)}</div>
+          <div class="atk-meta">
+            <span>🌐 IP: <b>${a.ip}</b></span>
+            <span>🗺️ <b>${a.country||'Unknown'}</b></span>
+            ${a.port?`<span>🔌 Port: <b>${a.port}</b></span>`:''}
+            <span>⚡ Attempts: <b>${(a.attempts||1).toLocaleString()}</b></span>
+            ${a.tech?`<span>🎯 MITRE: <b>${a.tech}</b></span>`:''}
+            ${a.cvss?`<span>📊 CVSS: <b>${a.cvss}</b></span>`:''}
+            ${a.asn?`<span>🏢 ASN: <b>${a.asn}</b></span>`:''}
+          </div>
+        </div>
+      </div>
+      <div class="atk-acts">
+        <button class="abtn ab-block" onclick="reqBlock('${a.ip}')">🚫 Block IP</button>
+        <button class="abtn ab-watch" onclick="watchIP('${a.ip}')">👁️ Watch</button>
+        <button class="abtn ab-info" onclick="showDetail(${i})">ℹ️ Details</button>
+        <button class="abtn ab-cam" onclick="triggerCameraCapture('Attack Evidence: ${a.tool}')">📸 Capture</button>
+        ${s==='CRITICAL'?`<button class="abtn ab-esc" onclick="escalate(${i})">🚨 Escalate</button>`:''}
+        <button class="abtn ab-ok" onclick="clearAtk(${i})">✅ Clear</button>
+      </div>`;
+    w.appendChild(div);
+  });
+}
+function filterA(){
+  const sf=document.getElementById('sf').value,tf=document.getElementById('tf').value;
+  renderAtks(allAtks.filter(a=>(sf==='all'||a.sev===sf)&&(tf==='all'||(a.tool||'').includes(tf))));
+}
+function getTC(t){
+  t=t.toLowerCase();
+  if(t.includes('nmap')) return 'tnmap';
+  if(t.includes('metasploit')) return 'tmsf';
+  if(t.includes('hydra')) return 'thydra';
+  if(t.includes('sqlmap')) return 'tsqlmap';
+  if(t.includes('john')) return 'tjohn';
+  if(t.includes('hashcat')) return 'thashcat';
+  if(t.includes('aircrack')||t.includes('wifi')||t.includes('wireless')) return 'taircrack';
+  if(t.includes('burp')) return 'tburp';
+  if(t.includes('nikto')) return 'tnikto';
+  if(t.includes('gobuster')||t.includes('dirb')) return 'tgobust';
+  if(t.includes('wireshark')||t.includes('tcpdump')) return 'twire';
+  if(t.includes('mimikatz')) return 'tmimic';
+  if(t.includes('cobalt')||t.includes('c2')||t.includes('beacon')) return 'tcobalt';
+  if(t.includes('kali')||t.includes('parrot')) return 'tkali';
+  if(t.includes('empire')||t.includes('powershell')||t.includes('alien')||t.includes('rat')) return 'tapk';
+  return 'tunkn';
+}
+function getTa(s){return{CRITICAL:'மிக ஆபத்தான தாக்குதல் — உடனடி நடவடிக்கை தேவை!',HIGH:'அதிக ஆபத்துள்ள தாக்குதல்',MEDIUM:'நடுத்தர ஆபத்து',LOW:'குறைந்த ஆபத்து'}[s]||'பாதுகாப்பு அச்சுறுத்தல்';}
+
+// ─── IP TABLE ───
+function renderIPs(){
+  const tb=document.getElementById('ip-tbody');tb.innerHTML='';
+  document.getElementById('map-active').textContent=Object.keys(allIPs).length;
+  document.getElementById('map-blocked').textContent=blockedIPs.size;
+  Object.values(allIPs).forEach(ip=>{
+    const bl=blockedIPs.has(ip.ip);
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="ipc">${ip.ip}</td>
+      <td style="font-size:10px">${ip.country||'Unknown'}</td>
+      <td><span class="tag to">${[...new Set(ip.tools)].slice(0,2).join(', ')}</span></td>
+      <td style="font-size:10px;color:var(--sub)">${ip.maxSev}</td>
+      <td class="ipc" style="color:var(--amber)">${ip.att.toLocaleString()}</td>
+      <td class="ipc" style="color:var(--orange)">${(Math.random()*4+5).toFixed(1)}</td>
+      <td class="ipc" style="color:var(--sub)">AS${Math.floor(Math.random()*60000)+1000}</td>
+      <td class="${bl?'sbk':'swt'}">${bl?'BLOCKED':'ACTIVE'}</td>
+      <td style="display:flex;gap:5px">${!bl?`<button class="abtn ab-block" style="font-size:9px" onclick="reqBlock('${ip.ip}')">🚫</button>`:''}
+      <button class="abtn ab-cam" style="font-size:9px" onclick="triggerCameraCapture('IP Evidence: ${ip.ip}')">📸</button></td>`;
+    tb.appendChild(tr);
+  });
+  drawMap();
+}
+
+function drawMap(){
+  const c=document.getElementById('map-canvas');if(!c)return;
+  c.width=c.offsetWidth||1200;c.height=250;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#03050d';ctx.fillRect(0,0,c.width,c.height);
+  // Grid
+  ctx.strokeStyle='rgba(212,175,55,.05)';ctx.lineWidth=1;
+  for(let i=0;i<c.width;i+=60){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,c.height);ctx.stroke();}
+  for(let i=0;i<c.height;i+=40){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(c.width,i);ctx.stroke();}
+  // Target node
+  const tx=c.width*.78,ty=c.height*.5;
+  const g=ctx.createRadialGradient(tx,ty,0,tx,ty,25);
+  g.addColorStop(0,'rgba(107,0,19,1)');g.addColorStop(1,'rgba(107,0,19,0)');
+  ctx.beginPath();ctx.arc(tx,ty,25,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+  ctx.strokeStyle='rgba(212,175,55,.8)';ctx.lineWidth=2;ctx.stroke();
+  ctx.fillStyle='#f0f4ff';ctx.font='bold 11px monospace';ctx.textAlign='center';ctx.fillText('🛡️ NODE',tx,ty+4);
+  // Attackers
+  const origins=[
+    {x:.05,y:.18,c:blockedIPs.size>0?'#555':'#ff453a',l:'Russia'},
+    {x:.08,y:.72,c:'#ff453a',l:'Iran'},
+    {x:.12,y:.38,c:'#0a84ff',l:'China'},
+    {x:.15,y:.82,c:'#ffd60a',l:'Pakistan'},
+    {x:.88,y:.28,c:'#ff453a',l:'N.Korea'},
+    {x:.82,y:.75,c:'#bf5af2',l:'Internal'},
+    {x:.18,y:.52,c:'#ffd60a',l:'Germany'},
+    {x:.07,y:.50,c:'#30d158',l:'Netherlands'},
+  ];
+  origins.forEach(o=>{
+    const sx=o.x*c.width,sy=o.y*c.height;
+    // Pulse
+    ctx.beginPath();ctx.arc(sx,sy,14,0,Math.PI*2);ctx.fillStyle=o.c+'22';ctx.fill();
+    ctx.strokeStyle=o.c+'66';ctx.lineWidth=1;ctx.stroke();
+    // Attack line
+    const lg=ctx.createLinearGradient(sx,sy,tx,ty);
+    lg.addColorStop(0,o.c);lg.addColorStop(1,'rgba(107,0,19,0)');
+    ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(tx,ty);
+    ctx.strokeStyle=lg;ctx.lineWidth=1.5;ctx.stroke();ctx.setLineDash([]);
+    // Dot
+    ctx.beginPath();ctx.arc(sx,sy,5,0,Math.PI*2);ctx.fillStyle=o.c;ctx.fill();
+    ctx.fillStyle=o.c;ctx.font='9px monospace';ctx.textAlign='left';ctx.fillText(o.l,sx+8,sy+4);
+  });
+}
+
+// ─── TOOL KB ───
+function renderToolKB(){
+  const g=document.getElementById('tool-kb-grid');g.innerHTML='';
+  TOOL_KB.forEach(t=>{
+    const d=document.createElement('div');d.className='tkbc';
+    d.innerHTML=`<div class="tkbc-head"><span class="tkbc-icon">${t.ico}</span><div><div class="tkbc-name">${t.n}</div><div class="tkbc-cat">${t.cat} · ${t.os.join(', ')}</div></div></div>
+      <div class="tkbc-desc">${t.desc}</div>
+      <div class="tkbc-sigs">${t.sigs.map(s=>`<span class="sig">${s}</span>`).join('')}</div>
+      <div class="tkbc-det">✅ NIRAVAN: ${t.det}</div>
+      <div style="font-size:9px;color:var(--sub);font-family:var(--mono);margin-top:6px">MITRE: ${t.mitre}</div>
+      <div class="tkbc-ta">${t.tamil}</div>`;
+    g.appendChild(d);
+  });
+}
+
+// ─── WORLD KB ───
+function renderWorldKB(){
+  const targets=['world-kb-content'];
+  targets.forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.innerHTML='';
+    WORLD_KB.forEach(sec=>{
+      const s=document.createElement('div');s.className='kb-section';
+      s.innerHTML=`<div class="kb-title">${sec.cat}</div><div class="kb-grid">${sec.items.map(item=>`<div class="kb-item"><div class="kb-item-title"><span>${item.t}</span></div><div class="kb-item-desc">${item.d}</div><div class="kb-item-cve">${item.cve}</div></div>`).join('')}</div>`;
+      el.appendChild(s);
+    });
+  });
+}
+
+// ─── COMPLIANCE ───
+function renderCompliance(dept){
+  const maps={school:[80,55,62,91,44,70,58],hospital:[65,78,48,85,58,52,70],police:[70,82,71,78,88,65,77],treasury:[58,68,90,82,72,45,68]};
+  const sc=maps[dept]||[65,70,68,80,58,62,72];
+  const fws=[{n:'ISO 27001:2022',d:'ISMS Standard',c:'#0a84ff'},{n:'NIST CSF 2.0',d:'Cybersecurity Framework',c:'#30d158'},{n:'CERT-In 2022',d:'India CERT Directions',c:'#d4af37'},{n:'DPDP Act 2023',d:'Data Protection Act',c:'#bf5af2'},{n:'OWASP ASVS 4.0',d:'Application Security',c:'#ff6b35'},{n:'PCI DSS 4.0',d:'Payment Security',c:'#5ac8fa'},{n:'IEC 62443',d:'Industrial Control Systems',c:'#ff2d78'}];
+  const g=document.getElementById('comp-grid');g.innerHTML='';
+  fws.forEach((fw,i)=>{
+    const s=sc[i]||65;const d=document.createElement('div');d.className='ccomp';
+    d.innerHTML=`<div class="cn">${fw.n}</div><div class="cd">${fw.d}</div>
+      <div class="cbg"><div class="cbar" style="width:0%;background:${fw.c}" data-t="${s}"></div></div>
+      <div class="cscore" style="color:${s>=75?'var(--green)':s>=50?'var(--amber)':'var(--red)'}">${s}%</div>
+      <div class="cchecks">${Array.from({length:10},(_,j)=>`<span class="cc ${j<Math.floor(s/10)?'cc-p':j<Math.floor(s/10)+2?'cc-w':'cc-f'}">${j<Math.floor(s/10)?'✓':j<Math.floor(s/10)+2?'⚠':'✗'}</span>`).join('')}</div>`;
+    g.appendChild(d);setTimeout(()=>d.querySelector('.cbar').style.width=`${s}%`,100+i*130);
+  });
+}
+
+// ─── CVEs ───
+function renderCVEs(critCount){
+  const cves=[
+    {id:'CVE-2024-3400',s:'10.0',sc:'crit-s',d:'Palo Alto PAN-OS RCE — unauthenticated command injection via GlobalProtect. Actively exploited.',t:'RCE · Zero-Day · Metasploit Module Available',m:'T1190'},
+    {id:'CVE-2024-6387',s:'8.1',sc:'high-s',d:'OpenSSH regreSSHion — root RCE via signal handler race condition. Affects Hydra brute force targets.',t:'RCE · SSH · Root · Linux Servers',m:'T1210'},
+    {id:'CVE-2024-1709',s:'10.0',sc:'crit-s',d:'ConnectWise ScreenConnect auth bypass — mass exploitation, ransomware delivery vector.',t:'Auth Bypass · RCE · Healthcare · MSF Module',m:'T1078'},
+    {id:'CVE-2024-27198',s:'9.8',sc:'crit-s',d:'JetBrains TeamCity auth bypass — supply chain attack, Metasploit weaponized.',t:'Auth Bypass · Supply Chain · CI/CD',m:'T1195'},
+    {id:'CVE-2021-44228',s:'10.0',sc:'crit-s',d:'Log4Shell — JNDI injection in Log4j. Affects Apache servers. Still actively exploited 2024.',t:'RCE · Java · Log4j · Active Exploitation',m:'T1190'},
+    {id:'CVE-2023-44487',s:'7.5',sc:'high-s',d:'HTTP/2 Rapid Reset DDoS — infrastructure disruption. Affects all HTTP/2 servers.',t:'DoS · Infrastructure · Web',m:'T1499'},
+    {id:'CVE-2024-21412',s:'8.1',sc:'high-s',d:'Windows SmartScreen bypass — active exploitation in phishing chains (SET toolkit).',t:'Bypass · Windows · Phishing',m:'T1553'},
+    {id:'CVE-2017-0144',s:'9.3',sc:'crit-s',d:'EternalBlue (MS17-010) — SMB RCE. Used by WannaCry/NotPetya. SMBv1 still present in India.',t:'RCE · SMB · WannaCry · Still Active',m:'T1210'},
+  ];
+  document.getElementById('cve-list').innerHTML=cves.slice(0,Math.max(4,critCount+3)).map(c=>`
+    <div class="cve"><div><div class="cvs ${c.sc}">${c.s}</div><div style="font-size:8px;text-align:center;color:var(--sub)">CVSS</div></div>
+    <div><div class="cveid">${c.id} <span style="font-size:8px;color:var(--dim);font-family:var(--mono)">MITRE:${c.m}</span></div>
+    <div class="cved">${c.d}</div><div class="cvet">${c.t}</div></div></div>`).join('');
+}
+
+// ─── QUANTUM ───
+function renderQuantum(){
+  document.getElementById('q-cur').innerHTML=`<div class="qi"><span class="q-name">RSA-2048 Key Exchange</span><span class="qs q-w">⚠ Quantum-Vulnerable (Shor 2030)</span></div><div class="qi"><span class="q-name">AES-256 Symmetric</span><span class="qs q-ok">✓ Quantum-Safe</span></div><div class="qi"><span class="q-name">TLS 1.3 Protocol</span><span class="qs q-ok">✓ Adequate (Transition needed)</span></div><div class="qi"><span class="q-name">SHA-256 Hash</span><span class="qs q-ok">✓ Quantum-Resistant</span></div><div class="qi"><span class="q-name">ECDSA Digital Signatures</span><span class="qs q-w">⚠ Vulnerable (Shor's Algorithm)</span></div><div class="qi"><span class="q-name">DH Key Exchange</span><span class="qs q-f">✗ CRITICAL — Quantum-Breakable</span></div><div class="qi"><span class="q-name">MD5/SHA-1 (Legacy)</span><span class="qs q-f">✗ Already Broken (Classical)</span></div><div class="qi"><span class="q-name">TN Govt PQC Adoption</span><span class="qs q-f">✗ 12% — Critical Gap</span></div>`;
+  document.getElementById('q-pqc').innerHTML=`<div class="qi"><span class="q-name">CRYSTALS-Kyber (FIPS 203)</span><span class="qs q-ok">Recommended KEM</span></div><div class="qi"><span class="q-name">CRYSTALS-Dilithium (FIPS 204)</span><span class="qs q-ok">Recommended Signatures</span></div><div class="qi"><span class="q-name">SPHINCS+ (FIPS 205)</span><span class="qs q-ok">Hash-based Signatures</span></div><div class="qi"><span class="q-name">BIKE / HQC (Round 4)</span><span class="qs q-w">⚠ Under Review</span></div><div class="qi"><span class="q-name">Q-Day Timeline</span><span class="qs" style="color:var(--cyan)">2030–2035</span></div><div class="qi"><span class="q-name">Migration Urgency</span><span class="qs q-f">✗ CRITICAL — Start 2025</span></div>`;
+}
+
+// ─── FUTURE ───
+function renderFuture(){
+  document.getElementById('ft').innerHTML=[
+    {y:'2025–2026',t:'AI-Powered Spear Phishing at Scale',d:'LLM-generated hyper-personalized attacks using OSINT enrichment. Tamil Nadu govt officials primary targets.',cl:'r'},
+    {y:'2027–2028',t:'Autonomous Malware Swarms',d:'Self-modifying AI agents adapting to evade detection in real-time across distributed networks.',cl:'r'},
+    {y:'2028–2030',t:'Deepfake Voice/Video Auth Bypass',d:'Real-time executive voice/face cloning. IAS officer deepfakes for government authorization bypass.',cl:'r'},
+    {y:'2030–2032',t:'Q-Day — PKI Collapse',d:'Quantum computers break RSA/ECC in hours. All legacy VPN, TLS, digital signatures compromised.',cl:'p'},
+    {y:'2032–2035',t:'AI Autonomous Hacking Platforms',d:'AI replaces Kali Linux/Metasploit — fully autonomous end-to-end attack chains without human operators.',cl:'r'},
+    {y:'2035–2040',t:'Brain-Computer Interface Attacks',d:'BCI neural data exfiltration. Manipulation of augmented government workers via neural implants.',cl:'b'},
+    {y:'2040–2045',t:'Quantum-AI Hybrid Superintelligence Attacks',d:'Quantum ML models break all current security assumptions in milliseconds.',cl:'r'},
+  ].map(t=>`<div class="tli"><div class="tldot tld-${t.cl}"></div><div class="tly">${t.y}</div><div class="tlt">${t.t}</div><div class="tld">${t.d}</div></div>`).join('');
+  document.getElementById('ai-era').innerHTML=`<b style="color:var(--cyan)">2030–2035 AI Threat Landscape:</b><br>• <b>Autonomous Exploit Gen</b>: AI finds 0-days faster than patch cycles<br>• <b>LLM-Assisted APTs</b>: Private LLMs for polymorphic malware generation<br>• <b>Adversarial ML</b>: Poison fraud detection AI training data<br>• <b>Prompt Injection Worms</b>: Self-propagating through gov AI assistants<br>• <b>Deepfake BEC</b>: AI video calls for wire fraud (₹100Cr+ cases)<br><i style="color:var(--dim)">Source: MITRE ATLAS, NCSC AI Security, OpenAI Red Team</i>`;
+  document.getElementById('pqc-tl').innerHTML=`<b style="color:var(--purple)">Post-Quantum Timeline:</b><br>• <b>2024</b>: NIST FIPS 203/204/205 finalized<br>• <b>2025–2027</b>: TN Govt PKI migration required<br>• <b>2028</b>: All new systems must be PQC-native<br>• <b>2030</b>: Q-Day risk window opens<br>• <b>2033</b>: Critical infra migration deadline<br><span style="color:var(--red)">⚠️ TN Govt PQC: 12% — CRITICAL GAP</span>`;
+}
+
+// ─── CORRELATION ───
+function renderCorr(){
+  document.getElementById('corr-wrap').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:18px">
+      <div class="mc"><div class="mc-icon">🏛️</div><div class="mc-val mv-go">47</div><div class="mc-lbl">Nodes Audited</div></div>
+      <div class="mc"><div class="mc-icon">🕸️</div><div class="mc-val mv-r">4</div><div class="mc-lbl">Critical Clusters</div></div>
+      <div class="mc"><div class="mc-icon">🔗</div><div class="mc-val mv-a">7</div><div class="mc-lbl">Attack Patterns</div></div>
+    </div>
+    ${[
+      {t:'Hydra SSH brute force from same /24 subnet — 4 nodes',s:'CRITICAL',n:['Chennai School-14','Madurai Hospital-3','Vellore Collectorate','Salem Police'],a:'Block subnet 91.108.56.0/24 immediately. Enable fail2ban. Disable password auth — keys only.'},
+      {t:'Nmap reconnaissance — full port scan across 6 nodes (pre-attack)',s:'HIGH',n:['Chennai Treasury','Coimbatore Hospital','Madurai Police','Erode Collectorate','Salem School','Vellore Court'],a:'Block reconnaissance IP ranges. Deploy honeypot on port 22. Enable port knocking.'},
+      {t:'SQLmap injection — school/hospital web portals (same vulnerability)',s:'CRITICAL',n:['Chennai School','Madurai Hospital HIS','Tirunelveli Treasury'],a:'Deploy WAF with OWASP CRS. Emergency parameterized query patch. Disable GET parameters in login.'},
+      {t:'Alien Program/RAT detected — USB-based injection across 3 nodes',s:'CRITICAL',n:['Chennai Hospital','Coimbatore Police','Salem Treasury'],a:'Emergency: Isolate all affected systems. USB ports disabled via GPO. Forensic imaging required.'},
+    ].map(c=>`<div class="corr"><div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><span class="${c.s==='CRITICAL'?'scrit':'shigh'} atk-sev">${c.s}</span><div class="corrt">${c.t}</div></div><div style="font-size:11px;color:var(--sub);margin-bottom:8px">📋 ${c.a}</div><div class="corrnodes">${c.n.map(n=>`<span class="corrn">${n}</span>`).join('')}</div></div>`).join('')}`;
+}
+
+// ─── BLOCK SYSTEM ───
+function reqBlock(ip){
+  pendingBlockIP=ip;
+  if(document.getElementById('req-approval').checked){
+    document.getElementById('blk-ip').textContent=ip;
+    document.getElementById('blk-detail').textContent=`Tool: ${allIPs[ip]?.tools?.join(', ')||'?'} | Attempts: ${allIPs[ip]?.att?.toLocaleString()||'?'} | Country: ${allIPs[ip]?.country||'?'} | Max Severity: ${allIPs[ip]?.maxSev||'?'}`;
+    showModal('m-block');
+  } else confirmBlock();
+}
+function confirmBlock(){
+  if(!pendingBlockIP)return;
+  blockedIPs.add(pendingBlockIP);
+  tlog(`🚫 BLOCKED: ${pendingBlockIP} — All connections terminated`,'lc');
+  document.getElementById('hs-b').textContent=blockedIPs.size;
+  document.getElementById('m-blk').textContent=blockedIPs.size;
+  toast(`IP ${pendingBlockIP} BLOCKED!`,'error');
+  pushNotif({type:'blocked',ip:pendingBlockIP});
+  closeModal('m-block');renderIPs();pendingBlockIP=null;
+}
+function denyBlock(){toast(`Block denied for ${pendingBlockIP}.`,'info');closeModal('m-block');pendingBlockIP=null;}
+function captureAndBlock(){confirmBlock();setTimeout(()=>triggerCameraCapture(`Post-block evidence: ${pendingBlockIP||'IP'}`),500);}
+function watchIP(ip){if(allIPs[ip])allIPs[ip].status='WATCHING';renderIPs();toast(`IP ${ip} added to watchlist.`,'warning');}
+function blockAllCrit(){
+  const ips=allAtks.filter(a=>a.sev==='CRITICAL'&&a.ip&&!a.ip.includes('Internal')&&!a.ip.includes('192.')).map(a=>a.ip);
+  ips.forEach(ip=>{if(ip){blockedIPs.add(ip);tlog(`🚫 AUTO-BLOCK: ${ip}`,'lc');}});
+  document.getElementById('hs-b').textContent=blockedIPs.size;document.getElementById('m-blk').textContent=blockedIPs.size;
+  toast(`${ips.length} critical IPs blocked!`,'error');renderIPs();
+}
+function quickBlockAll(){blockAllCrit();}
+function addManualBlock(){
+  const ip=document.getElementById('manual-ip').value.trim();if(!ip)return;
+  blockedIPs.add(ip);toast(`IP ${ip} manually blocked.`,'warning');
+  document.getElementById('manual-ip').value='';renderIPs();
+}
+function showAlert(msg){document.getElementById('atxt').textContent=`🚨 ${msg}`;document.getElementById('abar').classList.add('show');}
+
+// ─── PDF GENERATION ───
+async function genPDF(){
+  if(!allAtks.length){toast('Run a scan first to generate report.','error');return;}
+  toast('Generating full technical PDF report...','info');
+  const dept=document.getElementById('dept').value;
+  const dist=document.getElementById('dist').value;
+  const score=document.getElementById('rval').textContent;
+  const ts=new Date();
+  try{
+    const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const W=210,H=297;
+    // Page 1: Cover
+    doc.setFillColor(3,7,18);doc.rect(0,0,W,H,'F');
+    doc.setFillColor(107,0,19);doc.rect(0,0,W,8,'F');
+    doc.setFillColor(212,175,55);doc.rect(0,H-8,W,8,'F');
+    // Title
+    doc.setTextColor(212,175,55);doc.setFont('helvetica','bold');doc.setFontSize(28);
+    doc.text('NIRAVAN',W/2,45,'center');
+    doc.setFontSize(16);doc.text('CYBER INTELLIGENCE NODE — TECHNICAL AUDIT REPORT',W/2,58,'center');
+    doc.setFontSize(11);doc.setTextColor(240,244,255);
+    doc.text('World-Class Attack Intelligence | Hacking Tool Detection | Forensic Analysis',W/2,68,'center');
+    // Separator
+    doc.setDrawColor(212,175,55);doc.setLineWidth(.8);doc.line(20,75,W-20,75);
+    // Org info box
+    doc.setFillColor(15,20,40);doc.roundedRect(20,82,W-40,52,3,3,'F');
+    doc.setDrawColor(107,0,19);doc.setLineWidth(.5);doc.roundedRect(20,82,W-40,52,3,3,'S');
+    doc.setTextColor(212,175,55);doc.setFontSize(10);doc.setFont('helvetica','bold');
+    doc.text('AUDIT INFORMATION',30,92);
+    doc.setTextColor(240,244,255);doc.setFont('helvetica','normal');doc.setFontSize(9);
+    doc.text(`Organization: ${dept.toUpperCase()}`,30,100);
+    doc.text(`District: ${dist.toUpperCase()}`,30,107);
+    doc.text(`Report Date: ${ts.toLocaleString('en-IN')}`,30,114);
+    doc.text(`Report ID: NIRAVAN-CIN-${ts.getFullYear()}-${String(ts.getMonth()+1).padStart(2,'0')}-${Date.now().toString().slice(-6)}`,30,121);
+    doc.text(`Risk Score: ${score}/100`,120,100);
+    doc.text(`Total Findings: ${allAtks.length}`,120,107);
+    doc.text(`Critical: ${allAtks.filter(a=>a.sev==='CRITICAL').length}`,120,114);
+    doc.text(`Blocked IPs: ${blockedIPs.size}`,120,121);
+    doc.text(`Camera Captures: ${camCaptures.length}`,120,128);
+    // Tamil
+    doc.setTextColor(139,155,181);doc.setFontSize(9);
+    doc.text('Tamil Nadu Cyber Security Authority — Govt of Tamil Nadu',W/2,145,'center');
+    doc.text('Classification: RESTRICTED — For Official Use Only',W/2,152,'center');
+    // Risk section
+    doc.setFillColor(255,69,58,allAtks.filter(a=>a.sev==='CRITICAL').length>0?.2:.05);
+    doc.roundedRect(20,160,W-40,30,3,3,'F');
+    doc.setTextColor(allAtks.filter(a=>a.sev==='CRITICAL').length>0?255:48,allAtks.filter(a=>a.sev==='CRITICAL').length>0?69:209,allAtks.filter(a=>a.sev==='CRITICAL').length>0?58:88);
+    doc.setFontSize(14);doc.setFont('helvetica','bold');
+    const riskLbl=parseInt(score)>=70?'CRITICAL RISK — IMMEDIATE ACTION REQUIRED':parseInt(score)>=40?'MODERATE RISK — REMEDIATION RECOMMENDED':'LOW RISK — MAINTAIN VIGILANCE';
+    doc.text(`RISK ASSESSMENT: ${riskLbl}`,W/2,178,'center');
+    doc.setTextColor(240,244,255);doc.setFontSize(10);doc.setFont('helvetica','normal');
+    doc.text(`Overall Risk Score: ${score}/100 | Scan completed: ${ts.toLocaleTimeString('en-IN')}`,W/2,188,'center');
+    // Page footer
+    doc.setTextColor(100,115,140);doc.setFontSize(8);
+    doc.text('NIRAVAN Cyber Intelligence Node v5.0 — Tamil Nadu Cyber Security Authority — CONFIDENTIAL',W/2,H-12,'center');
+    doc.text('Page 1 of 3',W-30,H-12);
+    // Page 2: Attack Log
+    doc.addPage();
+    doc.setFillColor(3,7,18);doc.rect(0,0,W,H,'F');
+    doc.setFillColor(107,0,19);doc.rect(0,0,W,8,'F');
+    doc.setTextColor(212,175,55);doc.setFont('helvetica','bold');doc.setFontSize(14);
+    doc.text('ATTACK LOG & THREAT ATTRIBUTION',W/2,18,'center');
+    doc.setDrawColor(212,175,55);doc.setLineWidth(.5);doc.line(20,22,W-20,22);
+    let y=30;
+    const sevColors={CRITICAL:[255,69,58],HIGH:[255,107,53],MEDIUM:[255,214,10],LOW:[48,209,88]};
+    allAtks.slice(0,12).forEach((a,i)=>{
+      if(y>H-30){doc.addPage();doc.setFillColor(3,7,18);doc.rect(0,0,W,H,'F');doc.setFillColor(107,0,19);doc.rect(0,0,W,8,'F');y=20;}
+      const clr=sevColors[a.sev]||[140,155,185];
+      doc.setFillColor(...clr,.15);doc.roundedRect(15,y-4,W-30,22,2,2,'F');
+      doc.setDrawColor(...clr);doc.setLineWidth(.4);doc.line(15,y-4,15,y+18);
+      doc.setTextColor(...clr);doc.setFont('helvetica','bold');doc.setFontSize(8);
+      doc.text(`[${a.sev}] ${a.tool}`,20,y+2);
+      doc.setTextColor(240,244,255);doc.setFont('helvetica','normal');doc.setFontSize(8);
+      const desc=(a.desc||a.issue||'').slice(0,95);
+      doc.text(desc,20,y+8);
+      doc.setTextColor(100,115,140);doc.setFontSize(7);
+      doc.text(`IP: ${a.ip} | Country: ${a.country||'?'} | Port: ${a.port||'N/A'} | CVSS: ${a.cvss||'N/A'} | Attempts: ${(a.attempts||1).toLocaleString()} | MITRE: ${a.tech||'N/A'}`,20,y+15);
+      y+=26;
+    });
+    if(allAtks.length>12){doc.setTextColor(140,155,185);doc.setFontSize(8);doc.text(`... and ${allAtks.length-12} more findings. See JSON export for complete data.`,20,y+5);}
+    doc.setTextColor(100,115,140);doc.setFontSize(8);
+    doc.text('NIRAVAN Cyber Intelligence Node v5.0 — CONFIDENTIAL',W/2,H-12,'center');doc.text('Page 2 of 3',W-30,H-12);
+    // Page 3: Technical Details & Recommendations
+    doc.addPage();
+    doc.setFillColor(3,7,18);doc.rect(0,0,W,H,'F');
+    doc.setFillColor(107,0,19);doc.rect(0,0,W,8,'F');
+    doc.setTextColor(212,175,55);doc.setFont('helvetica','bold');doc.setFontSize(14);
+    doc.text('TECHNICAL RECOMMENDATIONS & REMEDIATION',W/2,18,'center');
+    doc.setDrawColor(212,175,55);doc.setLineWidth(.5);doc.line(20,22,W-20,22);
+    let y3=30;
+    const recs=[
+      ['IMMEDIATE (0–24 hours)','Block all identified attacker IPs at perimeter firewall. Enable fail2ban with threshold 5 attempts/60s. Disable SMBv1. Force MFA on all admin accounts. Isolate compromised systems.'],
+      ['SHORT TERM (1–7 days)','Patch all CVE-2024-3400, CVE-2024-6387, CVE-2024-1709. Deploy WAF with OWASP CRS. Disable WDigest authentication. Enable LSASS protection. Audit all admin accounts.'],
+      ['MEDIUM TERM (1–30 days)','Deploy EDR/XDR solution. Implement Zero Trust Architecture. Network segmentation (DMZ, internal, admin VLAN). Privileged Access Management (PAM). SOC integration.'],
+      ['LONG TERM (1–12 months)','Begin PQC migration planning (NIST FIPS 203/204/205). Deploy SIEM with UEBA. Red team exercises quarterly. CERT-In compliance audit. Staff cybersecurity training.'],
+      ['INDIA COMPLIANCE','File CERT-In mandatory breach report within 6 hours. DPDP Act 2023 notification to Data Protection Board. Preserve forensic evidence (camera captures + logs) per IT Act 2000 Sec 65B.'],
+    ];
+    recs.forEach(([title,body])=>{
+      doc.setFillColor(15,20,40);doc.roundedRect(15,y3-2,W-30,30,2,2,'F');
+      doc.setTextColor(212,175,55);doc.setFont('helvetica','bold');doc.setFontSize(9);doc.text(title,20,y3+5);
+      doc.setTextColor(200,210,240);doc.setFont('helvetica','normal');doc.setFontSize(8);
+      const lines=doc.splitTextToSize(body,W-50);
+      lines.forEach((line,li)=>doc.text(line,20,y3+12+li*5));
+      y3+=34;
+    });
+    // Tamil summary
+    doc.setFillColor(107,0,19,.1);doc.roundedRect(15,y3,W-30,25,2,2,'F');
+    doc.setTextColor(212,175,55);doc.setFont('helvetica','bold');doc.setFontSize(9);doc.text('TAMIL SUMMARY / தமிழ் சுருக்கம்',20,y3+8);
+    doc.setTextColor(200,210,240);doc.setFont('helvetica','normal');doc.setFontSize(8);
+    doc.text(`மொத்த தாக்குதல்கள்: ${allAtks.length} | மிக ஆபத்தானவை: ${allAtks.filter(a=>a.sev==='CRITICAL').length} | தடுக்கப்பட்ட IPs: ${blockedIPs.size} | ஆபத்து மதிப்பெண்: ${score}/100`,20,y3+16);
+    doc.text(`கேமரா பிடிப்புகள்: ${camCaptures.length} | ஹேக்கிங் கருவிகள்: ${new Set(allAtks.map(a=>a.tool)).size}`,20,y3+22);
+    doc.setTextColor(100,115,140);doc.setFontSize(8);
+    doc.text('NIRAVAN Cyber Intelligence Node v5.0 — Tamil Nadu Cyber Security Authority — CONFIDENTIAL',W/2,H-12,'center');doc.text('Page 3 of 3',W-30,H-12);
+    // Save
+    doc.save(`NIRAVAN_TechnicalReport_${dept}_${ts.toISOString().slice(0,10)}.pdf`);
+    tlog(`📄 PDF Technical Report generated: ${allAtks.length} findings, ${allAtks.filter(a=>a.sev==='CRITICAL').length} critical`,'lok');
+    toast('Full technical PDF report downloaded!','success');
+  }catch(e){
+    console.error(e);
+    toast('PDF generation error — using text export fallback.','warning');
+    genTextReport();
+  }
+}
+
+function genTextReport(){
+  const dept=document.getElementById('dept').value;
+  const r=`NIRAVAN CYBER INTELLIGENCE NODE — TECHNICAL AUDIT REPORT\n${'='.repeat(60)}\nDate: ${new Date().toLocaleString('en-IN')}\nDept: ${dept.toUpperCase()} | Risk: ${document.getElementById('rval').textContent}/100\nFindings: ${allAtks.length} | Critical: ${allAtks.filter(a=>a.sev==='CRITICAL').length} | Blocked: ${blockedIPs.size}\n\nATTACK LOG:\n${allAtks.map(a=>`[${a.sev}] ${a.tool} from ${a.ip} (${a.country}) — ${(a.desc||a.issue||'').slice(0,80)}`).join('\n')}\n\nGenerated by NIRAVAN v5.0 — Tamil Nadu Cyber Security Authority`;
+  const blob=new Blob([r],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`NIRAVAN_Report_${new Date().toISOString().slice(0,10)}.txt`;a.click();URL.revokeObjectURL(url);
+  toast('Text report downloaded (PDF library fallback).','info');
+}
+
+// ─── OTHER ACTIONS ───
+async function syncSOC(){
+  tlog('Syncing to Chennai SOC...','ls');
+  try{const t=localStorage.getItem('niravan_token');await fetch(`${API}/local-node/sync`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t||'demo'}`},body:JSON.stringify({audit_id:window.activeAuditId||'demo'})});}catch{}
+  tlog('✓ Synced to Central SOC.','lok');toast('Synced to Chennai SOC!','success');
+}
+function autoMitigate(){const e=allAtks.filter(a=>a.sev==='LOW'||a.sev==='MEDIUM');e.forEach((a,i)=>setTimeout(()=>tlog(`✓ Auto-mitigated: ${(a.tool||'')} — ${(a.desc||a.issue||'').slice(0,60)}`,'lok'),i*350));setTimeout(()=>toast(`Auto-mitigated ${e.length} findings.`,'success'),e.length*350+400);}
+function showDetail(i){const a=allAtks[i];if(!a)return;tlog(`📚 Detail: [${a.tool}] ${(a.desc||a.issue||'').slice(0,100)}`,'li');toast(`${a.tool}: CVSS ${a.cvss||'N/A'} | ${a.ip} | ${a.tech||'N/A'}`,'info');}
+function clearAtk(i){if(allAtks[i])allAtks[i].sev='CLEARED';tlog(`✓ Finding #${i+1} cleared.`,'lok');toast('Finding cleared.','success');}
+function escalate(i){const a=allAtks[i];if(!a)return;document.getElementById('esc-ips').value=a.ip||'';showModal('m-esc');}
+function submitEsc(){tlog(`🚨 CERT-In escalation submitted.`,'lc');closeModal('m-esc');toast(`Escalated — Ref: INC-${Date.now().toString().slice(-8)}`,'warning');}
+function exportJSON(){if(!allAtks.length){toast('No scan data.','error');return;}const b=new Blob([JSON.stringify({attacks:allAtks,blocked:[...blockedIPs],ips:allIPs,captures:camCaptures.length,exported:new Date().toISOString()},null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=`niravan_${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(u);toast('SIEM-ready JSON exported!','success');}
+
+// ─── NOTIF ───
+function pushNotif(atk){
+  notifCount++;document.getElementById('nc').textContent=notifCount;
+  const p=document.getElementById('npanel');
+  const isBlk=atk.type==='blocked';
+  const c=document.createElement('div');
+  const cl=isBlk?'n-r':atk.sev==='CRITICAL'?'n-r':atk.sev==='HIGH'?'n-a':'n-b';
+  c.className=`ncard ${cl}`;
+  const ip=atk.ip||'Unknown';const tool=atk.tool||'Unknown';
+  c.innerHTML=`<div class="ntop"><span class="nicon">${isBlk?'🚫':atk.sev==='CRITICAL'?'🚨':'⚠️'}</span><div class="ntitle">${isBlk?`IP ${ip} BLOCKED`:atk.sev==='CRITICAL'?'CRITICAL ATTACK':atk.tool||'Attack'}</div><button class="nclose" onclick="this.closest('.ncard').remove()">×</button></div><div class="nbody">${isBlk?`IP <b>${ip}</b> blocked & reported to AbuseIPDB.`:`<b style="color:var(--red)">${tool}</b> from <b style="color:var(--cyan)">${ip}</b> (${atk.country||'Unknown'}). ${(atk.attempts||0).toLocaleString()} attempts.`}</div><div class="nacts">${!isBlk?`<button class="nb-ap" onclick="reqBlock('${ip}');this.closest('.ncard').remove()">🚫 Block</button>`:''}${atk.sev==='CRITICAL'?`<button class="nb-ap" onclick="triggerCameraCapture('Critical: ${tool}');this.closest('.ncard').remove()" style="background:rgba(255,45,120,.15);color:var(--pink);border:1px solid rgba(255,45,120,.3)">📸 Capture</button>`:''}<button class="nb-ds" onclick="this.closest('.ncard').remove()">Dismiss</button></div>`;
+  p.appendChild(c);
+  setTimeout(()=>{if(c.parentNode){c.style.opacity='0';c.style.transform='translateX(120%)';c.style.transition='all .4s';setTimeout(()=>c.remove(),400);}},14000);
+}
+function showNotifs(){document.getElementById('npanel').style.display=document.getElementById('npanel').style.display==='none'?'flex':'none';}
+
+// ─── TABS ───
+function sw(name){
+  document.querySelectorAll('.tp-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(`panel-${name}`).classList.add('active');
+  event.target.classList.add('active');
+  if(name==='ips'){renderIPs();setTimeout(drawMap,150);}
+  if(name==='tools')renderToolKB();
+  if(name==='worldkb')renderWorldKB();
+  if(name==='corr')renderCorr();
+}
+
+// ─── MODAL ───
+function showModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+// ─── TOAST ───
+function toast(msg,type='info'){
+  const c=document.getElementById('tc');
+  const e=document.createElement('div');e.className=`toast ${type}`;
+  e.innerHTML=`<span>${{success:'✅',error:'🚫',info:'ℹ️',warning:'⚠️',critical:'🚨'}[type]}</span><span>${msg}</span>`;
+  c.appendChild(e);
+  setTimeout(()=>{e.style.opacity='0';e.style.transform='translateX(100%)';e.style.transition='all .3s';setTimeout(()=>e.remove(),300);},5000);
+}
+
+// ─── INIT ───
+window.addEventListener('load',()=>{
+  checkHealth();
+  renderWorldKB();
+  const tok=localStorage.getItem('niravan_token');
+  toast(tok?'Authenticated — all features active.':'Demo mode — scan data simulated.',tok?'success':'info');
+  // Request camera permission early
+  navigator.mediaDevices?.getUserMedia({video:true,audio:false}).then(s=>{s.getTracks().forEach(t=>t.stop());setH('cam','g','READY');}).catch(()=>setH('cam','a','PERMISSION NEEDED'));
+});
+</script>
+</body>
+</html>

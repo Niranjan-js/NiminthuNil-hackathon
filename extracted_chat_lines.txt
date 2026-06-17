@@ -1,0 +1,100 @@
+Line 281: if(e.key === 'Enter') handleChatSend();
+  +1: });
+  +2: }
+  +3: const timeEl = document.getElementById('chat-init-time');
+  +4: if(timeEl) timeEl.textContent = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  +5: }
+  +6: 
+  +7: // ── Real-Time Engine ──
+  +8: function startRealTimeEngine() {
+  +9: // New event every 3-8 seconds
+  +10: setInterval(generateAndAddEvent, randomInt(3000, 8000));
+  +11: 
+  +12: // Update KPI counters every 2 seconds
+  +13: setInterval(updateKPIs, 2000);
+  +14: 
+  +15: // Update QRI every 10 seconds
+  +16: setInterval(updateQRI, 10000);
+  +17: 
+  +18: // Update trend chart every 30 seconds
+  +19: setInterval(updateTrendChart, 30000);
+  +20: 
+  +21: // Update ticker
+  +22: setInterval(updateTicker, 5000);
+  +23: 
+  +24: // Update EPS counter every second
+  +25: setInterval(() => {
+  +26: const val = randomInt(4000, 4500);
+  +27: const el  = document.getElementById('eps-counter');
+  +28: if(el) el.textContent = val.toLocaleString() + ' events/sec';
+  +29: eventsProcessed += val;
+  +30: const amEl = document.getElementById('am-events');
+  +31: if(amEl) amEl.textContent = eventsProcessed.toLocaleString();
+  +32: correlationsFound += randomInt(1, 5);
+  +33: const corEl = document.getElementById('am-correlations');
+  +34: if(corEl) corEl.textContent = correlationsFound.toLocaleString();
+  +35: const evEl = document.getElementById('events-analyzed');
+  +36: if(evEl) evEl.textContent = val.toLocaleString();
+  +37: }, 1000);
+  +38: 
+  +39: // Initial renders
+  +40: setTimeout(() => {
+  +41: updateKPIs();
+  +42: updateQRI();
+  +43: updateTicker();
+  +44: }, 500);
+  +45: }
+  +46: 
+  +47: async function generateAndAddEvent() {
+  +48: if (window.NIRAVAN_API_ACTIVE) {
+  +49: const evt = generateEvent();
+  +50: try {
+  +51: const res = await fetch(`${window.API_URL}/ingest-event`, {
+  +52: method: 'POST',
+  +53: headers: { 'Content-Type': 'application/json' },
+  +54: body: JSON.stringify({
+  +55: type: evt.type,
+  +56: severity: evt.severity,
+  +57: title: evt.title,
+  +58: description: evt.description,
+  +59: technical: evt.technical || evt.description,
+  +60: mitre: evt.mitre || [],
+  +61: tactic: evt.tactic,
+  +62: technique: evt.technique,
+  +63: category: evt.category,
+  +64: host: evt.host || null,
+  +65: user: evt.user || null
+  +66: })
+  +67: });
+  +68: if (res.ok) {
+  +69: await window.syncFromBackend();
+  +70: const newEvt = window.NIRAVAN_DATA.events[0];
+  +71: if (newEvt) {
+  +72: if (currentPage === 'dashboard') {
+  +73: addEventToFeed(newEvt);
+  +74: }
+  +75: if (newEvt.severity === 'critical') {
+  +76: showToast(`🔴 ${newEvt.title}: ${newEvt.description.substring(0, 60)}...`, 'critical');
+  +77: }
+  +78: }
+  +79: }
+  +80: } catch (e) {
+  +81: console.error("[NIRAVAN] Error ingesting event:", e);
+  +82: }
+  +83: } else {
+  +84: const evt = generateEvent();
+  +85: 
+  +86: // Evaluate detection rules offline
+  +87: let ruleTriggered = false;
+  +88: if (window.NIRAVAN_DATA.detectionRules) {
+  +89: const enabledRules = window.NIRAVAN_DATA.detectionRules.filter(r => r.status === 'enabled');
+  +90: for (const rule of enabledRules) {
+  +91: try {
+  +92: const cond = JSON.parse(rule.condition_json);
+  +93: const field = cond.field;
+  +94: let triggered = false;
+  +95: 
+  +96: if (field === 'type') {
+  +97: const val = cond.value;
+  +98: if (evt.type === val) {
+  +99: const subfield = cond.subfield;

@@ -1,0 +1,250 @@
+1: /* ═══════════════════════════════════════════════
+2:    NIRAVAN Frontend Application
+3:    Tamil Nadu Government Cybersecurity Platform
+4: ═══════════════════════════════════════════════ */
+5: 
+6: const API = 'http://localhost:8000';
+7: let authToken = null;
+8: let currentUser = null;
+9: let currentRole = null;
+10: let allIncidents = [];
+11: let allAssets = [];
+12: let charts = {};
+13: let isTamil = false;
+14: 
+15: /* ── i18n ── */
+16: const T = {
+17:   en: {
+18:     'dashboard-title': 'Command Center',
+19:     'lang-toggle': 'தமிழ்',
+20:   },
+21:   ta: {
+22:     'dashboard-title': 'கட்டளை மையம்',
+23:     'lang-toggle': 'English',
+24:   }
+25: };
+26: 
+27: function toggleLanguage() {
+28:   isTamil = !isTamil;
+29:   document.getElementById('lang-btn').textContent = isTamil ? 'English' : 'தமிழ்';
+30:   document.querySelectorAll('[data-i18n]').forEach(el => {
+31:     const key = el.getAttribute('data-i18n');
+32:     const dict = isTamil ? T.ta : T.en;
+33:     if (dict[key]) el.textContent = dict[key];
+34:   });
+35: }
+36: 
+37: /* ── Toast ── */
+38: function showToast(msg, type = '', duration = 3500) {
+39:   const t = document.getElementById('toast');
+40:   t.textContent = msg;
+41:   t.className = type ? `show ${type}` : 'show';
+42:   setTimeout(() => { t.className = ''; }, duration);
+43: }
+44: 
+45: /* ── Auth ── */
+46: async function doLogin() {
+47:   const email = document.getElementById('login-email').value.trim();
+48:   const password = document.getElementById('login-password').value;
+49:   const btn = document.getElementById('btn-login');
+50:   const errEl = document.getElementById('login-error');
+51: 
+52:   if (!email || !password) {
+53:     errEl.textContent = 'Please enter your email and password.';
+54:     errEl.style.display = 'block';
+55:     return;
+56:   }
+57: 
+58:   btn.disabled = true;
+59:   btn.textContent = 'Signing in...';
+60:   errEl.style.display = 'none';
+61: 
+62:   try {
+63:     const res = await fetch(`${API}/api/v1/auth/login`, {
+64:       method: 'POST',
+65:       headers: { 'Content-Type': 'application/json' },
+66:       body: JSON.stringify({ email, password })
+67:     });
+68:     const data = await res.json();
+69:     if (!res.ok) throw new Error(data.detail || 'Login failed');
+70: 
+71:     authToken = data.token;
+72:     currentUser = data;
+73:     currentRole = data.role;
+74:     localStorage.setItem('niravan_token', authToken);
+75:     localStorage.setItem('niravan_user', JSON.stringify(data));
+76:     initApp();
+77:   } catch (e) {
+78:     errEl.textContent = e.message;
+79:     errEl.style.display = 'block';
+80:     btn.disabled = false;
+81:     btn.textContent = 'Sign In to NIRAVAN';
+82:   }
+83: }
+84: 
+85: document.getElementById('login-password').addEventListener('keydown', e => {
+86:   if (e.key === 'Enter') doLogin();
+87: });
+88: 
+89: function doLogout() {
+90:   authToken = null; currentUser = null; currentRole = null;
+91:   localStorage.removeItem('niravan_token');
+92:   localStorage.removeItem('niravan_user');
+93:   Object.values(charts).forEach(c => { try { c.destroy(); } catch(e) {} });
+94:   charts = {};
+95:   document.getElementById('app').classList.remove('active');
+96:   document.getElementById('login-page').style.display = 'flex';
+97:   document.getElementById('login-password').value = '';
+98: }
+99: 
+100: /* ── API helper ── */
+101: async function api(path, opts = {}) {
+102:   const res = await fetch(`${API}${path}`, {
+103:     ...opts,
+104:     headers: {
+105:       'Content-Type': 'application/json',
+106:       'Authorization': `Bearer ${authToken}`,
+107:       ...(opts.headers || {})
+108:     }
+109:   });
+110:   if (res.status === 401) { doLogout(); throw new Error('Session expired'); }
+111:   return res.json();
+112: }
+113: 
+114: /* ── Init App ── */
+115: function initApp() {
+116:   document.getElementById('login-page').style.display = 'none';
+117:   document.getElementById('app').classList.add('active');
+118: 
+119:   // Set user info in top bar
+120:   const initials = (currentUser.email || '?').split('@')[0].slice(0,2).toUpperCase();
+121:   document.getElementById('user-avatar').textContent = initials;
+122:   document.getElementById('user-name-display').textContent = currentUser.email.split('@')[0];
+123:   const roleBadge = document.getElementById('user-role-badge');
+124:   roleBadge.textContent = currentRole === 'admin' ? 'Admin' : 'Analyst';
+125:   roleBadge.className = `topbar-role-badge ${currentRole === 'admin' ? 'admin' : 'analyst'}`;
+126: 
+127:   // Show correct nav
+128:   if (currentRole === 'admin') {
+129:     document.getElementById('admin-nav').style.display = 'block';
+130:     document.getElementById('analyst-nav').style.display = 'none';
+131:     navigate('dashboard');
+132:   } else {
+133:     document.getElementById('admin-nav').style.display = 'none';
+134:     document.getElementById('analyst-nav').style.display = 'block';
+135:     document.getElementById('topbar-org-name').textContent = `Dept: ${currentUser.email.split('@')[0]}`;
+136:     navigate('my-overview');
+137:   }
+138: 
+139:   // Live counter
+140:   startLiveCounter();
+141:   document.getElementById('dashboard-timestamp').textContent = new Date().toLocaleString('en-IN');
+142: }
+143: 
+144: function startLiveCounter() {
+145:   const el = document.getElementById('eps-counter');
+146:   setInterval(() => {
+147:     const base = 3800 + Math.floor(Math.random() * 800);
+148:     el.textContent = base.toLocaleString('en-IN');
+149:   }, 2000);
+150: }
+151: 
+152: /* ── Navigation ── */
+153: function navigate(page) {
+154:   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+155:   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+156: 
+157:   const pageEl = document.getElementById(`page-${page}`);
+158:   if (pageEl) pageEl.classList.add('active');
+159: 
+160:   const navEl = document.querySelector(`.nav-item[data-page="${page}"]`);
+161:   if (navEl) navEl.classList.add('active');
+162: 
+163:   // Load data for page
+164:   loadPageData(page);
+165: }
+166: 
+167: function loadPageData(page) {
+168:   switch(page) {
+169:     case 'dashboard': loadDashboard(); break;
+170:     case 'incidents': loadIncidents(); break;
+171:     case 'assets': loadAssets(); break;
+172:     case 'intel': loadIntel(); break;
+173:     case 'cases': loadCases(); break;
+174:     case 'knowledge-graph': loadKnowledgeGraph(); break;
+175:     case 'reports': loadReports(); break;
+176:     case 'audit': loadAudit(); break;
+177:     case 'admin-users': loadUsers(); break;
+178:     case 'tn-map': loadTNMap(); break;
+179:     case 'my-overview': loadMyOverview(); break;
+180:     case 'my-assets': loadMyAssets(); break;
+181:     case 'my-incidents': loadMyIncidents(); break;
+182:     case 'my-reports': loadMyReports(); break;
+183:     case 'my-intel': loadMyIntel(); break;
+184:   }
+185: }
+186: 
+187: /* ═══ DATA LOADERS ═══ */
+188: 
+189: /* ── Dashboard ── */
+190: async function loadDashboard() {
+191:   try {
+192:     const [incidents, assets, iocs] = await Promise.all([
+193:       api('/api/v1/incidents'),
+194:       api('/api/v1/assets'),
+195:       api('/api/v1/iocs')
+196:     ]);
+197: 
+198:     allIncidents = incidents;
+199:     allAssets = assets;
+200: 
+201:     const open = incidents.filter(i => i.status === 'open');
+202:     const critical = incidents.filter(i => i.severity === 'critical' && i.status === 'open');
+203:     document.getElementById('stat-threats').textContent = open.length;
+204:     document.getElementById('stat-critical').textContent = critical.length;
+205:     document.getElementById('stat-assets').textContent = assets.length;
+206:     document.getElementById('stat-iocs').textContent = iocs.length;
+207: 
+208:     const nb = document.getElementById('nb-incidents');
+209:     if (nb) { nb.textContent = open.length; }
+210: 
+211:     renderDashboardIncidents(incidents.slice(0, 8));
+212:     renderDashboardAssets(assets.sort((a,b) => b.riskScore - a.riskScore).slice(0, 5));
+213:     renderDashboardCVEs();
+214:     renderSeverityChart(incidents);
+215:     renderTrendChart(incidents);
+216:   } catch(e) { showToast('Failed to load dashboard data', 'error'); }
+217: }
+218: 
+219: function refreshDashboard() {
+220:   document.getElementById('dashboard-timestamp').textContent = new Date().toLocaleString('en-IN');
+221:   loadDashboard();
+222: }
+223: 
+224: function renderDashboardIncidents(incidents) {
+225:   const el = document.getElementById('dashboard-incidents-table');
+226:   if (!incidents.length) { el.innerHTML = emptyState('No incidents recorded'); return; }
+227:   el.innerHTML = `
+228:     <table class="gov-table">
+229:       <thead><tr>
+230:         <th>ID</th><th>Title</th><th>Severity</th><th>Status</th><th>Host</th><th>Time</th><th>MITRE</th>
+231:       </tr></thead>
+232:       <tbody>${incidents.map(i => `
+233:         <tr>
+234:           <td class="monospace">${i.id}</td>
+235:           <td style="max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escHtml(i.title)}">${escHtml(i.title)}</td>
+236:           <td><span class="badge ${i.severity}">${i.severity}</span></td>
+237:           <td><span class="badge ${i.status}">${i.status}</span></td>
+238:           <td class="monospace" style="font-size:12px">${i.host || '—'}</td>
+239:           <td style="font-size:12px;color:var(--gray-500)">${i.timeStr || relTime(i.timestamp)}</td>
+240:           <td>${(i.mitre||[]).slice(0,2).map(m => `<span class="mitre-tag">${m}</span>`).join('')}</td>
+241:         </tr>`).join('')}
+242:       </tbody>
+243:     </table>`;
+244: }
+245: 
+246: function renderDashboardAssets(assets) {
+247:   const el = document.getElementById('dashboard-assets-table');
+248:   if (!assets.length) { el.innerHTML = emptyState('No assets found'); return; }
+249:   el.innerHTML = `
+250:     <table class="gov-table">

@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+pyjwt
+bcrypt
+python-multipart
+python-dotenv
+slowapi
+psycopg2-binary
+cryptography

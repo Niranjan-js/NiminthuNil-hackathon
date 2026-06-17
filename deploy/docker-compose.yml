@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # ── FastAPI Backend API ──
+  niravan-api:
+    build:
+      context: ..
+      dockerfile: ./backend/Dockerfile
+    container_name: niravan-api
+    restart: always
+    environment:
+      - NIRAVAN_JWT_SECRET=${NIRAVAN_JWT_SECRET:-CHANGE_ME_IN_PRODUCTION_5d8f28f01b34e402b1f86c2e391}
+      - NIRAVAN_DB_URL=postgresql://niravan_user:niravan_pass@niravan-db:5432/niravan_prod
+      - NIRAVAN_ENV=production
+      - NIRAVAN_ALLOWED_ORIGINS=https://niravan.tn.gov.in
+      - NIRAVAN_JWT_EXPIRY_MINUTES=60
+    depends_on:
+      niravan-db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    networks:
+      - niravan-net
+
+  # ── PostgreSQL Database ──
+  niravan-db:
+    image: postgres:16-alpine
+    container_name: niravan-db
+    restart: always
+    environment:
+      - POSTGRES_USER=niravan_user
+      - POSTGRES_PASSWORD=niravan_pass
+      - POSTGRES_DB=niravan_prod
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Auto-run SQL migrations on startup
+      - ../backend/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U niravan_user -d niravan_prod"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - niravan-net
+
+  # ── Nginx Web Server & Reverse Proxy ──
+  niravan-proxy:
+    image: nginx:alpine
+    container_name: niravan-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../index.html:/var/www/niravan/index.html:ro
+      - ../css:/var/www/niravan/css:ro
+      - ../js:/var/www/niravan/js:ro
+      - /etc/ssl/certs/niravan_tn_gov_in.crt:/etc/ssl/certs/niravan_tn_gov_in.crt:ro
+      - /etc/ssl/private/niravan_tn_gov_in.key:/etc/ssl/private/niravan_tn_gov_in.key:ro
+    depends_on:
+      - niravan-api
+    networks:
+      - niravan-net
+
+networks:
+  niravan-net:
+    driver: bridge
+
+volumes:
+  pgdata:
+    driver: local

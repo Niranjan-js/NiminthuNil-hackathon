@@ -1,0 +1,7 @@
+645: addChatMessage('user', q);
+667: addChatMessage('niravan', data.response || "No response received from NIRAVAN CORE.");
+674: addChatMessage('niravan', response);
+681: addChatMessage('niravan', response);
+686: function addChatMessage(role, content) {
+719: typing.id = 'typing-indicator';
+741: const t = document.getElementById('typing-indicator');

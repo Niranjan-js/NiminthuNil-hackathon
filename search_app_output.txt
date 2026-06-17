@@ -1,0 +1,80 @@
+152: item.addEventListener('click', () => {
+161: toggle.addEventListener('click', () => {
+169: btn.addEventListener('click', (e) => {
+181: document.getElementById('asset-type-filter')?.addEventListener('click', (e) => {
+195: btn.addEventListener('click', (e) => {
+213: 'guardian':       ['Guardian Mode',          'Simple, one-click protection for your organization'],
+224: 'roadmap':        ['Platform Roadmap',      'From demonstration to enterprise production — 5-phase evolution'],
+626: card.addEventListener('click', () => {
+687: <button class="btn-danger" onclick="acknowledgeIncident(this, '${evt.id}')">🔒 Contain</button>
+688: ${evt.host ? `<button class="btn-danger" onclick="window.triggerMitigationIsolateHost('${evt.host}')" style="background:#ff9f0a;color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-weight:600;font-size:0.7rem;">🔒 Isolate Host</button>` : ''}
+690: `<button class="btn-danger" onclick="window.triggerMitigationBlockIP('${evt.technical.match(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/)[0]}')" style="background:#bf5af2;color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-weight:600;font-size:0.7rem;">🚫 Block IP</button>` : ''}
+692: `<button class="btn-warning" onclick="navigateTo('cases'); selectedCaseId = 'case-${evt.id.split('-')[1] || evt.id}'; renderCasesList(); renderCaseDetail(selectedCaseId);">👁️ View Case</button>` :
+693: `<button class="btn-warning" onclick="escalateIncident(this, '${evt.id}')">⬆️ Escalate</button>`
+695: <button class="btn-primary" onclick="runPlaybook(this, '${evt.id}')">📋 Auto-Playbook</button>
+696: <button class="btn-secondary" onclick="suppressIncident(this, '${evt.id}')">🔕 Suppress</button>
+697: <button class="btn-ai" onclick="investigateIncident(this, '${evt.id}')" style="background:linear-gradient(135deg,var(--accent-purple),var(--accent-blue));color:#fff;border:none;box-shadow:var(--glow-blue);grid-column:1/3;padding:10px 14px;border-radius:var(--radius-sm);font-weight:600;font-size:0.75rem;cursor:pointer;margin-top:6px;transition:all var(--transition);">🧠 AI Forensic Investigation</button>
+1225: <button class="btn btn-outline" style="margin-top:10px; font-size:0.7rem; padding:4px 10px; height:28px; cursor:pointer;" onclick="window.downloadCERTInReport()">
+1467: downloadAnchor.click();
+1572: <div class="toggle-switch ${s.on?'on':''}" onclick="this.classList.toggle('on')"></div>
+1604: <div class="toggle-switch ${n.on?'on':''}" onclick="this.classList.toggle('on')"></div>
+1621: <div class="toggle-switch ${s.on?'on':''}" onclick="this.classList.toggle('on')"></div>
+1864: toast.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span class="toast-msg">${message}</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>`;
+2222: window.autofillLogin = function(email, password) {
+2228: showToast("Autofilled demo credentials. Authenticating...", "info");
+2497: card.addEventListener('click', () => {
+2595: <button onclick="window.approveSOARActions('${caseObj.id}')" class="btn-primary" style="font-size:0.62rem; height:26px; background:#ff2d55; border:none; padding:0 12px; border-radius:var(--radius-sm); font-weight:600; cursor:pointer; color:#fff; text-transform:uppercase;">Approve & Contain</button>
+2596: <button onclick="window.dismissSOARActions('${caseObj.id}')" class="btn-secondary" style="font-size:0.62rem; height:28px; padding:0 12px; border-radius:var(--radius-sm); cursor:pointer; text-transform:uppercase;">Dismiss</button>
+2638: <option value="admin@niravan.ai" ${caseObj.assignee === 'admin@niravan.ai' ? 'selected' : ''}>admin@niravan.ai</option>
+2643: <button onclick="window.generatePDFInvestigationReport('${caseObj.id}')" class="btn-primary" style="font-size:0.62rem; height:28px; background:#ffd60a; color:#000; border:none; padding:0 10px; border-radius:var(--radius-sm); font-weight:600; cursor:pointer; text-transform:uppercase; display:flex; align-items:center; gap:4px; box-shadow:0 0 8px rgba(255,214,10,0.2);">
+2650: <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.1);padding:4px 10px;border-radius:4px;font-size:0.6rem;color:var(--accent-blue);cursor:pointer;" onclick="navigateTo('incidents'); setTimeout(()=> { const card=Array.from(document.querySelectorAll('#incidents-list .incident-card')).find(c=>c.innerHTML.includes('${caseObj.incident_id}')); if(card) card.click(); }, 150);">
+2693: <button onclick="handleAddCaseNote('${caseObj.id}')" ${disabledAttr} class="btn-primary" style="padding:0 16px;font-size:0.72rem;height:34px;">Add Note</button>
+2740: <button onclick="handleAddCaseEvidence('${caseObj.id}')" class="btn-secondary" style="padding:6px;font-size:0.65rem;">Sync to Vault</button>
+3129: <div class="incident-card ${activeClass}" onclick="window.renderDetectionDetail('${rule.id}')" style="cursor:pointer;padding:12px;display:flex;flex-direction:column;gap:6px;border-radius:var(--radius-sm);background:rgba(255,255,255,${isSelected ? '0.04' : '0.01'});border:1px solid ${isSelected ? 'var(--accent-blue)' : 'rgba(255,255,255,0.03)'};position:relative;transition:all var(--transition);">
+3231: <button onclick="window.saveRuleDetails('${ruleObj.id}')" ${disabledAttr} class="btn-primary" style="flex:1;font-size:0.7rem;height:34px;">Save Rule</button>
+3232: <button onclick="window.testRuleDetails('${ruleObj.id}')" class="btn-secondary" style="flex:1;font-size:0.7rem;height:34px;border-color:var(--accent-blue);color:var(--accent-blue);background:transparent;">Run Dry-Run Test</button>
+3375: <button onclick="window.saveRuleDetails(null)" class="btn-primary" style="flex:1;font-size:0.7rem;height:34px;">Create Rule</button>
+3376: <button onclick="navigateTo('detection')" class="btn-secondary" style="flex:1;font-size:0.7rem;height:34px;background:transparent;">Cancel</button>
+3793: let clickedNode = null;
+3797: clickedNode = node;
+3802: if (clickedNode) {
+3803: graphState.draggedNode = clickedNode;
+3804: graphState.selectedNode = clickedNode;
+3805: showGraphToolbar(clickedNode, e.clientX, e.clientY);
+3858: canvas.addEventListener('dblclick', (e) => {
+3866: let clickedNode = null;
+3870: clickedNode = node;
+3875: if (clickedNode) {
+3876: openProfileModal(clickedNode.entity_type, clickedNode.id);
+4086: document.getElementById('btn-graph-inspect').onclick = () => openProfileModal(node.entity_type, node.id);
+4088: document.getElementById('btn-graph-blast').onclick = () => {
+4092: document.getElementById('btn-graph-source').onclick = () => {
+4100: document.getElementById('btn-graph-target').onclick = () => {
+4127: showToast("Please click a node in the graph first to select it.", "info");
+4300: document.getElementById('profile-modal-blast-btn').onclick = () => {
+4428: role: entityId === "admin@niravan.ai" ? "admin" : "developer",
+4429: department: entityId === "admin@niravan.ai" ? "Security" : "Engineering",
+4430: source_device: entityId === "admin@niravan.ai" ? "SEC-WORKSTATION-01" : "WORKSTATION-01",
+4431: risk_score: entityId === "admin@niravan.ai" ? 10 : 45,
+4432: failed_logins: entityId === "admin@niravan.ai" ? 1 : 12,
+4433: successful_logins: entityId === "admin@niravan.ai" ? 42 : 110,
+4447: owner: "admin@niravan.ai",
+4561: <tr style="border-bottom:1px solid rgba(255,255,255,0.03); cursor:pointer;" onclick="window.inspectVaultEntry('${act.who}', '${act.where}')">
+4947: downloadAnchor.click();
+5422: <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
+5518: 'phishing':             { title: '📧 Suspicious Email or Link Detected',     desc: (e) => `A phishing attempt was detected — someone is trying to trick your users into revealing passwords or clicking malicious links.`, action: 'Block Source' },
+5679: <button class="gai-action-btn" id="gai-btn-${evtId}" onclick="guardianQuickBlockItem(this, '${evtId}')">\uD83D\uDEAB ${actionLabel || 'Block'}</button>
+5720: user_email: localStorage.getItem('niravan_user_email') || 'admin@niravan.ai',
+5722: detail: `Guardian Mode: User blocked threat '${guardianCurrentThreat ? guardianCurrentThreat.title : 'active threat'}' with one-click action.`,
+5755: user_email: localStorage.getItem('niravan_user_email') || 'admin@niravan.ai',
+5778: user_email: localStorage.getItem('niravan_user_email') || 'admin@niravan.ai',
+5794: user_email: localStorage.getItem('niravan_user_email') || 'admin@niravan.ai',
+5808: user_email: localStorage.getItem('niravan_user_email') || 'admin@niravan.ai',
+5818: user_email: localStorage.getItem('niravan_user_email') || 'admin@niravan.ai',
+5847: user_email: localStorage.getItem('niravan_user_email') || 'admin@niravan.ai',
+5860: detect: 'NIRAVAN monitors all email patterns, suspicious link clicks, and fake login page visits in real-time.',
+5861: action: 'Never click links in unexpected emails. NIRAVAN will block known phishing sites automatically.',
+5885: action: 'Block the transfer immediately using the one-click action. Change all administrator passwords.',
+6620: // Also hook into nav clicks
+6621: document.querySelectorAll('[data-page="guardian"], .nav-item[onclick*="guardian"]').forEach(el => {
+6622: el.addEventListener('click', () => {
