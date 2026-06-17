@@ -347,7 +347,10 @@ class CorrelationEngine:
                     affected_departments = "IT Department"
                     estimated_recovery_time = "4 hours"
 
-            inc_id = f"inc-{random.randint(9000, 9999)}"
+            while True:
+                inc_id = f"inc-{random.randint(9000, 999999)}"
+                if not db.query(IncidentModel).filter(IncidentModel.id == inc_id).first():
+                    break
             triggered_incident = IncidentModel(
                 id=inc_id,
                 title=f"Autonomous Response: {rule_name}" if confidence > 95 else rule_name,
