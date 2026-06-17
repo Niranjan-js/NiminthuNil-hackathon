@@ -269,7 +269,8 @@ class WazuhIngestor:
             normalized["mitre"] = ["T1071.001"]
             normalized["technique"] = "Application Layer Protocol: Web Protocols"
             
-            uri_lower = uri.lower()
+            import urllib.parse
+            uri_lower = urllib.parse.unquote(uri).lower()
             user_agent = (log_data.get("User-Agent") or log_data.get("user_agent") or "").lower()
             
             if "sqlmap" in user_agent or "sqlmap" in uri_lower:
