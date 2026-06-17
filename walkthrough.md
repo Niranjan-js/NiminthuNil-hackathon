@@ -61,3 +61,17 @@ test_selector.py .                                                       [100%]
 ### B. Playwright UI Validation (Passed)
 * **Login Success**: Successfully authenticated as Administrator and confirmed that the login overlay is dismissed and `localStorage` is populated.
 * **Chat Interactions (UTF-8)**: Successfully sent test prompts ("What is the most critical threat?", "Generate incident response playbook", "Explain brute force") and verified that the chatbot responds with high-quality markdown tables and code blocks.
+
+---
+
+## 🕵️ 3. Anthropic Cybersecurity Skills Integration
+We analyzed [Anthropic-Cybersecurity-Skills](https://github.com/mukul975/Anthropic-Cybersecurity-Skills) and integrated its detection knowledge directly into the **NIRAVAN** threat analyzer engine (`backend/wazuh_ingestor.py`):
+1. **Nmap Scan Evasion Detection (`SIG-005`)**: Detects advanced network discovery probes, timing adjustments (`-T4`/`-T5`), packet fragmentation, decoy addresses, and spoofed source ports.
+2. **Metasploit Exploitation Detection (`SIG-006`)**: Identifies execution of `msfconsole`, `msfvenom`, and `meterpreter` commands for local and remote service exploitation.
+3. **SQLmap SQL Injection Detection (`SIG-007`)**: Detects automated database dump attacks via User-Agent signatures and request URI analysis.
+4. **Hydra & John the Ripper Brute-force Detection (`SIG-008`)**: Normalizes command executions of password crackers and dictionary brute-forcers.
+5. **Alien Program / RAT Injection Detection (`SIG-010`)**: Standardizes indicators of netcat, reverse shells, and unauthorized executables running from temporary directories, prompting immediate **Camera Capture** on the frontend for physical/local forensics.
+6. **SQL Injection Query Sanitizer (`SIG-009`)**: Scans web proxy URIs for SQL injection strings (e.g. `UNION SELECT`, `select database()`, `pg_sleep`, etc.).
+
+All changes have been successfully committed and pushed to [NiminthuNil-hackathon on GitHub](https://github.com/Niranjan-js/NiminthuNil-hackathon.git).
+
