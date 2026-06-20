@@ -8,3 +8,5 @@ python-dotenv
 slowapi
 psycopg2-binary
 cryptography
+anthropic
+networkx

@@ -156,6 +156,15 @@ class WazuhIngestor:
                 normalized["severity"] = "low"
                 normalized["mitre"] = ["T1078"]
                 normalized["technique"] = "Valid Accounts"
+                
+                logon_type = str(log_data.get("LogonType") or log_data.get("logon_type", ""))
+                is_admin = normalized["user"] and ("admin" in normalized["user"].lower() or "krbtgt" in normalized["user"].lower())
+                if logon_type == "3" and is_admin and "ticket" in str(log_data.get("KeyLength") or log_data.get("description", "")):
+                    normalized["event_name"] = "Potential Golden/Silver Ticket Logon Detected"
+                    normalized["description"] = f"Anomalous network logon (Type 3) as Domain Admin user {normalized['user']} without correlated authentication logs (Golden Ticket)."
+                    normalized["severity"] = "critical"
+                    normalized["mitre"] = ["T1558.001"]
+                    normalized["technique"] = "Use Alternate Authentication Material: Golden Ticket"
             elif event_id == 4625:
                 normalized["event_name"] = "Failed Logon Attempt (EventID 4625)"
                 normalized["user"] = log_data.get("TargetUserName") or log_data.get("user")
@@ -164,6 +173,35 @@ class WazuhIngestor:
                 normalized["severity"] = "medium"
                 normalized["mitre"] = ["T1110"]
                 normalized["technique"] = "Brute Force"
+            elif event_id == 4769:
+                ticket_encryption = log_data.get("TicketEncryptionType") or log_data.get("ticket_encryption")
+                service_name = log_data.get("ServiceName") or log_data.get("service_name", "")
+                if str(ticket_encryption) in ["0x17", "23"]:
+                    normalized["event_name"] = "Kerberoasting Ticket Request (EventID 4769)"
+                    normalized["description"] = f"Anomalous Kerberos service ticket request for service '{service_name}' using weak RC4 encryption (potential Kerberoasting)."
+                    normalized["severity"] = "critical"
+                    normalized["mitre"] = ["T1558.003"]
+                    normalized["technique"] = "Use Alternate Authentication Material: Kerberoasting"
+            elif event_id == 4662:
+                properties = log_data.get("Properties") or log_data.get("properties", "")
+                if "1131f6aa" in str(properties) or "1131f6ad" in str(properties) or "Get-Changes" in str(properties):
+                    normalized["event_name"] = "DCSync Directory Replication (EventID 4662)"
+                    normalized["description"] = f"Directory replication rights requested on Domain Controller (potential DCSync threat)."
+                    normalized["severity"] = "critical"
+                    normalized["mitre"] = ["T1003.006"]
+                    normalized["technique"] = "OS Credential Dumping: DCSync"
+            elif event_id == 4672:
+                normalized["event_name"] = "Special Privileges Assigned to New Logon (EventID 4672)"
+                normalized["description"] = f"Special administrator/system privileges assigned to logon user: {log_data.get('SubjectUserName') or log_data.get('user')}"
+                normalized["severity"] = "high"
+                normalized["mitre"] = ["T1548"]
+                normalized["technique"] = "Abuse Elevation Control Mechanism"
+            elif event_id == 5136:
+                normalized["event_name"] = "Group Policy Object Modified (EventID 5136)"
+                normalized["description"] = f"Active Directory GPO modified: {log_data.get('LDAPDisplayName')} changed to {log_data.get('AttributeValue')}"
+                normalized["severity"] = "high"
+                normalized["mitre"] = ["T1484.001"]
+                normalized["technique"] = "Domain Policy Modification: Group Policy Modification"
             elif event_id == 7045:
                 service = log_data.get("ServiceName") or log_data.get("service")
                 path = log_data.get("ImagePath") or log_data.get("path")

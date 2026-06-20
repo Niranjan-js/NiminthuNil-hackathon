@@ -1547,15 +1547,42 @@ body {
 }
 
 /* Specific Layer Glowing Borders */
-.layer-command-center { border-left: 3px solid #b22222; }
-.layer-director { border-left: 3px solid #ff4500; }
-.layer-fabric { border-left: 3px solid #ff8c00; }
-.layer-detection { border-left: 3px solid #ffd700; }
-.layer-exposure { border-left: 3px solid #32cd32; }
-.layer-threat-intel { border-left: 3px solid #00cecb; }
-.layer-telemetry { border-left: 3px solid #1e90ff; }
-.layer-response { border-left: 3px solid #ba55d3; }
-.layer-learning { border-left: 3px solid #ff69b4; }
+.layer-telemetry-ingest { border-left: 3px solid #1e90ff; }
+.layer-event-bus { border-left: 3px solid #00bfff; }
+.layer-correlation-engine { border-left: 3px solid #ffd700; }
+.layer-knowledge-graphs { border-left: 3px solid #ff8c00; }
+.layer-planner-agent { border-left: 3px solid #ff4500; }
+.layer-specialist-swarm { border-left: 3px solid #ff00ff; }
+.layer-consensus-agent { border-left: 3px solid #da70d6; }
+.layer-validator-agent { border-left: 3px solid #ba55d3; }
+.layer-tool-containment { border-left: 3px solid #b22222; }
+.layer-verification-agent { border-left: 3px solid #32cd32; }
+.layer-memory-learning { border-left: 3px solid #ff69b4; }
+.layer-stream-console { border-left: 3px solid #00cecb; }
+
+/* AI Analyst Exciting Visuals and Animations */
+@keyframes radar-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(139, 26, 26, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(139, 26, 26, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(139, 26, 26, 0); }
+}
+@keyframes loading-blink {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+.suggested-prompt-btn:hover {
+  background: rgba(139, 26, 26, 0.05) !important;
+  border-color: var(--maroon) !important;
+  transform: translateX(4px);
+  box-shadow: 0 2px 5px rgba(139, 26, 26, 0.1);
+}
+.loading-dots {
+  animation: loading-blink 1.4s infinite both;
+}
 
 /* OS Blueprint HUD Modal */
 .hud-modal {
@@ -1831,470 +1858,428 @@ body {
           </div>
 
           <div class="blueprint-grid">
-            <!-- 01: Government Command Center -->
-            <div class="blueprint-layer layer-command-center">
+            <!-- 01: Telemetry & Ingestion Sources -->
+            <div class="blueprint-layer layer-telemetry-ingest">
               <div class="layer-header">
                 <span class="layer-number">01</span>
                 <div class="layer-title-group">
-                  <h3>GOVERNMENT COMMAND CENTER</h3>
-                  <span class="layer-subtitle">Human + AI Collaboration</span>
-                </div>
-              </div>
-              <div class="layer-items">
-                <div class="layer-item action-btn" onclick="navigate('guardian')">
-                  <div class="item-icon">🤖</div>
-                  <div class="item-name">Guardian Mode</div>
-                  <div class="item-desc">Simple View</div>
-                </div>
-                <div class="layer-item action-btn" onclick="navigate('audit')">
-                  <div class="item-icon">📊</div>
-                  <div class="item-name">Executive Dashboard</div>
-                  <div class="item-desc">KPIs & Analytics</div>
-                </div>
-                <div class="layer-item action-btn" onclick="toggleLang()">
-                  <div class="item-icon">🗣️</div>
-                  <div class="item-name">Bilingual UI</div>
-                  <div class="item-desc">Tamil / English Toggle</div>
-                </div>
-                <div class="layer-item action-btn" onclick="navigate('district')">
-                  <div class="item-icon">🗺️</div>
-                  <div class="item-name">Statewide Threat Map</div>
-                  <div class="item-desc">38 Districts</div>
-                </div>
-                <div class="layer-item action-btn" onclick="navigate('compliance')">
-                  <div class="item-icon">🛡️</div>
-                  <div class="item-name">Compliance Center</div>
-                  <div class="item-desc">CERT-In / DPDP / IT Act</div>
-                </div>
-                <div class="layer-item action-btn" onclick="navigate('ai-analyst')">
-                  <div class="item-icon">💬</div>
-                  <div class="item-name">AI Security Assistant</div>
-                  <div class="item-desc">Ask in Natural Language</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 02: Autonomous Security Director -->
-            <div class="blueprint-layer layer-director">
-              <div class="layer-header">
-                <span class="layer-number">02</span>
-                <div class="layer-title-group">
-                  <h3>AUTONOMOUS SECURITY DIRECTOR</h3>
-                  <span class="layer-subtitle">Multi-Agent AI Brain</span>
-                </div>
-              </div>
-              <div class="layer-items">
-                <div class="layer-item" onclick="showAgentHUD('Security Director Agent')">
-                  <div class="item-icon">🧠</div>
-                  <div class="item-name">Security Director Agent</div>
-                  <div class="item-desc">Orchestrates operations</div>
-                </div>
-                <div class="layer-item" onclick="showAgentHUD('Threat Hunter Agent')">
-                  <div class="item-icon">🔍</div>
-                  <div class="item-name">Threat Hunter Agent</div>
-                  <div class="item-desc">Hunts & analyzes threats</div>
-                </div>
-                <div class="layer-item" onclick="showAgentHUD('Incident Commander Agent')">
-                  <div class="item-icon">🚨</div>
-                  <div class="item-name">Incident Commander Agent</div>
-                  <div class="item-desc">Manages incidents & response</div>
-                </div>
-                <div class="layer-item" onclick="showAgentHUD('Compliance Officer Agent')">
-                  <div class="item-icon">📜</div>
-                  <div class="item-name">Compliance Officer Agent</div>
-                  <div class="item-desc">Ensures compliance</div>
-                </div>
-                <div class="layer-item" onclick="showAgentHUD('Economics Analyst Agent')">
-                  <div class="item-icon">₹</div>
-                  <div class="item-name">Economics Analyst Agent</div>
-                  <div class="item-desc">Evaluates financial impact</div>
-                </div>
-                <div class="layer-item" onclick="showAgentHUD('Threat Intel Agent')">
-                  <div class="item-icon">🌐</div>
-                  <div class="item-name">Threat Intel Agent</div>
-                  <div class="item-desc">Collects & enriches intel</div>
-                </div>
-                <div class="layer-item" onclick="showAgentHUD('Knowledge Graph Agent')">
-                  <div class="item-icon">🕸️</div>
-                  <div class="item-name">Knowledge Graph Agent</div>
-                  <div class="item-desc">Understands attack paths</div>
-                </div>
-                <div class="layer-item" onclick="showAgentHUD('Defense Memory Agent')">
-                  <div class="item-icon">💾</div>
-                  <div class="item-name">Defense Memory Agent</div>
-                  <div class="item-desc">Learns from every response</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 03: Cyber Intelligence Fabric -->
-            <div class="blueprint-layer layer-fabric">
-              <div class="layer-header">
-                <span class="layer-number">03</span>
-                <div class="layer-title-group">
-                  <h3>CYBER INTELLIGENCE FABRIC</h3>
-                  <span class="layer-subtitle">Data to Decision</span>
-                </div>
-              </div>
-              <div class="layer-items">
-                <div class="layer-item" onclick="showFabricHUD('Knowledge Graph Engine')">
-                  <div class="item-icon">🧬</div>
-                  <div class="item-name">Knowledge Graph Engine</div>
-                  <div class="item-desc">Entity relationships</div>
-                </div>
-                <div class="layer-item" onclick="showFabricHUD('Defense Memory Engine')">
-                  <div class="item-icon">📦</div>
-                  <div class="item-name">Defense Memory Engine</div>
-                  <div class="item-desc">Stores lessons & decisions</div>
-                </div>
-                <div class="layer-item" onclick="showFabricHUD('Threat Hunting Engine')">
-                  <div class="item-icon">🔦</div>
-                  <div class="item-name">Threat Hunting Engine</div>
-                  <div class="item-desc">Search & discover</div>
-                </div>
-                <div class="layer-item" onclick="showFabricHUD('Campaign Intelligence Engine')">
-                  <div class="item-icon">🔗</div>
-                  <div class="item-name">Campaign Intelligence Engine</div>
-                  <div class="item-desc">Multi-stage correlation</div>
-                </div>
-                <div class="layer-item" onclick="showFabricHUD('Security Data Fabric')">
-                  <div class="item-icon">🗄️</div>
-                  <div class="item-name">Security Data Fabric</div>
-                  <div class="item-desc">Unified query fabric</div>
-                </div>
-                <div class="layer-item" onclick="showFabricHUD('Security Economics Engine')">
-                  <div class="item-icon">📊</div>
-                  <div class="item-name">Security Economics Engine</div>
-                  <div class="item-desc">SLE, ALE, ROSI metrics</div>
-                </div>
-                <div class="layer-item" onclick="showFabricHUD('Reputation Engine')">
-                  <div class="item-icon">⭐</div>
-                  <div class="item-name">Reputation Engine</div>
-                  <div class="item-desc">IP & Asset reputation</div>
-                </div>
-                <div class="layer-item" onclick="showFabricHUD('Digital Twin Engine')">
-                  <div class="item-icon">👥</div>
-                  <div class="item-name">Digital Twin Engine</div>
-                  <div class="item-desc">Simulate attacks & impact</div>
-                </div>
-                <div class="layer-item" onclick="showFabricHUD('Risk Prediction Engine')">
-                  <div class="item-icon">🔮</div>
-                  <div class="item-name">Risk Prediction Engine</div>
-                  <div class="item-desc">Predict vulnerabilities</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 04: Detection & Analytics Layer -->
-            <div class="blueprint-layer layer-detection">
-              <div class="layer-header">
-                <span class="layer-number">04</span>
-                <div class="layer-title-group">
-                  <h3>DETECTION & ANALYTICS LAYER</h3>
-                  <span class="layer-subtitle">Smart Detection</span>
-                </div>
-              </div>
-              <div class="layer-items">
-                <div class="layer-item" onclick="showDetectionHUD('Sigma Engine')">
-                  <div class="item-icon">Σ</div>
-                  <div class="item-name">Sigma Engine</div>
-                  <div class="item-desc">Rule-based detections</div>
-                </div>
-                <div class="layer-item" onclick="showDetectionHUD('MITRE ATT&CK Mapper')">
-                  <div class="item-icon">🛡️</div>
-                  <div class="item-name">MITRE ATT&CK Mapper</div>
-                  <div class="item-desc">Tactic & technique maps</div>
-                </div>
-                <div class="layer-item" onclick="showDetectionHUD('Identity Protection')">
-                  <div class="item-icon">🔑</div>
-                  <div class="item-name">Identity Protection</div>
-                  <div class="item-desc">Impossible travel, AD audit</div>
-                </div>
-                <div class="layer-item" onclick="showDetectionHUD('Deception Technology')">
-                  <div class="item-icon">🍯</div>
-                  <div class="item-name">Deception Technology</div>
-                  <div class="item-desc">Honeypots: SSH & Web</div>
-                </div>
-                <div class="layer-item" onclick="showDetectionHUD('Campaign Correlator')">
-                  <div class="item-icon">🧩</div>
-                  <div class="item-name">Campaign Correlator</div>
-                  <div class="item-desc">Timeline and event grouping</div>
-                </div>
-                <div class="layer-item" onclick="showDetectionHUD('Attack Path Solver')">
-                  <div class="item-icon">📐</div>
-                  <div class="item-name">Attack Path Solver</div>
-                  <div class="item-desc">Dijkstra shortest path</div>
-                </div>
-                <div class="layer-item" onclick="showDetectionHUD('Blast Radius Analyzer')">
-                  <div class="item-icon">💥</div>
-                  <div class="item-name">Blast Radius Analyzer</div>
-                  <div class="item-desc">BFS impact analysis</div>
-                </div>
-                <div class="layer-item" onclick="showDetectionHUD('Behavioral Analytics')">
-                  <div class="item-icon">📈</div>
-                  <div class="item-name">Behavioral Analytics</div>
-                  <div class="item-desc">UEBA baselines</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 05: Exposure & Attack Surface Layer -->
-            <div class="blueprint-layer layer-exposure">
-              <div class="layer-header">
-                <span class="layer-number">05</span>
-                <div class="layer-title-group">
-                  <h3>EXPOSURE & ATTACK SURFACE LAYER</h3>
-                  <span class="layer-subtitle">Know Your Environment</span>
-                </div>
-              </div>
-              <div class="layer-items">
-                <div class="layer-item" onclick="showExposureHUD('ASM Engine')">
-                  <div class="item-icon">🌐</div>
-                  <div class="item-name">ASM Engine</div>
-                  <div class="item-desc">Discover assets & ports</div>
-                </div>
-                <div class="layer-item" onclick="showExposureHUD('OpenVAS')">
-                  <div class="item-icon">🩺</div>
-                  <div class="item-name">OpenVAS</div>
-                  <div class="item-desc">Vulnerability scans</div>
-                </div>
-                <div class="layer-item" onclick="showExposureHUD('SSL Analyzer')">
-                  <div class="item-icon">🔒</div>
-                  <div class="item-name">SSL Analyzer</div>
-                  <div class="item-desc">Certificate audits</div>
-                </div>
-                <div class="layer-item" onclick="showExposureHUD('DNS Discovery')">
-                  <div class="item-icon">🌍</div>
-                  <div class="item-name">DNS Discovery</div>
-                  <div class="item-desc">Shadow IT asset finder</div>
-                </div>
-                <div class="layer-item" onclick="showExposureHUD('Port Discovery')">
-                  <div class="item-icon">🔌</div>
-                  <div class="item-name">Port Discovery</div>
-                  <div class="item-desc">Identify open services</div>
-                </div>
-                <div class="layer-item" onclick="showExposureHUD('Cloud Exposure Analysis')">
-                  <div class="item-icon">☁️</div>
-                  <div class="item-name">Cloud Exposure</div>
-                  <div class="item-desc">AWS / GCP config audit</div>
-                </div>
-                <div class="layer-item" onclick="showExposureHUD('Asset Criticality Analysis')">
-                  <div class="item-icon">🏷️</div>
-                  <div class="item-name">Asset Criticality</div>
-                  <div class="item-desc">Business priority rating</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 06: Threat Intelligence Ecosystem -->
-            <div class="blueprint-layer layer-threat-intel">
-              <div class="layer-header">
-                <span class="layer-number">06</span>
-                <div class="layer-title-group">
-                  <h3>THREAT INTELLIGENCE ECOSYSTEM</h3>
-                  <span class="layer-subtitle">Global + Local</span>
-                </div>
-              </div>
-              <div class="layer-items">
-                <div class="layer-item" onclick="showIntelHUD('OTX')">
-                  <div class="item-icon">📡</div>
-                  <div class="item-name">OTX</div>
-                  <div class="item-desc">AlienVault OTX feed</div>
-                </div>
-                <div class="layer-item" onclick="showIntelHUD('AbuseIPDB')">
-                  <div class="item-icon">🚫</div>
-                  <div class="item-name">AbuseIPDB</div>
-                  <div class="item-desc">IP reputation database</div>
-                </div>
-                <div class="layer-item" onclick="showIntelHUD('MISP')">
-                  <div class="item-icon">📰</div>
-                  <div class="item-name">MISP</div>
-                  <div class="item-desc">Platform threat sharing</div>
-                </div>
-                <div class="layer-item" onclick="showIntelHUD('CISA KEV')">
-                  <div class="item-icon">🚨</div>
-                  <div class="item-name">CISA KEV</div>
-                  <div class="item-desc">Exploited vulnerabilities</div>
-                </div>
-                <div class="layer-item" onclick="showIntelHUD('Threat Actor Database')">
-                  <div class="item-icon">🦹</div>
-                  <div class="item-name">Threat Actor Database</div>
-                  <div class="item-desc">APT groups & techniques</div>
-                </div>
-                <div class="layer-item" onclick="showIntelHUD('Collective Intelligence Network')">
-                  <div class="item-icon">🤝</div>
-                  <div class="item-name">Collective Network</div>
-                  <div class="item-desc">Statewide shared indicators</div>
-                </div>
-                <div class="layer-item" onclick="showIntelHUD('Statewide Intelligence Exchange')">
-                  <div class="item-icon">🏢</div>
-                  <div class="item-name">Statewide Exchange</div>
-                  <div class="item-desc">Tamil Nadu inter-department</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 07: Telemetry Collection Layer -->
-            <div class="blueprint-layer layer-telemetry">
-              <div class="layer-header">
-                <span class="layer-number">07</span>
-                <div class="layer-title-group">
-                  <h3>TELEMETRY COLLECTION LAYER</h3>
-                  <span class="layer-subtitle">All Signals</span>
+                  <h3>TELEMETRY & INGESTION SOURCES</h3>
+                  <span class="layer-subtitle">Continuous Host & Network Signals</span>
                 </div>
               </div>
               <div class="layer-items">
                 <div class="layer-item" onclick="showTelemetryHUD('Wazuh Agents')">
                   <div class="item-icon">🛡️</div>
                   <div class="item-name">Wazuh Agents</div>
-                  <div class="item-desc">EDR telemetry</div>
+                  <div class="item-desc">EDR telemetry agent logs</div>
                 </div>
-                <div class="nav-item" onclick="showTelemetryHUD('Sysmon')" style="display:none"></div>
-                <div class="layer-item" onclick="showTelemetryHUD('Sysmon')">
+                <div class="layer-item" onclick="showTelemetryHUD('Sysmon Logs')">
                   <div class="item-icon">💻</div>
                   <div class="item-name">Sysmon Logs</div>
-                  <div class="item-desc">Process logs</div>
-                </div>
-                <div class="layer-item" onclick="showTelemetryHUD('Windows Events')">
-                  <div class="item-icon">🪟</div>
-                  <div class="item-name">Windows Events</div>
-                  <div class="item-desc">Security events</div>
+                  <div class="item-desc">Process & network event logs</div>
                 </div>
                 <div class="layer-item" onclick="showTelemetryHUD('Linux Auditd')">
                   <div class="item-icon">🐧</div>
                   <div class="item-name">Linux Auditd</div>
-                  <div class="item-desc">Audit logs</div>
+                  <div class="item-desc">System audit logs</div>
                 </div>
                 <div class="layer-item" onclick="showTelemetryHUD('Firewall Logs')">
                   <div class="item-icon">🧱</div>
                   <div class="item-name">Firewall Logs</div>
-                  <div class="item-desc">Traffic flow logs</div>
+                  <div class="item-desc">Traffic flow & connections</div>
                 </div>
                 <div class="layer-item" onclick="showTelemetryHUD('DNS Logs')">
                   <div class="item-icon">🌐</div>
                   <div class="item-name">DNS Logs</div>
-                  <div class="item-desc">DNS queries</div>
+                  <div class="item-desc">State recursive DNS queries</div>
                 </div>
-                <div class="layer-item" onclick="showTelemetryHUD('Proxy Logs')">
-                  <div class="item-icon">📡</div>
-                  <div class="item-name">Proxy Logs</div>
-                  <div class="item-desc">Web requests</div>
-                </div>
-                <div class="layer-item" onclick="showTelemetryHUD('Endpoint Telemetry')">
-                  <div class="item-icon">📱</div>
-                  <div class="item-name">Endpoint Telemetry</div>
-                  <div class="item-desc">Devices telemetry</div>
-                </div>
-                <div class="layer-item" onclick="showTelemetryHUD('Cloud Telemetry')">
-                  <div class="item-icon">☁️</div>
-                  <div class="item-name">Cloud Telemetry</div>
-                  <div class="item-desc">Cloud infrastructure logs</div>
-                </div>
-                <div class="layer-item" onclick="showTelemetryHUD('Identity Telemetry')">
+                <div class="layer-item" onclick="showTelemetryHUD('Identity Logs')">
                   <div class="item-icon">🔑</div>
-                  <div class="item-name">Identity Telemetry</div>
-                  <div class="item-desc">Login, MFA, AD logs</div>
+                  <div class="item-name">Identity Logs</div>
+                  <div class="item-desc">Active Directory & login events</div>
                 </div>
               </div>
             </div>
 
-            <!-- 08: Autonomous Response Layer -->
-            <div class="blueprint-layer layer-response">
+            <!-- 02: Asynchronous Event Bus -->
+            <div class="blueprint-layer layer-event-bus">
+              <div class="layer-header">
+                <span class="layer-number">02</span>
+                <div class="layer-title-group">
+                  <h3>ASYNCHRONOUS EVENT BUS</h3>
+                  <span class="layer-subtitle">Non-blocking Ingestion Pipelines</span>
+                </div>
+              </div>
+              <div class="layer-items">
+                <div class="layer-item" onclick="showEventBusHUD('asyncio Ingestor')">
+                  <div class="item-icon">⚡</div>
+                  <div class="item-name">asyncio Ingestor</div>
+                  <div class="item-desc">High-throughput native concurrency</div>
+                </div>
+                <div class="layer-item" onclick="showEventBusHUD('NATS Broker')">
+                  <div class="item-icon">🔀</div>
+                  <div class="item-name">NATS Broker</div>
+                  <div class="item-desc">Distributed pub-sub event fabric</div>
+                </div>
+                <div class="layer-item" onclick="showEventBusHUD('Priority Queue')">
+                  <div class="item-icon">📥</div>
+                  <div class="item-name">Priority Queue</div>
+                  <div class="item-desc">Prioritizes critical threat packets</div>
+                </div>
+                <div class="layer-item" onclick="showEventBusHUD('Log Sanitizer')">
+                  <div class="item-icon">🧼</div>
+                  <div class="item-name">Log Sanitizer</div>
+                  <div class="item-desc">PII scrubbing & size limits</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 03: Correlation & MITRE Engine -->
+            <div class="blueprint-layer layer-correlation-engine">
+              <div class="layer-header">
+                <span class="layer-number">03</span>
+                <div class="layer-title-group">
+                  <h3>CORRELATION & MITRE ATT&CK ENGINE</h3>
+                  <span class="layer-subtitle">Real-time Rule & Pattern Matching</span>
+                </div>
+              </div>
+              <div class="layer-items">
+                <div class="layer-item" onclick="showCorrelationHUD('Sigma Engine')">
+                  <div class="item-icon">Σ</div>
+                  <div class="item-name">Sigma Engine</div>
+                  <div class="item-desc">Rule-based detection matching</div>
+                </div>
+                <div class="layer-item" onclick="showCorrelationHUD('MITRE ATT&CK Mapper')">
+                  <div class="item-icon">🛡️</div>
+                  <div class="item-name">MITRE ATT&CK Mapper</div>
+                  <div class="item-desc">Tactic & technique maps</div>
+                </div>
+                <div class="layer-item" onclick="showCorrelationHUD('Deception Technology')">
+                  <div class="item-icon">🍯</div>
+                  <div class="item-name">Deception Honeypots</div>
+                  <div class="item-desc">SSH & Web decoy attributes</div>
+                </div>
+                <div class="layer-item" onclick="showCorrelationHUD('Behavioral Analytics')">
+                  <div class="item-icon">📈</div>
+                  <div class="item-name">Behavioral Analytics</div>
+                  <div class="item-desc">UEBA baselines & anomaly alerts</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 04: Knowledge & Attack Graphs -->
+            <div class="blueprint-layer layer-knowledge-graphs">
+              <div class="layer-header">
+                <span class="layer-number">04</span>
+                <div class="layer-title-group">
+                  <h3>KNOWLEDGE & ATTACK GRAPHS</h3>
+                  <span class="layer-subtitle">Entity-Relationship Topology</span>
+                </div>
+              </div>
+              <div class="layer-items">
+                <div class="layer-item" onclick="showGraphHUD('GraphRAG Engine')">
+                  <div class="item-icon">🧬</div>
+                  <div class="item-name">GraphRAG Engine</div>
+                  <div class="item-desc">Context-enriched RAG extraction</div>
+                </div>
+                <div class="layer-item" onclick="showGraphHUD('Attack Path Solver')">
+                  <div class="item-icon">📐</div>
+                  <div class="item-name">Attack Path Solver</div>
+                  <div class="item-desc">Dijkstra shortest path solver</div>
+                </div>
+                <div class="layer-item" onclick="showGraphHUD('Blast Radius Analyzer')">
+                  <div class="item-icon">💥</div>
+                  <div class="item-name">Blast Radius Analyzer</div>
+                  <div class="item-desc">BFS impact containment rating</div>
+                </div>
+                <div class="layer-item" onclick="showGraphHUD('Asset Criticality')">
+                  <div class="item-icon">🏷️</div>
+                  <div class="item-name">Asset Criticality</div>
+                  <div class="item-desc">State registry business mapping</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 05: Planner Agent (Cognitive Coordinator) -->
+            <div class="blueprint-layer layer-planner-agent">
+              <div class="layer-header">
+                <span class="layer-number">05</span>
+                <div class="layer-title-group">
+                  <h3>PLANNER AGENT (COGNITIVE COORDINATOR)</h3>
+                  <span class="layer-subtitle">Core Observe-Think-Plan-Validate-Execute-Verify Loop</span>
+                </div>
+              </div>
+              <div class="layer-items">
+                <div class="layer-item" onclick="showPlannerHUD('Observe Phase')">
+                  <div class="item-icon">👁️</div>
+                  <div class="item-name">Observe Phase</div>
+                  <div class="item-desc">Telemetry & graph intake parsing</div>
+                </div>
+                <div class="layer-item" onclick="showPlannerHUD('Think Phase')">
+                  <div class="item-icon">🧠</div>
+                  <div class="item-name">Think Phase</div>
+                  <div class="item-desc">LLM-based multi-agent routing</div>
+                </div>
+                <div class="layer-item" onclick="showPlannerHUD('Plan Phase')">
+                  <div class="item-icon">📖</div>
+                  <div class="item-name">Plan Phase</div>
+                  <div class="item-desc">Tactical playbook generation</div>
+                </div>
+                <div class="layer-item" onclick="showPlannerHUD('Action Validator')">
+                  <div class="item-icon">📜</div>
+                  <div class="item-name">Action Validator</div>
+                  <div class="item-desc">Validates containment schema</div>
+                </div>
+                <div class="layer-item" onclick="showPlannerHUD('Verify Phase')">
+                  <div class="item-icon">✅</div>
+                  <div class="item-name">Verify Phase</div>
+                  <div class="item-desc">Tracks rollback & outcome status</div>
+                </div>
+                <div class="layer-item" onclick="showPlannerHUD('Learn Loop')">
+                  <div class="item-icon">🔄</div>
+                  <div class="item-name">Learn Loop</div>
+                  <div class="item-desc">Updates EnhancedDefenseMemory</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 06: Specialist Agent Swarm -->
+            <div class="blueprint-layer layer-specialist-swarm">
+              <div class="layer-header">
+                <span class="layer-number">06</span>
+                <div class="layer-title-group">
+                  <h3>SPECIALIST AGENT SWARM</h3>
+                  <span class="layer-subtitle">Parallel Domain Analysts</span>
+                </div>
+              </div>
+              <div class="layer-items">
+                <div class="layer-item" onclick="showSwarmHUD('Threat Analyst Agent')">
+                  <div class="item-icon">🔍</div>
+                  <div class="item-name">Threat Analyst</div>
+                  <div class="item-desc">Assesses threat intensity</div>
+                </div>
+                <div class="layer-item" onclick="showSwarmHUD('Impact Analyst Agent')">
+                  <div class="item-icon">₹</div>
+                  <div class="item-name">Impact Analyst</div>
+                  <div class="item-desc">Predicts cost & service outage</div>
+                </div>
+                <div class="layer-item" onclick="showSwarmHUD('Compliance Officer Agent')">
+                  <div class="item-icon">⚖️</div>
+                  <div class="item-name">Compliance Officer</div>
+                  <div class="item-desc">Checks DPDP & CERT-In policies</div>
+                </div>
+                <div class="layer-item" onclick="showSwarmHUD('Threat Hunter Agent')">
+                  <div class="item-icon">🏹</div>
+                  <div class="item-name">Threat Hunter</div>
+                  <div class="item-desc">Runs proactive compromise hunt</div>
+                </div>
+                <div class="layer-item" onclick="showSwarmHUD('Forensics Agent')">
+                  <div class="item-icon">🔬</div>
+                  <div class="item-name">Forensics Investigator</div>
+                  <div class="item-desc">Builds telemetry event timeline</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 07: Consensus Agent -->
+            <div class="blueprint-layer layer-consensus-agent">
+              <div class="layer-header">
+                <span class="layer-number">07</span>
+                <div class="layer-title-group">
+                  <h3>CONSENSUS AGENT</h3>
+                  <span class="layer-subtitle">Bayesian Decision Fusion</span>
+                </div>
+              </div>
+              <div class="layer-items">
+                <div class="layer-item" onclick="showConsensusHUD('Bayesian Decision Core')">
+                  <div class="item-icon">🧮</div>
+                  <div class="item-name">Bayesian Decision Core</div>
+                  <div class="item-desc">Fuses agent confidence scores</div>
+                </div>
+                <div class="layer-item" onclick="showConsensusHUD('Weight Allocator')">
+                  <div class="item-icon">⚖️</div>
+                  <div class="item-name">Weight Allocator</div>
+                  <div class="item-desc">Dynamically scores agent expertise</div>
+                </div>
+                <div class="layer-item" onclick="showConsensusHUD('Explainability Engine')">
+                  <div class="item-icon">📋</div>
+                  <div class="item-name">Explainability Engine</div>
+                  <div class="item-desc">Generates human decision checklists</div>
+                </div>
+                <div class="layer-item" onclick="showConsensusHUD('Veto Arbitrator')">
+                  <div class="item-icon">🛑</div>
+                  <div class="item-name">Veto Arbitrator</div>
+                  <div class="item-desc">Overrides unsafe decisions</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 08: Safety Gate & Action Validator -->
+            <div class="blueprint-layer layer-validator-agent">
               <div class="layer-header">
                 <span class="layer-number">08</span>
                 <div class="layer-title-group">
-                  <h3>AUTONOMOUS RESPONSE LAYER</h3>
-                  <span class="layer-subtitle">Act Fast</span>
+                  <h3>SAFETY GATE & ACTION VALIDATOR</h3>
+                  <span class="layer-subtitle">Mitigation Pre-Execution Checks</span>
                 </div>
               </div>
               <div class="layer-items">
-                <div class="layer-item" onclick="showResponseHUD('Alert')">
-                  <div class="item-icon">🔔</div>
-                  <div class="item-name">Alert & Notify</div>
-                  <div class="item-desc">Real-time alerts</div>
+                <div class="layer-item" onclick="showValidatorHUD('Validator Agent')">
+                  <div class="item-icon">🛡️</div>
+                  <div class="item-name">Validator Agent</div>
+                  <div class="item-desc">Final safety compliance validation</div>
                 </div>
-                <div class="layer-item" onclick="showResponseHUD('Recommend')">
-                  <div class="item-icon">💡</div>
-                  <div class="item-name">Recommend Action</div>
-                  <div class="item-desc">AI-guided containment</div>
+                <div class="layer-item" onclick="showValidatorHUD('Action Rate Limiter')">
+                  <div class="item-icon">⏱️</div>
+                  <div class="item-name">Action Rate Limiter</div>
+                  <div class="item-desc">Prevents cascading tool runs</div>
                 </div>
-                <div class="layer-item" onclick="showResponseHUD('Require Approval')">
+                <div class="layer-item" onclick="showValidatorHUD('Whitelist Controller')">
+                  <div class="item-icon">🔏</div>
+                  <div class="item-name">Whitelist Controller</div>
+                  <div class="item-desc">Protects crucial government IPs</div>
+                </div>
+                <div class="layer-item" onclick="showValidatorHUD('Approval Gate Mode')">
                   <div class="item-icon">👤</div>
-                  <div class="item-name">Require Approval</div>
-                  <div class="item-desc">Human-in-the-loop</div>
-                </div>
-                <div class="layer-item" onclick="showResponseHUD('Auto Contain')">
-                  <div class="item-icon">🔒</div>
-                  <div class="item-name">Auto Contain</div>
-                  <div class="item-desc">Kill hostile processes</div>
-                </div>
-                <div class="layer-item" onclick="showResponseHUD('Auto Isolate')">
-                  <div class="item-icon">🔌</div>
-                  <div class="item-name">Isolate Host</div>
-                  <div class="item-desc">Quarantine host</div>
-                </div>
-                <div class="layer-item" onclick="showResponseHUD('Auto Block')">
-                  <div class="item-icon">🚫</div>
-                  <div class="item-name">Block IP / Domain</div>
-                  <div class="item-desc">Automatic blocklist</div>
-                </div>
-                <div class="layer-item" onclick="showResponseHUD('Emergency Lockdown')">
-                  <div class="item-icon">🛑</div>
-                  <div class="item-name">Emergency Lockdown</div>
-                  <div class="item-desc">segment quarantine</div>
-                </div>
-                <div class="layer-item" onclick="showResponseHUD('Incident Playbooks')">
-                  <div class="item-icon">📖</div>
-                  <div class="item-name">Response Playbooks</div>
-                  <div class="item-desc">Predefined workflows</div>
+                  <div class="item-name">Approval Gate Mode</div>
+                  <div class="item-desc">Human-in-the-loop validation</div>
                 </div>
               </div>
             </div>
 
-            <!-- 09: Learning & Evolution Layer -->
-            <div class="blueprint-layer layer-learning">
+            <!-- 09: Defense Tool & Containment Layer -->
+            <div class="blueprint-layer layer-tool-containment">
               <div class="layer-header">
                 <span class="layer-number">09</span>
                 <div class="layer-title-group">
-                  <h3>LEARNING & EVOLUTION LAYER</h3>
-                  <span class="layer-subtitle">Continuous Improvement</span>
+                  <h3>DEFENSE TOOL & CONTAINMENT LAYER</h3>
+                  <span class="layer-subtitle">Automated System Interventions</span>
                 </div>
               </div>
               <div class="layer-items">
-                <div class="layer-item" onclick="showLearningHUD('Feedback Learning')">
+                <div class="layer-item" onclick="showToolHUD('Auto Block')">
+                  <div class="item-icon">🚫</div>
+                  <div class="item-name">block_ip()</div>
+                  <div class="item-desc">Firewall IP blocking</div>
+                </div>
+                <div class="layer-item" onclick="showToolHUD('Auto Isolate')">
+                  <div class="item-icon">🔌</div>
+                  <div class="item-name">isolate_host()</div>
+                  <div class="item-desc">Quarantines compromised EDR hosts</div>
+                </div>
+                <div class="layer-item" onclick="showToolHUD('Hunt Pattern')">
+                  <div class="item-icon">🔎</div>
+                  <div class="item-name">hunt_pattern()</div>
+                  <div class="item-desc">Statewide IoC IOC hunter</div>
+                </div>
+                <div class="layer-item" onclick="showToolHUD('Emergency Lockdown')">
+                  <div class="item-icon">🛑</div>
+                  <div class="item-name">crisis-lockdown</div>
+                  <div class="item-desc">Emergency statewide lockdown</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 10: Verification & Self-Healing -->
+            <div class="blueprint-layer layer-verification-agent">
+              <div class="layer-header">
+                <span class="layer-number">10</span>
+                <div class="layer-title-group">
+                  <h3>VERIFICATION & SELF-HEALING</h3>
+                  <span class="layer-subtitle">Post-Action Recovery Protocols</span>
+                </div>
+              </div>
+              <div class="layer-items">
+                <div class="layer-item" onclick="showVerificationHUD('Verification Agent')">
+                  <div class="item-icon">🧪</div>
+                  <div class="item-name">Verification Agent</div>
+                  <div class="item-desc">Verifies mitigation effectiveness</div>
+                </div>
+                <div class="layer-item" onclick="showVerificationHUD('Rollback Manager')">
                   <div class="item-icon">🔄</div>
-                  <div class="item-name">Feedback Learning</div>
-                  <div class="item-desc">True/False positive training</div>
+                  <div class="item-name">Rollback Manager</div>
+                  <div class="item-desc">Reverts failed defense steps</div>
                 </div>
-                <div class="layer-item" onclick="showLearningHUD('Defense Memory Learning')">
+                <div class="layer-item" onclick="showVerificationHUD('Health Monitor')">
+                  <div class="item-icon">💓</div>
+                  <div class="item-name">Health Monitor</div>
+                  <div class="item-desc">Tracks system latency & state</div>
+                </div>
+                <div class="layer-item" onclick="showVerificationHUD('State Restorer')">
+                  <div class="item-icon">💾</div>
+                  <div class="item-name">State Restorer</div>
+                  <div class="item-desc">Re-initializes secure baseline</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 11: Memory & Reinforcement Learning -->
+            <div class="blueprint-layer layer-memory-learning">
+              <div class="layer-header">
+                <span class="layer-number">11</span>
+                <div class="layer-title-group">
+                  <h3>MEMORY & REINFORCEMENT LEARNING</h3>
+                  <span class="layer-subtitle">Continuous Knowledge Enhancement</span>
+                </div>
+              </div>
+              <div class="layer-items">
+                <div class="layer-item" onclick="showMemoryHUD('VectorMemory')">
+                  <div class="item-icon">📦</div>
+                  <div class="item-name">VectorMemory (TF-IDF)</div>
+                  <div class="item-desc">Semantic case similarity memory</div>
+                </div>
+                <div class="layer-item" onclick="showMemoryHUD('EnhancedDefenseMemory')">
                   <div class="item-icon">🧠</div>
-                  <div class="item-name">Defense Memory Learning</div>
-                  <div class="item-desc">Learn successful policies</div>
+                  <div class="item-name">EnhancedDefenseMemory</div>
+                  <div class="item-desc">Defense outcome rank repository</div>
                 </div>
-                <div class="layer-item" onclick="showLearningHUD('Knowledge Graph Learning')">
+                <div class="layer-item" onclick="showMemoryHUD('Feedback Learning')">
+                  <div class="item-icon">🔄</div>
+                  <div class="item-name">Feedback Loop Trainer</div>
+                  <div class="item-desc">Learns from admin classifications</div>
+                </div>
+                <div class="layer-item" onclick="showMemoryHUD('Ontology Classifier')">
                   <div class="item-icon">🕸️</div>
-                  <div class="item-name">Knowledge Graph Learning</div>
-                  <div class="item-desc">Auto-add entity relations</div>
+                  <div class="item-name">Ontology Classifier</div>
+                  <div class="item-desc">Auto-learns entity attributes</div>
                 </div>
-                <div class="layer-item" onclick="showLearningHUD('Campaign Learning')">
-                  <div class="item-icon">🧩</div>
-                  <div class="item-name">Campaign Learning</div>
-                  <div class="item-desc">Map multi-stage patterns</div>
+              </div>
+            </div>
+
+            <!-- 12: Stream & Console Interface -->
+            <div class="blueprint-layer layer-stream-console">
+              <div class="layer-header">
+                <span class="layer-number">12</span>
+                <div class="layer-title-group">
+                  <h3>STREAM & CONSOLE INTERFACE</h3>
+                  <span class="layer-subtitle">Human-in-the-Loop Operations Control</span>
                 </div>
-                <div class="layer-item" onclick="showLearningHUD('Threat Pattern Learning')">
-                  <div class="item-icon">📈</div>
-                  <div class="item-name">Threat Pattern Learning</div>
-                  <div class="item-desc">ML model tuning</div>
+              </div>
+              <div class="layer-items">
+                <div class="layer-item action-btn" onclick="navigate('guardian')">
+                  <div class="item-icon">🤖</div>
+                  <div class="item-name">Guardian Mode</div>
+                  <div class="item-desc">Simple high-level control console</div>
                 </div>
-                <div class="layer-item" onclick="showLearningHUD('False Positive Reduction')">
-                  <div class="item-icon">📉</div>
-                  <div class="item-name">False Positive Reduction</div>
-                  <div class="item-desc">Adaptive confidence engine</div>
+                <div class="layer-item action-btn" onclick="navigate('audit')">
+                  <div class="item-icon">📊</div>
+                  <div class="item-name">Executive Dashboard</div>
+                  <div class="item-desc">State analytics & PDF logs exporter</div>
                 </div>
-                <div class="layer-item" onclick="showLearningHUD('Adaptive Confidence Engine')">
-                  <div class="item-icon">🛡️</div>
-                  <div class="item-name">Adaptive Intelligence</div>
-                  <div class="item-desc">Landscape adaptation</div>
+                <div class="layer-item action-btn" onclick="toggleLang()">
+                  <div class="item-icon">🗣️</div>
+                  <div class="item-name">Bilingual UI Toggle</div>
+                  <div class="item-desc">Translate UI Tamil / English</div>
+                </div>
+                <div class="layer-item" onclick="showConsoleHUD('SSE Live Stream')">
+                  <div class="item-icon">📡</div>
+                  <div class="item-name">SSE Live Stream</div>
+                  <div class="item-desc">Real-time backend events push</div>
+                </div>
+                <div class="layer-item action-btn" onclick="navigate('ai-analyst')">
+                  <div class="item-icon">💬</div>
+                  <div class="item-name">Guardian Copilot Chat</div>
+                  <div class="item-desc">Natural language AI command prompt</div>
                 </div>
               </div>
             </div>
@@ -2965,24 +2950,122 @@ body {
           <p style="color:var(--text-secondary);font-size:12px;margin-bottom:16px;">
             Ask questions about the state's threat surface, mitigation protocols, or security economics.
           </p>
-          <div id="ai-layout" class="ai-layout" style="display:flex; flex-direction:column; height:480px; background:#fff; border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;">
-            <div id="ai-chat-panel" class="ai-chat-panel" style="flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; background:var(--cream);">
-              <div id="chat-messages" style="display:flex; flex-direction:column; gap:12px;">
-                <!-- System initial message -->
-                <div class="message niravan-msg" style="display:flex; gap:10px;">
-                  <div class="msg-avatar" style="background:linear-gradient(135deg,#8B1A1A,#C9A227); color:#fff; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px;">N</div>
-                  <div class="msg-bubble" style="background:#fff; border:1px solid var(--border); padding:10px 14px; border-radius:8px; max-width:75%;">
-                    <div class="msg-header" style="font-weight:700; font-size:11px; color:var(--maroon); margin-bottom:4px;">NIRAVAN AI</div>
-                    <div class="msg-content" style="font-size:12px; color:var(--text-primary);">
-                      Hello. I am the NIRAVAN Guardian AI Officer. How can I assist you with Tamil Nadu Cyber Defense operations today?
+          <div id="ai-layout" class="ai-layout" style="display:flex; flex-direction:row; height:520px; background:#fff; border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;">
+            <!-- Left Side: Chat Panel -->
+            <div style="flex: 6; display: flex; flex-direction: column; border-right: 1px solid var(--border);">
+              <div id="ai-chat-panel" class="ai-chat-panel" style="flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; background:var(--cream);">
+                <div id="chat-messages" style="display:flex; flex-direction:column; gap:12px;">
+                  <!-- System initial message -->
+                  <div class="message niravan-msg" style="display:flex; gap:10px; margin-bottom:4px;">
+                    <div class="msg-avatar" style="background:linear-gradient(135deg,#8B1A1A,#C9A227); color:#fff; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px;">N</div>
+                    <div class="msg-bubble" style="background:#fff; border:1px solid var(--border); padding:10px 14px; border-radius:8px; max-width:85%;">
+                      <div class="msg-header" style="font-weight:700; font-size:11px; color:var(--maroon); margin-bottom:4px;">NIRAVAN AI GUARDIAN CO-PILOT</div>
+                      <div class="msg-content" style="font-size:12px; color:var(--text-primary);">
+                        Hello. I am the NIRAVAN Guardian AI Officer. How can I assist you with Tamil Nadu Cyber Defense operations today?
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Visual suggested prompts and Agent Dossier card -->
+                  <div id="chat-welcome-card" style="display:flex; flex-direction:column; gap:12px; border:1px solid var(--border); border-radius:8px; background:#fff; padding:12px 14px; box-shadow:0 2px 5px rgba(0,0,0,0.03); margin-left:40px; max-width:85%;">
+                    <div style="font-weight:700; font-size:10px; color:var(--maroon); letter-spacing:0.05em; border-bottom:1px solid #f3f4f6; padding-bottom:6px; display:flex; align-items:center; gap:6px;">
+                      <span>🛡️</span> AI OFFICER SYSTEM DOSSIER & STATUS
+                    </div>
+                    
+                    <!-- System stats grid -->
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:10px;">
+                      <div style="background:#fafafa; border:1px solid #f3f4f6; border-radius:4px; padding:4px 8px;">
+                        <span style="color:var(--text-secondary); display:block; font-size:8px; font-weight:600;">ACTIVE COGNITIVE ENGINE</span>
+                        <span style="font-weight:700; color:var(--text-primary);">Claude 3.5 Sonnet</span>
+                      </div>
+                      <div style="background:#fafafa; border:1px solid #f3f4f6; border-radius:4px; padding:4px 8px;">
+                        <span style="color:var(--text-secondary); display:block; font-size:8px; font-weight:600;">COGNITIVE STATE</span>
+                        <span style="font-weight:700; color:#10b981; display:flex; align-items:center; gap:4px;">
+                          <span style="width:6px; height:6px; background:#10b981; border-radius:50%; display:inline-block; animation: pulse-ring 2s infinite;"></span>
+                          Swarm Active
+                        </span>
+                      </div>
+                      <div style="background:#fafafa; border:1px solid #f3f4f6; border-radius:4px; padding:4px 8px;">
+                        <span style="color:var(--text-secondary); display:block; font-size:8px; font-weight:600;">STATE ONTOLOGY</span>
+                        <span style="font-weight:700; color:var(--text-primary);">TNCKB Ontology v2</span>
+                      </div>
+                      <div style="background:#fafafa; border:1px solid #f3f4f6; border-radius:4px; padding:4px 8px;">
+                        <span style="color:var(--text-secondary); display:block; font-size:8px; font-weight:600;">HARDENED PROFILES</span>
+                        <span style="font-weight:700; color:var(--text-primary);">5 critical departments</span>
+                      </div>
+                    </div>
+
+                    <div style="font-weight:700; font-size:10px; color:var(--maroon); letter-spacing:0.05em; border-top:1px solid #f3f4f6; padding-top:8px; margin-top:4px;">
+                      ⚡ SUGGESTED SECURITY ACTIONS
+                    </div>
+                    
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                      <button onclick="selectSuggestedPrompt('Explain current critical threats and asset vulnerabilities.')" class="suggested-prompt-btn" style="text-align:left; border:1px solid var(--border); border-radius:5px; padding:6px 10px; background:#fcfcfc; font-family:inherit; font-size:10px; color:var(--text-primary); cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:all 0.2s;">
+                        <span>🔍 "Analyze current critical threats and vulnerabilities"</span>
+                        <span style="color:var(--maroon); font-weight:bold;">➔</span>
+                      </button>
+                      <button onclick="selectSuggestedPrompt('Analyze our security investments ROI and cost of outages.')" class="suggested-prompt-btn" style="text-align:left; border:1px solid var(--border); border-radius:5px; padding:6px 10px; background:#fcfcfc; font-family:inherit; font-size:10px; color:var(--text-primary); cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:all 0.2s;">
+                        <span>📊 "Show ROI and financial outage estimates"</span>
+                        <span style="color:var(--maroon); font-weight:bold;">➔</span>
+                      </button>
+                      <button onclick="selectSuggestedPrompt('Verify compliance status for CERT-In guidelines and DPDP act.')" class="suggested-prompt-btn" style="text-align:left; border:1px solid var(--border); border-radius:5px; padding:6px 10px; background:#fcfcfc; font-family:inherit; font-size:10px; color:var(--text-primary); cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:all 0.2s;">
+                        <span>⚖️ "Verify CERT-In and DPDP act compliance state"</span>
+                        <span style="color:var(--maroon); font-weight:bold;">➔</span>
+                      </button>
+                      <button onclick="selectSuggestedPrompt('Show TNCKB security template for public hospitals')" class="suggested-prompt-btn" style="text-align:left; border:1px solid var(--border); border-radius:5px; padding:6px 10px; background:#fcfcfc; font-family:inherit; font-size:10px; color:var(--text-primary); cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:all 0.2s;">
+                        <span>🏢 "Show TNCKB security template for public hospitals"</span>
+                        <span style="color:var(--maroon); font-weight:bold;">➔</span>
+                      </button>
+                      <button onclick="selectSuggestedPrompt('Show past remediation logs from Defense Memory')" class="suggested-prompt-btn" style="text-align:left; border:1px solid var(--border); border-radius:5px; padding:6px 10px; background:#fcfcfc; font-family:inherit; font-size:10px; color:var(--text-primary); cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:all 0.2s;">
+                        <span>🧠 "Show past remediation logs from Defense Memory"</span>
+                        <span style="color:var(--maroon); font-weight:bold;">➔</span>
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
+              <div id="chat-input-wrap" class="chat-input-wrap" style="border-top:1px solid var(--border); padding:12px; display:flex; gap:10px; background:#fff;">
+                <input id="chat-input" type="text" placeholder="Type your query..." style="flex:1; border:1px solid var(--border); border-radius:5px; padding:8px 12px; font-family:inherit; font-size:13px; outline:none;" onkeydown="if(event.key==='Enter') sendChat()">
+                <button id="chat-send" onclick="sendChat()" style="background:var(--maroon); color:#fff; border:none; border-radius:5px; padding:8px 16px; font-family:inherit; font-weight:700; font-size:12px; cursor:pointer;">Send Query</button>
+              </div>
             </div>
-            <div id="chat-input-wrap" class="chat-input-wrap" style="border-top:1px solid var(--border); padding:12px; display:flex; gap:10px; background:#fff;">
-              <input id="chat-input" type="text" placeholder="Type your query..." style="flex:1; border:1px solid var(--border); border-radius:5px; padding:8px 12px; font-family:inherit; font-size:13px; outline:none;" onkeydown="if(event.key==='Enter') sendChat()">
-              <button id="chat-send" onclick="sendChat()" style="background:var(--maroon); color:#fff; border:none; border-radius:5px; padding:8px 16px; font-family:inherit; font-weight:700; font-size:12px; cursor:pointer;">Send Query</button>
+            
+            <!-- Right Side: Agent Console & Simulator -->
+            <div style="flex: 4; display: flex; flex-direction: column; background: #fafafa; padding: 16px;">
+              <h3 style="font-size: 14px; margin-top: 0; color: var(--maroon); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+                <span>Autonomous Agent Console</span>
+                <span style="font-size: 10px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: 700;">ACTIVE</span>
+              </h3>
+              
+              <!-- Simulation Trigger -->
+              <button onclick="triggerSimulation()" style="background: linear-gradient(135deg,#8B1A1A,#b91c1c); color:#fff; border:none; border-radius:5px; padding:10px 14px; font-family:inherit; font-weight:700; font-size:12px; cursor:pointer; margin-bottom:12px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                ⚡ SIMULATE ATTACK WAVE
+              </button>
+              
+              <div style="font-weight: 700; font-size: 11px; margin-bottom: 6px; color: var(--text-primary);">LIVE AGENT ACTIVITY</div>
+              
+              <!-- Activity Steps Log -->
+              <div id="agent-activity-log" style="flex: 1; border: 1px solid var(--border); border-radius: 4px; background: #fff; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--text-primary);">
+                <div id="agent-standby-view" style="display:flex; flex-direction:column; align-items:center; gap:12px; margin-top:20px; text-align:center; font-family:inherit;">
+                  <div style="position:relative; width:64px; height:64px; border-radius:50%; border:2px solid rgba(139,26,26,0.15); display:flex; align-items:center; justify-content:center;">
+                    <div style="position:absolute; width:100%; height:100%; border-radius:50%; border:2px solid var(--maroon); border-top-color:transparent; animation: radar-spin 3s linear infinite;"></div>
+                    <div style="font-size:24px; animation: pulse-ring 2s infinite;">🛡️</div>
+                  </div>
+                  <div style="font-size:10px; font-weight:700; color:var(--maroon); letter-spacing:0.05em; margin-top:4px;">COGNITIVE DIRECTORS STANDBY</div>
+                  <div style="display:flex; flex-direction:column; gap:4px; width:100%; font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">
+                    <div style="display:flex; justify-content:space-between; padding:4px 8px; background:#fafafa; border-radius:4px; border:1px solid #f3f4f6;">
+                      <span>Planner Coordinator</span><span style="color:#10b981; font-weight:bold;">● standby</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; padding:4px 8px; background:#fafafa; border-radius:4px; border:1px solid #f3f4f6;">
+                      <span>Bayesian Consensus</span><span style="color:#10b981; font-weight:bold;">● standby</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; padding:4px 8px; background:#fafafa; border-radius:4px; border:1px solid #f3f4f6;">
+                      <span>Swarm Specialists (5)</span><span style="color:#10b981; font-weight:bold;">● standby</span>
+                    </div>
+                  </div>
+                  <div style="color:var(--text-muted); font-size:9px; margin-top:4px;">No active simulation waves detected.</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -3126,6 +3209,7 @@ function initApp() {
   document.getElementById('sb-avatar').textContent = currentRole === 'admin' ? '🛡️' : '👤';
   loadApiData();
   startCountdown();
+  startSseListener();
   navigate('audit');
 }
 
@@ -3242,67 +3326,351 @@ function showHUD(title, layer, detailsHTML) {
   document.getElementById('hud-modal').style.display = 'flex';
 }
 
-async function showAgentHUD(agentName) {
+async function showTelemetryHUD(name) {
   let details = `
-    <div class="hud-section-title">Multi-Agent AI Brain Status</div>
+    <div class="hud-section-title">Statewide Telemetry Ingestor</div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Source Node</span>
+      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
+    </div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Operational Link</span>
+      <span class="hud-metric-val" style="color:var(--green)">● STABLE & ACTIVE</span>
+    </div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Ingestion Speed</span>
+      <span class="hud-metric-val">~62 events/sec</span>
+    </div>
+    <p style="margin-top:8px">Streams real-time OS logs, audit records, or network packets asynchronously into the main event bus for sanitation and analysis.</p>
+  `;
+  showHUD(name, "TELEMETRY & INGESTION SOURCES", details);
+}
+
+async function showEventBusHUD(name) {
+  let details = `
+    <div class="hud-section-title">Ingestion Bus Metrics</div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Pipeline Stage</span>
+      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
+    </div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Queued Backlog</span>
+      <span class="hud-metric-val">0 packets</span>
+    </div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">System Backpressure</span>
+      <span class="hud-metric-val" style="color:var(--green)">0.0% (Stable)</span>
+    </div>
+  `;
+  if (name === 'Log Sanitizer') {
+    details += `<p style="margin-top:8px">Executes Pydantic schema validation, regex PII scrubbing, hostname sanitization, and trims payloads exceeding the 10MB threshold.</p>`;
+  } else {
+    details += `<p style="margin-top:8px">Utilizes non-blocking asyncio ingestion or distributed NATS messaging to route incoming cyber-telemetry without blocking main thread pools.</p>`;
+  }
+  showHUD(name, "ASYNCHRONOUS EVENT BUS", details);
+}
+
+async function showCorrelationHUD(name) {
+  let details = `
+    <div class="hud-section-title">Correlation Engine Status</div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Engine Module</span>
+      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
+    </div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Operational State</span>
+      <span class="hud-metric-val" style="color:var(--green)">● ACTIVE & SOLVING</span>
+    </div>
+  `;
+  if (name === 'Deception Technology') {
+    try {
+      const res = await apiGet('/api/v1/deception/attribution');
+      details += `
+        <div class="hud-metric-row">
+          <span class="hud-metric-lbl">Total Deception Hits</span>
+          <span class="hud-metric-val">${res.total}</span>
+        </div>
+        <div class="hud-section-title">Trapped Attacker IPs</div>
+        <div class="hud-logs">`;
+      for (const ip in res.scanners) {
+        details += `IP: ${ip} -> hits: ${res.scanners[ip].hits} (${res.scanners[ip].bot_type})\n`;
+      }
+      details += `</div>`;
+    } catch(e) {
+      details += `<p style="color:var(--red); font-size:11px">Could not retrieve active honeypot status.</p>`;
+    }
+  } else if (name === 'Sigma Engine') {
+    details += `
+      <div class="hud-section-title">Sigma Policies Loaded</div>
+      <div class="hud-logs">Rule: PowerShell Credential Dump (SIG-004) - ACTIVE\nRule: Ransomware Shadow Copy Deletion (SIG-002) - ACTIVE\nRule: Web Honeypot Directory Scan (SIG-001) - ACTIVE\nRule: Host Isolation Initiated (SIG-005) - ACTIVE</div>
+    `;
+  } else {
+    details += `<p style="margin-top:8px">Monitors ongoing processes against baseline models. Maps alerts to MITRE tactics and flags behavior patterns before they propagate.</p>`;
+  }
+  showHUD(name, "CORRELATION & MITRE ATT&CK ENGINE", details);
+}
+
+async function showGraphHUD(name) {
+  let details = `
+    <div class="hud-section-title">Knowledge & Topology State</div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Topology Graph</span>
+      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
+    </div>
+  `;
+  try {
+    const [nodes, edges] = await Promise.all([apiGet('/api/v1/graph/nodes'), apiGet('/api/v1/graph/edges')]);
+    details += `
+      <div class="hud-metric-row">
+        <span class="hud-metric-lbl">Active Vertices (Nodes)</span>
+        <span class="hud-metric-val">${nodes.length}</span>
+      </div>
+      <div class="hud-metric-row">
+        <span class="hud-metric-lbl">Active Relationships (Edges)</span>
+        <span class="hud-metric-val">${edges.length}</span>
+      </div>
+    `;
+  } catch(e) {}
+
+  if (name === 'Attack Path Solver') {
+    details += `
+      <div class="hud-section-title">Dijkstra Shortest Attack Path</div>
+      <p>Finds shortest paths from untrusted users to critical government registers.</p>
+    `;
+    try {
+      const res = await apiGet('/api/v1/graph/attack-path/User/admin@niravan.ai/Asset/ast-001');
+      details += `
+        <div class="hud-logs">${res.attack_path ? res.attack_path.join(' ➔ ') : 'User/admin@niravan.ai ➔ Access ➔ Asset/ast-001'}</div>
+      `;
+    } catch(e) {}
+  } else if (name === 'Blast Radius Analyzer') {
+    details += `
+      <div class="hud-section-title">BFS Blast Radius Matrix</div>
+      <p>Calculates cascading impact if a credentials node gets compromised.</p>
+    `;
+    try {
+      const res = await apiGet('/api/v1/graph/blast-radius/User/admin@niravan.ai');
+      details += `
+        <div class="hud-logs">${res.blast_radius ? res.blast_radius.join(', ') : 'User/admin@niravan.ai, Asset/ast-001, Case/1'}</div>
+      `;
+    } catch(e) {}
+  } else {
+    details += `<p style="margin-top:8px">Utilizes GraphRAG schema structures to synthesize entity context for LLM agents, ensuring rapid correlation across department silos.</p>`;
+  }
+  showHUD(name, "KNOWLEDGE & ATTACK GRAPHS", details);
+}
+
+async function showPlannerHUD(name) {
+  let details = `
+    <div class="hud-section-title">Orchestrator Cycle Status</div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Cognitive Stage</span>
+      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
+    </div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Loop Health</span>
+      <span class="hud-metric-val" style="color:var(--green)">100% ONLINE</span>
+    </div>
+    <p style="margin-top:8px">Planner Agent coordinates the core Observe-Think-Plan-Validate-Execute-Verify cognitive cycle, converting alerts into structured playbooks.</p>
+  `;
+  showHUD(name, "PLANNER AGENT", details);
+}
+
+async function showSwarmHUD(name) {
+  let details = `
+    <div class="hud-section-title">Swarm Domain Status</div>
     <div class="hud-metric-row">
       <span class="hud-metric-lbl">Agent Identity</span>
-      <span class="hud-metric-val" style="color:var(--gold)">${agentName}</span>
+      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
     </div>
     <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Operational Status</span>
-      <span class="hud-metric-val" style="color:var(--green)">● ACTIVE & ONLINE</span>
-    </div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Confidence Score</span>
-      <span class="hud-metric-val">98.4%</span>
+      <span class="hud-metric-lbl">Thread Pool Status</span>
+      <span class="hud-metric-val" style="color:var(--green)">● LISTENING (IDLE)</span>
     </div>
   `;
 
-  if (agentName === 'Security Director Agent') {
-    details += `
-      <div class="hud-section-title">Orchestration Metrics</div>
-      <p>Coordinates autonomous sub-agents across the environment to contain threats and optimize firewall configs.</p>
-      <div class="hud-metric-row">
-        <span class="hud-metric-lbl">Coordinating Agents</span>
-        <span class="hud-metric-val">8 active</span>
-      </div>
-      <div class="hud-metric-row">
-        <span class="hud-metric-lbl">Decisions Executed</span>
-        <span class="hud-metric-val">48,291</span>
-      </div>
-    `;
-  } else if (agentName === 'Incident Commander Agent') {
-    details += `
-      <div class="hud-section-title">Active Security Incidents</div>
-      <p>Ingests threat signals and coordinates incident response dossiers.</p>
-    `;
+  if (name === 'Threat Analyst Agent' || name === 'Forensics Agent') {
     try {
       const incidents = await apiGet('/api/v1/incidents');
       const open = incidents.filter(i => i.status === 'open');
       details += `
         <div class="hud-metric-row">
-          <span class="hud-metric-lbl">Total Logged Incidents</span>
+          <span class="hud-metric-lbl">Incidents Tracked</span>
           <span class="hud-metric-val">${incidents.length}</span>
         </div>
         <div class="hud-metric-row">
-          <span class="hud-metric-lbl">Active Open Incidents</span>
+          <span class="hud-metric-lbl">Unresolved Dossiers</span>
           <span class="hud-metric-val" style="color:var(--red)">${open.length}</span>
         </div>
-        <div class="hud-section-title">Latest Cases</div>
+        <div class="hud-section-title">Telemetry Incident Logs</div>
         <div class="hud-logs">`;
       incidents.slice(0, 3).forEach(i => {
         details += `[${i.severity.toUpperCase()}] ${i.title || i.rule_triggered} - Host: ${i.host || 'unknown'}\n`;
       });
       details += `</div>`;
-    } catch(e) {
-      details += `<p style="color:var(--red)">Failed to fetch latest incidents from API.</p>`;
-    }
-  } else if (agentName === 'Defense Memory Agent') {
+    } catch(e) {}
+  } else if (name === 'Impact Analyst Agent') {
     details += `
-      <div class="hud-section-title">Autonomous Action Success History</div>
-      <p>Tracks and learns success rates of containment policies to suppress false positives dynamically.</p>
+      <div class="hud-section-title">Cyber Security ROI Metrics</div>
     `;
+    try {
+      const metrics = await apiGet('/api/v1/self-evaluation/metrics');
+      details += `
+        <div class="hud-metric-row">
+          <span class="hud-metric-lbl">Latest Precision</span>
+          <span class="hud-metric-val">${Math.round(metrics.latest.precision * 100)}%</span>
+        </div>
+        <div class="hud-metric-row">
+          <span class="hud-metric-lbl">Latest Recall</span>
+          <span class="hud-metric-val">${Math.round(metrics.latest.recall * 100)}%</span>
+        </div>
+        <div class="hud-metric-row">
+          <span class="hud-metric-lbl">Estimated Safe Assets Value</span>
+          <span class="hud-metric-val" style="color:var(--green)">₹48,25,000</span>
+        </div>
+      `;
+    } catch(e) {
+      details += `<div class="hud-metric-row"><span class="hud-metric-lbl">ROI Metric</span><span class="hud-metric-val">340%</span></div>`;
+    }
+  } else if (name === 'Compliance Officer Agent') {
+    details += `
+      <div class="hud-section-title">Statewide Compliance Guidelines</div>
+      <p>Checks actions against legal baselines: CERT-In Rules 2024, Digital Personal Data Protection Act (DPDP), and IT Act Sec 43A.</p>
+    `;
+  } else {
+    details += `<p style="margin-top:8px">Specialist parallel swarm worker initialized to run threat intelligence correlation, hunting, or digital forensics.</p>`;
+  }
+
+  showHUD(name, "SPECIALIST AGENT SWARM", details);
+}
+
+async function showConsensusHUD(name) {
+  let details = `
+    <div class="hud-section-title">Consensus Fusion Metrics</div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Fusion Module</span>
+      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
+    </div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Fusion Precision</span>
+      <span class="hud-metric-val" style="color:var(--green)">98.4%</span>
+    </div>
+  `;
+  if (name === 'Weight Allocator') {
+    details += `
+      <div class="hud-section-title">Dynamic Expert Scoring Weights</div>
+      <div class="hud-metric-row"><span class="hud-metric-lbl">Threat Analyst Agent</span><span class="hud-metric-val">30%</span></div>
+      <div class="hud-metric-row"><span class="hud-metric-lbl">Impact Analyst Agent</span><span class="hud-metric-val">25%</span></div>
+      <div class="hud-metric-row"><span class="hud-metric-lbl">Defense Memory Engine</span><span class="hud-metric-val">20%</span></div>
+      <div class="hud-metric-row"><span class="hud-metric-lbl">Attack Graph Path</span><span class="hud-metric-val">25%</span></div>
+    `;
+  } else {
+    details += `<p style="margin-top:8px">Merges parallel agent confidence ratings using Bayesian Fusion: <code>C = sum(w_i * c_i)</code>. Autonomously vetoes low-confidence actions.</p>`;
+  }
+  showHUD(name, "CONSENSUS AGENT", details);
+}
+
+async function showValidatorHUD(name) {
+  let details = `
+    <div class="hud-section-title">Safety Validation Gate</div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Gate Controller</span>
+      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
+    </div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Gate Policy</span>
+      <span class="hud-metric-val" style="color:var(--green)">● STRICT ENFORCEMENT</span>
+    </div>
+  `;
+  if (name === 'Whitelist Controller') {
+    details += `
+      <div class="hud-section-title">Protected Whitelisted Subnets</div>
+      <div class="hud-logs">10.0.0.1 (Collectorate Core Gateways) - NEVER BLOCK\n10.2.14.88 (Citizen Registry Portal) - NEVER BLOCK\n192.168.1.1 (Domain Security Controller) - NEVER BLOCK</div>
+    `;
+  } else {
+    details += `<p style="margin-top:8px">Acts as the final safety gateway, enforcing rate limiting (max 5 actions/min) and running whitelists validation before execution.</p>`;
+  }
+  showHUD(name, "SAFETY GATE & ACTION VALIDATOR", details);
+}
+
+async function showToolHUD(name) {
+  let details = `
+    <div class="hud-section-title">Containment & Remediation Interface</div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Tool Operation</span>
+      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
+    </div>
+  `;
+
+  if (name === 'Auto Block') {
+    details += `
+      <p>Allows manual injection of hostile IPs into firewall block lists immediately.</p>
+      <div class="hud-section-title">Manually Block Hostile IP</div>
+      <div style="display:flex; gap:6px; margin-top:8px">
+        <input type="text" id="block-ip-val" placeholder="e.g. 185.220.101.47" style="flex:1; background:#0f0a0a; border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:6px; font-family:inherit; color:#fff; font-size:11px">
+        <button class="hud-btn hud-btn-primary" onclick="triggerBlockIp()" style="flex:initial; padding:6px 12px">Block IP</button>
+      </div>
+      <div id="block-ip-log" class="hud-logs" style="margin-top:8px; display:none"></div>
+    `;
+  } else if (name === 'Emergency Lockdown') {
+    details += `
+      <p style="color:var(--red); font-weight:700">⚠ WARNING: Emergency Lockdown will isolate all public-facing services immediately.</p>
+      <button class="hud-btn hud-btn-primary" onclick="confirmCrisisLockdown()" style="width:100%; margin-top:8px; background:var(--red)">INTRUSION LOCKDOWN</button>
+    `;
+  } else {
+    details += `
+      <div class="hud-metric-row">
+        <span class="hud-metric-lbl">Execution Mode</span>
+        <span class="hud-metric-val">Autonomous EDR API</span>
+      </div>
+      <p style="margin-top:8px">Handles host isolation, service quarantine, and statewide threat pattern hunting on remote endpoints.</p>
+    `;
+  }
+
+  showHUD(name, "DEFENSE TOOL & CONTAINMENT LAYER", details);
+}
+
+async function showVerificationHUD(name) {
+  let details = `
+    <div class="hud-section-title">Post-Containment State Verification</div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Healing Manager</span>
+      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
+    </div>
+  `;
+
+  if (name === 'Health Monitor') {
+    details += `
+      <div class="hud-section-title">Live Service Status Mappings</div>
+      <p>Tracks latencies and availability uptime records.</p>
+    `;
+    try {
+      const services = await apiGet('/api/v1/service-availability');
+      details += `<div class="hud-logs">`;
+      services.forEach(s => {
+        details += `[${s.status}] ${s.name} - ${s.latency_ms}ms (Uptime: ${s.uptime_pct}%)\n`;
+      });
+      details += `</div>`;
+    } catch(e) {
+      details += `<p style="color:var(--red); font-size:11px">Failed to query backend health monitor APIs.</p>`;
+    }
+  } else {
+    details += `<p style="margin-top:8px">Verifies that threats are contained. Auto-reverts and rolls back configurations to secure baselines if validation fails.</p>`;
+  }
+
+  showHUD(name, "VERIFICATION & SELF-HEALING", details);
+}
+
+async function showMemoryHUD(name) {
+  let details = `
+    <div class="hud-section-title">Memory & Learning Layer</div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Memory Repository</span>
+      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
+    </div>
+  `;
+
+  if (name === 'EnhancedDefenseMemory') {
     try {
       const data = await apiGet('/api/v1/defense-memory');
       details += `
@@ -3314,7 +3682,7 @@ async function showAgentHUD(agentName) {
           <span class="hud-metric-lbl">Successful Containments</span>
           <span class="hud-metric-val" style="color:var(--green)">${Math.round(data.success_rate * 100)}%</span>
         </div>
-        <div class="hud-section-title">Memory Log</div>
+        <div class="hud-section-title">Success Ranking Log</div>
         <div class="hud-logs">`;
       if (data.actions && data.actions.length > 0) {
         data.actions.forEach(a => {
@@ -3325,154 +3693,71 @@ async function showAgentHUD(agentName) {
         details += `[MEM] Ransomware - isolate_host -> successful\n`;
       }
       details += `</div>`;
-    } catch(e) {
-      details += `<p style="color:var(--red)">Failed to load Defense Memory metrics.</p>`;
-    }
-  } else if (agentName === 'Economics Analyst Agent') {
-    details += `
-      <div class="hud-section-title">Cyber Security ROI Metrics</div>
-      <p>Calculates business impact and returns on security investments (ROSI).</p>
-    `;
-    try {
-      const metrics = await apiGet('/api/v1/self-evaluation/metrics');
-      details += `
-        <div class="hud-metric-row">
-          <span class="hud-metric-lbl">Current Precision</span>
-          <span class="hud-metric-val">${Math.round(metrics.latest.precision * 100)}%</span>
-        </div>
-        <div class="hud-metric-row">
-          <span class="hud-metric-lbl">Current Recall</span>
-          <span class="hud-metric-val">${Math.round(metrics.latest.recall * 100)}%</span>
-        </div>
-        <div class="hud-metric-row">
-          <span class="hud-metric-lbl">Savings from Autonomous Blocks</span>
-          <span class="hud-metric-val" style="color:var(--green)">₹48,25,000</span>
-        </div>
-      `;
-    } catch(e) {
-      details += `<div class="hud-metric-row"><span class="hud-metric-lbl">ROI</span><span class="hud-metric-val">340%</span></div>`;
-    }
-  } else if (agentName === 'Knowledge Graph Agent') {
-    details += `
-      <div class="hud-section-title">Knowledge Graph State</div>
-      <p>Graph nodes representing asset permissions, logins, and threats.</p>
-    `;
-    try {
-      const [nodes, edges] = await Promise.all([apiGet('/api/v1/graph/nodes'), apiGet('/api/v1/graph/edges')]);
-      details += `
-        <div class="hud-metric-row">
-          <span class="hud-metric-lbl">Total Graph Nodes</span>
-          <span class="hud-metric-val">${nodes.length}</span>
-        </div>
-        <div class="hud-metric-row">
-          <span class="hud-metric-lbl">Total Graph Edges</span>
-          <span class="hud-metric-val">${edges.length}</span>
-        </div>
-      `;
     } catch(e) {}
-  } else {
-    details += `
-      <div class="hud-section-title">System Status</div>
-      <p>This agent acts autonomously as part of the NIRAVAN AI director cluster, running real-time defense tasks.</p>
-    `;
-  }
-
-  showHUD(agentName, "AUTONOMOUS SECURITY DIRECTOR", details);
-}
-
-async function showFabricHUD(engineName) {
-  let details = `
-    <div class="hud-section-title">Fabric Engine Status</div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Engine Name</span>
-      <span class="hud-metric-val" style="color:var(--gold)">${engineName}</span>
-    </div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Status</span>
-      <span class="hud-metric-val" style="color:var(--green)">● SYNCHRONIZED</span>
-    </div>
-  `;
-
-  if (engineName === 'Knowledge Graph Engine') {
+  } else if (name === 'Feedback Learning') {
     try {
-      const nodes = await apiGet('/api/v1/graph/nodes');
+      const incidents = await apiGet('/api/v1/incidents');
+      const suppressed = incidents.filter(i => i.status === 'suppressed');
       details += `
-        <div class="hud-section-title">Active Relationships</div>
+        <div class="hud-metric-row">
+          <span class="hud-metric-lbl">Total Suppressed False Positives</span>
+          <span class="hud-metric-val">${suppressed.length}</span>
+        </div>
+        <div class="hud-section-title">Submitted Feedback Logs</div>
         <div class="hud-logs">`;
-      nodes.slice(0, 8).forEach(n => {
-        details += `Node: ${n.name} (Type: ${n.entity_type})\n`;
-      });
+      if (suppressed.length > 0) {
+        suppressed.forEach(s => {
+          details += `[FP Feedback] Rule: ${s.rule_triggered} -> Suppressed.\n`;
+        });
+      } else {
+        details += `[FP Feedback] Admin:scheduled administrative login -> Suppressed PowerShell warning.\n`;
+      }
       details += `</div>`;
-      
+    } catch(e) {}
+  } else if (name === 'Ontology Classifier') {
+    try {
       const ont = await apiGet('/api/v1/knowledge/ontology');
-      details += `<div class="hud-section-title">Security Ontology Engine Mappings</div>`;
+      details += `<div class="hud-section-title">Ontology Category Mapping</div>`;
       ont.categories.forEach(cat => {
-        details += `<div class="hud-metric-row" style="margin-top: 8px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1)">
+        details += `<div class="hud-metric-row" style="margin-top:4px; font-weight:bold; border-bottom:1px solid rgba(255,255,255,0.1)">
            <span class="hud-metric-lbl">${cat.name}</span>
         </div>`;
-        cat.items.slice(0, 3).forEach(item => {
+        cat.items.slice(0, 2).forEach(item => {
           const keys = Object.keys(item);
           details += `<div class="hud-metric-row">
             <span class="hud-metric-lbl">${item[keys[0]]}</span>
-            <span class="hud-metric-val" style="font-size: 11px; color: var(--gold)">${item[keys[1]]}</span>
+            <span class="hud-metric-val" style="font-size:10px; color:var(--gold)">${item[keys[1]]}</span>
           </div>`;
         });
       });
     } catch(e) {}
-  } else if (engineName === 'Defense Memory Engine') {
-    try {
-      const kb = await apiGet('/api/v1/knowledge/base');
-      details += `<div class="hud-section-title">Tamil Nadu Cyber Knowledge Base (TNCKB)</div>
-      <p>Pre-packaged safety profiles & playbooks for critical state departments.</p>`;
-      for (const dept in kb.templates) {
-        details += `<div class="hud-metric-row" style="margin-top: 8px; font-weight: bold; color: var(--gold)">
-          <span>🏢 ${dept} Department Profile</span>
-        </div>
-        <p style="font-size:11px; margin: 4px 0; color: #ccc">${kb.templates[dept].description}</p>
-        <div class="hud-logs" style="font-size:10px; max-height:80px; overflow-y:auto; padding:4px;">`;
-        kb.templates[dept].rules.forEach(r => {
-          details += `• ${r}\n`;
-        });
-        details += `Compliance Focus: ${kb.templates[dept].compliance_focus.join(', ')}\n</div>`;
-      }
-    } catch(e) {}
-  } else if (engineName === 'Security Data Fabric') {
-    try {
-      const feed = await apiGet('/api/v1/intelligence/statewide-exchange');
-      details += `<div class="hud-section-title">Statewide Intelligence Exchange (TN-SIE)</div>
-      <div class="hud-metric-row">
-        <span class="hud-metric-lbl">Exchange Node Status</span>
-        <span class="hud-metric-val" style="color:var(--green)">${feed.status}</span>
-      </div>
-      <div class="hud-metric-row">
-        <span class="hud-metric-lbl">Participating Districts</span>
-        <span class="hud-metric-val">${feed.metrics.participating_districts}</span>
-      </div>
-      <div class="hud-section-title">Anonymized Shared Threat Feeds</div>
-      <div class="hud-logs">`;
-      feed.shared_iocs.forEach(ioc => {
-        details += `[${ioc.shared_at}] ${ioc.type}: ${ioc.indicator} | ${ioc.threat_type} (From: ${ioc.source})\n`;
-      });
-      details += `</div>`;
-    } catch(e) {}
-  } else if (engineName === 'Campaign Intelligence Engine') {
-    try {
-      const campaigns = await apiGet('/api/v1/campaigns');
-      details += `
-        <div class="hud-section-title">Identified Campaigns</div>
-        <div class="hud-logs">`;
-      campaigns.forEach(c => {
-        details += `Campaign: ${c.name} - Status: ${c.status} (Weight: ${c.weight})\n`;
-      });
-      details += `</div>`;
-    } catch(e) {}
   } else {
-    details += `
-      <p>Runs distributed analytics across all statewide threat vectors in real-time, providing immediate data fabric updates.</p>
-    `;
+    details += `<p style="margin-top:8px">Maintains semantic similarity stores using TF-IDF VectorMemory, providing immediate contextual lookup for incident responders.</p>`;
   }
 
-  showHUD(engineName, "CYBER INTELLIGENCE FABRIC", details);
+  showHUD(name, "MEMORY & REINFORCEMENT LEARNING", details);
+}
+
+async function showConsoleHUD(name) {
+  let details = `
+    <div class="hud-section-title">Human Interface Control</div>
+    <div class="hud-metric-row">
+      <span class="hud-metric-lbl">Console Module</span>
+      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
+    </div>
+  `;
+  if (name === 'SSE Live Stream') {
+    details += `
+      <div class="hud-metric-row">
+        <span class="hud-metric-lbl">SSE Channel</span>
+        <span class="hud-metric-val" style="color:var(--green)">● ESTABLISHED</span>
+      </div>
+      <p style="margin-top:8px">SSE connection streams live incident updates and telemetry warnings directly to the user dashboard dynamically.</p>
+    `;
+  } else {
+    details += `<p style="margin-top:8px">Provides administrative officers with interactive commands, translation controllers, and downloadable audit logs.</p>`;
+  }
+  showHUD(name, "STREAM & CONSOLE INTERFACE", details);
 }
 
 async function confirmCrisisLockdown() {
@@ -3510,221 +3795,6 @@ async function confirmCrisisLockdown() {
   }
 }
 
-async function showDetectionHUD(name) {
-  let details = `
-    <div class="hud-section-title">Detection Engine Status</div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Module</span>
-      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
-    </div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Active State</span>
-      <span class="hud-metric-val" style="color:var(--green)">● ONLINE</span>
-    </div>
-  `;
-
-  if (name === 'Deception Technology') {
-    try {
-      const res = await apiGet('/api/v1/deception/attribution');
-      details += `
-        <div class="hud-section-title">Honeypots Status</div>
-        <div class="hud-metric-row">
-          <span class="hud-metric-lbl">Total Deception Hits</span>
-          <span class="hud-metric-val">${res.total}</span>
-        </div>
-        <div class="hud-section-title">Trapped Attacker IPs</div>
-        <div class="hud-logs">`;
-      for (const ip in res.scanners) {
-        details += `IP: ${ip} -> hits: ${res.scanners[ip].hits} (${res.scanners[ip].bot_type})\n`;
-      }
-      details += `</div>`;
-    } catch(e) {}
-  } else if (name === 'Sigma Engine') {
-    details += `
-      <div class="hud-section-title">Active Sigma Rules</div>
-      <div class="hud-logs">Rule: PowerShell Credential Dump (SIG-004) - ACTIVE\nRule: Ransomware Shadow Copy Deletion (SIG-002) - ACTIVE\nRule: Web Honeypot Directory Scan (SIG-001) - ACTIVE\nRule: Host Isolation Initiated (SIG-005) - ACTIVE</div>
-    `;
-  } else if (name === 'Attack Path Solver') {
-    details += `
-      <div class="hud-section-title">Shortest Path Solver (Dijkstra)</div>
-      <p>Simulates the shortest network attack paths to critical assets.</p>
-    `;
-    try {
-      const res = await apiGet('/api/v1/graph/attack-path/User/admin@niravan.ai/Asset/ast-001');
-      details += `
-        <div class="hud-metric-row">
-          <span class="hud-metric-lbl">Source Node</span>
-          <span class="hud-metric-val">User/admin@niravan.ai</span>
-        </div>
-        <div class="hud-metric-row">
-          <span class="hud-metric-lbl">Target Node</span>
-          <span class="hud-metric-val">Asset/ast-001</span>
-        </div>
-        <div class="hud-section-title">Attack Path Calculation</div>
-        <div class="hud-logs">${res.attack_path ? res.attack_path.join(' -> ') : 'User/admin@niravan.ai -> Access -> Asset/ast-001'}</div>
-      `;
-    } catch(e) {}
-  } else if (name === 'Blast Radius Analyzer') {
-    details += `
-      <div class="hud-section-title">Blast Radius BFS calculation</div>
-      <p>Calculates the potential blast radius of a compromised node.</p>
-    `;
-    try {
-      const res = await apiGet('/api/v1/graph/blast-radius/User/admin@niravan.ai');
-      details += `
-        <div class="hud-metric-row">
-          <span class="hud-metric-lbl">Target entity</span>
-          <span class="hud-metric-val">User/admin@niravan.ai</span>
-        </div>
-        <div class="hud-section-title">Blast Radius Output</div>
-        <div class="hud-logs">${res.blast_radius ? res.blast_radius.join(', ') : 'User/admin@niravan.ai, Asset/ast-001, Case/1'}</div>
-      `;
-    } catch(e) {}
-  } else {
-    details += `<p>Performs real-time behavior analytics and pattern matching on state telemetry logs.</p>`;
-  }
-
-  showHUD(name, "DETECTION & ANALYTICS LAYER", details);
-}
-
-async function showExposureHUD(name) {
-  let details = `
-    <div class="hud-section-title">Exposure Engine Status</div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Engine</span>
-      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
-    </div>
-  `;
-
-  if (name === 'ASM Engine') {
-    details += `
-      <p>Allows automated exposure scans on external target surfaces.</p>
-      <div class="hud-section-title">Trigger Network Scan</div>
-      <div style="display:flex; gap:6px; margin-top:8px">
-        <input type="text" id="asm-target" placeholder="e.g. school.tn.gov.in" style="flex:1; background:#0f0a0a; border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:6px; font-family:inherit; color:#fff; font-size:11px">
-        <button class="hud-btn hud-btn-primary" onclick="triggerAsmScan()" style="flex:initial; padding:6px 12px">Scan</button>
-      </div>
-      <div id="asm-status-log" class="hud-logs" style="margin-top:8px; display:none"></div>
-    `;
-  } else {
-    details += `
-      <div class="hud-metric-row">
-        <span class="hud-metric-lbl">State</span>
-        <span class="hud-metric-val" style="color:var(--green)">● RUNNING</span>
-      </div>
-      <p>Scans domain databases, DNS configurations, and SSL certs for vulnerabilities and shadow exposures.</p>
-    `;
-  }
-
-  showHUD(name, "EXPOSURE & ATTACK SURFACE LAYER", details);
-}
-
-async function triggerAsmScan() {
-  const target = document.getElementById('asm-target').value.trim();
-  const logEl = document.getElementById('asm-status-log');
-  if (!target) { showToast('Please enter a target domain','err'); return; }
-  logEl.style.display = 'block';
-  logEl.textContent = `[ASM] Initiating domain discovery scan for: ${target}...\n`;
-  try {
-    const res = await fetch(`${API}/api/v1/asm/scan-network`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
-      body: JSON.stringify({ target })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || 'Scan failed');
-    logEl.textContent += `[ASM] Scan request queued successfully. Job ID: ${data.job_id}\n`;
-    logEl.textContent += `[ASM] Polling job status...\n`;
-    
-    // Poll job status once
-    setTimeout(async () => {
-      try {
-        const job = await apiGet(`/api/v1/jobs/${data.job_id}`);
-        logEl.textContent += `[ASM] Job state: ${job.status.toUpperCase()} (Total targets found: ${job.details.ports ? job.details.ports.length : 0})\n`;
-      } catch(e) {}
-    }, 1500);
-  } catch(e) {
-    logEl.textContent += `[ERROR] Scan request failed: ${e.message}\n`;
-  }
-}
-
-async function showIntelHUD(name) {
-  let details = `
-    <div class="hud-section-title">Threat Intelligence Feed</div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Feed Provider</span>
-      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
-    </div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Connectivity</span>
-      <span class="hud-metric-val" style="color:var(--green)">● SYNCHRONIZED</span>
-    </div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Sync Interval</span>
-      <span class="hud-metric-val">Every 15 minutes</span>
-    </div>
-    <p style="margin-top:8px">Pulls active indicators of compromise (IOCs) such as hostile IP addresses, file hashes, and attack patterns to seed active blocklists.</p>
-  `;
-  showHUD(name, "THREAT INTELLIGENCE ECOSYSTEM", details);
-}
-
-async function showTelemetryHUD(name) {
-  let details = `
-    <div class="hud-section-title">Statewide Telemetry Ingestor</div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Source Type</span>
-      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
-    </div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Ingest Rate</span>
-      <span class="hud-metric-val">~42 events/sec</span>
-    </div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Link Status</span>
-      <span class="hud-metric-val" style="color:var(--green)">● STABLE</span>
-    </div>
-    <p style="margin-top:8px">Ingests event signals from endpoints, firewalls, and cloud logs, passing them to the Sigma correlation engine.</p>
-  `;
-  showHUD(name, "TELEMETRY COLLECTION LAYER", details);
-}
-
-async function showResponseHUD(name) {
-  let details = `
-    <div class="hud-section-title">Autonomous Action Interface</div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Action</span>
-      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
-    </div>
-  `;
-
-  if (name === 'Auto Block' || name === 'Block IP / Domain' || name === 'Auto Block') {
-    details += `
-      <p>Allows adding hostile IP addresses to the firewall blocklist immediately.</p>
-      <div class="hud-section-title">Manually Block Hostile IP</div>
-      <div style="display:flex; gap:6px; margin-top:8px">
-        <input type="text" id="block-ip-val" placeholder="e.g. 185.220.101.47" style="flex:1; background:#0f0a0a; border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:6px; font-family:inherit; color:#fff; font-size:11px">
-        <button class="hud-btn hud-btn-primary" onclick="triggerBlockIp()" style="flex:initial; padding:6px 12px">Block IP</button>
-      </div>
-      <div id="block-ip-log" class="hud-logs" style="margin-top:8px; display:none"></div>
-    `;
-  } else if (name === 'Emergency Lockdown') {
-    details += `
-      <p style="color:var(--red); font-weight:700">⚠ WARNING: Emergency Lockdown will isolate the entire network segment immediately.</p>
-      <button class="hud-btn hud-btn-primary" onclick="triggerLockdown()" style="width:100%; margin-top:8px; background:var(--red)">INTRUSION LOCKDOWN</button>
-    `;
-  } else {
-    details += `
-      <div class="hud-metric-row">
-        <span class="hud-metric-lbl">Configuration</span>
-        <span class="hud-metric-val">Fully Autonomous</span>
-      </div>
-      <p>Handles immediate incident containment playbooks under administrative supervision.</p>
-    `;
-  }
-
-  showHUD(name, "AUTONOMOUS RESPONSE LAYER", details);
-}
-
 async function triggerBlockIp() {
   const ip = document.getElementById('block-ip-val').value.trim();
   const logEl = document.getElementById('block-ip-log');
@@ -3753,47 +3823,6 @@ function triggerLockdown() {
   }
 }
 
-async function showLearningHUD(name) {
-  let details = `
-    <div class="hud-section-title">Feedback & Learning Engine</div>
-    <div class="hud-metric-row">
-      <span class="hud-metric-lbl">Module</span>
-      <span class="hud-metric-val" style="color:var(--gold)">${name}</span>
-    </div>
-  `;
-
-  if (name === 'Feedback Learning') {
-    details += `
-      <p>Feedback logs submitted by the administrative officers to train the machine learning layers.</p>
-      <div class="hud-section-title">Submitted Feedback History</div>
-    `;
-    try {
-      const incidents = await apiGet('/api/v1/incidents');
-      const suppressed = incidents.filter(i => i.status === 'suppressed');
-      details += `
-        <div class="hud-metric-row">
-          <span class="hud-metric-lbl">Total Suppressed False Positives</span>
-          <span class="hud-metric-val">${suppressed.length}</span>
-        </div>
-        <div class="hud-logs">`;
-      if (suppressed.length > 0) {
-        suppressed.forEach(s => {
-          details += `[FP Feedback] Rule: ${s.rule_triggered} -> Suppressed.\n`;
-        });
-      } else {
-        details += `[FP Feedback] Admin:scheduled administrative login -> Suppressed PowerShell warning.\n`;
-      }
-      details += `</div>`;
-    } catch(e) {}
-  } else {
-    details += `
-      <p>Continuously trains models on false positive distributions, asset classification changes, and campaign histories.</p>
-    `;
-  }
-
-  showHUD(name, "LEARNING & EVOLUTION LAYER", details);
-}
-
 function renderArchitecturePage() {
   // OS Blueprint page renders dynamically
 }
@@ -3819,7 +3848,23 @@ function navigate(page) {
 }
 
 /* Guardian Copilot Chat Function */
+// Initialize copilot history globally
+if (!window.copilotHistory) {
+  window.copilotHistory = [];
+}
+
+function selectSuggestedPrompt(promptText) {
+  const input = document.getElementById('chat-input');
+  if (input) {
+    input.value = promptText;
+    sendChat();
+  }
+}
+
 async function sendChat() {
+  const welcomeCard = document.getElementById('chat-welcome-card');
+  if (welcomeCard) welcomeCard.style.display = 'none';
+
   const input = document.getElementById('chat-input');
   const msgContainer = document.getElementById('chat-messages');
   if (!input || !msgContainer) return;
@@ -3867,10 +3912,40 @@ async function sendChat() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${authToken}`
       },
-      body: JSON.stringify({ prompt: q })
+      body: JSON.stringify({ prompt: q, history: window.copilotHistory })
     });
     const data = await res.json();
     msgContainer.removeChild(typing);
+
+    // Save message and reply to history
+    window.copilotHistory.push({ role: 'user', content: q });
+    window.copilotHistory.push({ role: 'assistant', content: data.response || '' });
+    if (window.copilotHistory.length > 12) {
+      window.copilotHistory.shift();
+      window.copilotHistory.shift();
+    }
+
+    // Build tool calls trace HTML
+    let toolTraceHtml = '';
+    if (data.tool_calls && data.tool_calls.length > 0) {
+      toolTraceHtml = '<div class="tool-calls-container" style="margin-top: 8px; border-top: 1px dashed var(--border); padding-top: 8px; display:flex; flex-direction:column; gap:6px;">';
+      data.tool_calls.forEach(tc => {
+        const success = tc.result && tc.result.success;
+        const color = success ? '#10b981' : '#ef4444';
+        const icon = success ? '✅' : '❌';
+        toolTraceHtml += `
+          <div class="tool-call-trace" style="background:#f9fafb; border:1px solid var(--border); border-left:3px solid ${color}; border-radius:4px; padding:6px 10px; font-family:var(--font-mono); font-size:11px; text-align:left;">
+            <div style="font-weight:700; display:flex; justify-content:space-between; align-items:center;">
+              <span>🔧 Tool Executed: <strong>${tc.name}</strong></span>
+              <span style="color:${color}; font-size:10px;">${icon} ${success ? 'Success' : 'Failed'}</span>
+            </div>
+            <div style="color:var(--text-secondary); margin-top:2px; font-size:10px;">Input: ${JSON.stringify(tc.input)}</div>
+            ${tc.result && tc.result.reason ? `<div style="color:var(--text-secondary); margin-top:2px; font-size:10px;">Reason: ${tc.result.reason}</div>` : ''}
+          </div>
+        `;
+      });
+      toolTraceHtml += '</div>';
+    }
 
     const reply = document.createElement('div');
     reply.className = 'message niravan-msg';
@@ -3881,7 +3956,8 @@ async function sendChat() {
       <div class="msg-avatar" style="background:linear-gradient(135deg,#8B1A1A,#C9A227); color:#fff; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px;">N</div>
       <div class="msg-bubble" style="background:#fff; border:1px solid var(--border); padding:10px 14px; border-radius:8px; max-width:75%;">
         <div class="msg-header" style="font-weight:700; font-size:11px; color:var(--maroon); margin-bottom:4px;">NIRAVAN AI</div>
-        <div class="msg-content" style="font-size:12px; color:var(--text-primary); white-space:pre-wrap;">${esc(data.response || "No response")}</div>
+        <div class="msg-content" style="font-size:12px; color:var(--text-primary); white-space:pre-wrap; text-align:left;">${esc(data.response || "No response")}</div>
+        ${toolTraceHtml}
       </div>
     `;
     msgContainer.appendChild(reply);
@@ -3903,6 +3979,192 @@ async function sendChat() {
     msgContainer.appendChild(errorMsg);
     msgContainer.scrollTop = msgContainer.scrollHeight;
   }
+}
+
+async function triggerSimulation() {
+  showToast('Initiating statewide multi-stage attack simulation...', 'ok');
+  
+  // Clear activity log with animated progress view
+  const logEl = document.getElementById('agent-activity-log');
+  if (logEl) {
+    logEl.innerHTML = `
+      <div id="sim-init-view" style="display:flex; flex-direction:column; gap:10px; font-family:var(--font-mono); font-size:10px; text-align:left; margin-top:10px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; background:var(--maroon); border-radius:50%; display:inline-block; animation: pulse-ring 1s infinite;"></span>
+          <span style="font-weight:700; color:var(--maroon);">INITIALIZING SIMULATION WAVE...</span>
+        </div>
+        <div style="border:1px solid var(--border); border-radius:4px; padding:8px 10px; background:#fafafa; display:flex; flex-direction:column; gap:5px;">
+          <div style="display:flex; justify-content:space-between; color:#3b82f6;">
+            <span>➔ Resolving Network Topology</span><span class="loading-dots">...</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; color:var(--text-muted);">
+            <span>➔ Binding Swarm Domain Directors</span><span>[WAITING]</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; color:var(--text-muted);">
+            <span>➔ Seeding MITRE Attack Vectors</span><span>[WAITING]</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    setTimeout(() => {
+      const step1 = document.querySelector('#sim-init-view div div:nth-child(1)');
+      if (step1) step1.innerHTML = '<span>✔ Resolved Network Topology</span><span style="color:#10b981; font-weight:bold;">[RESOLVED]</span>';
+      const step2 = document.querySelector('#sim-init-view div div:nth-child(2)');
+      if (step2) {
+        step2.style.color = '#3b82f6';
+        step2.innerHTML = '<span>➔ Binding Swarm Domain Directors</span><span class="loading-dots">...</span>';
+      }
+    }, 600);
+
+    setTimeout(() => {
+      const step2 = document.querySelector('#sim-init-view div div:nth-child(2)');
+      if (step2) step2.innerHTML = '<span>✔ Bound Swarm Domain Directors</span><span style="color:#10b981; font-weight:bold;">[BOUND]</span>';
+      const step3 = document.querySelector('#sim-init-view div div:nth-child(3)');
+      if (step3) {
+        step3.style.color = '#3b82f6';
+        step3.innerHTML = '<span>➔ Seeding MITRE Attack Vectors</span><span class="loading-dots">...</span>';
+      }
+    }, 1200);
+
+    setTimeout(() => {
+      const step3 = document.querySelector('#sim-init-view div div:nth-child(3)');
+      if (step3) step3.innerHTML = '<span>✔ Seeded MITRE Attack Vectors</span><span style="color:#10b981; font-weight:bold;">[ACTIVE]</span>';
+    }, 1800);
+  }
+  
+  try {
+    const res = await fetch(`${API}/api/v1/simulate/attack-wave`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      }
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showToast('Simulation triggered successfully!', 'ok');
+    } else {
+      showToast(`Simulation failed: ${data.detail}`, 'err');
+    }
+  } catch (err) {
+    showToast('Failed to connect to simulation api', 'err');
+  }
+}
+
+function addAgentActivityLog(incidentId, step, status, message) {
+  const logEl = document.getElementById('agent-activity-log');
+  if (!logEl) return;
+  
+  // Remove placeholder if present
+  if (logEl.innerHTML.includes('No agent activity logged yet') || document.getElementById('agent-standby-view') || document.getElementById('sim-init-view')) {
+    logEl.innerHTML = '';
+  }
+  
+  const stepColors = {
+    'observe': '#3b82f6',
+    'think': '#a855f7',
+    'plan': '#f59e0b',
+    'validate': '#10b981',
+    'execute': '#ef4444',
+    'verify': '#14b8a6',
+    'learn': '#6366f1',
+    'explain': '#06b6d4',
+    'forensics': '#f43f5e'
+  };
+  
+  const color = stepColors[step.toLowerCase()] || 'var(--text-secondary)';
+  const timestamp = new Date().toLocaleTimeString();
+  
+  const entry = document.createElement('div');
+  entry.style.borderBottom = '1px solid #f3f4f6';
+  entry.style.paddingBottom = '4px';
+  entry.style.textAlign = 'left';
+  entry.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-weight:700; color:${color}; font-size:10px;">[${step.toUpperCase()}]</span>
+      <span style="color:var(--text-muted); font-size:9px;">${timestamp}</span>
+    </div>
+    <div style="margin-top:2px; color:var(--text-primary); font-size:10px;">${message}</div>
+  `;
+  
+  logEl.appendChild(entry);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function startSseListener() {
+  if (window.sseSource) {
+    window.sseSource.close();
+  }
+  
+  const source = new EventSource(`${API}/api/v1/events/stream`);
+  window.sseSource = source;
+  
+  source.addEventListener('planner_started', (e) => {
+    const data = JSON.parse(e.data);
+    showToast(`🤖 Planner cycle started for incident ${data.incident_id.substring(0,8)}...`, 'ok');
+    addAgentActivityLog(data.incident_id, 'observe', 'observe started', 'Analyzing threat environment, similar past incidents, and knowledge graph relationships...');
+  });
+  
+  source.addEventListener('planner_completed', (e) => {
+    const data = JSON.parse(e.data);
+    const result = data.result;
+    const status = data.status;
+    const isSuccess = status === 'completed';
+    
+    showToast(`🤖 Planner cycle completed: ${isSuccess ? 'Auto-Mitigated' : 'Requires Approval'}`, 'ok');
+    
+    loadApiData();
+    
+    if (result && result.steps) {
+      if (result.steps.think) {
+        addAgentActivityLog(data.incident_id, 'think', 'completed', `Attribution: ${result.steps.think.attack_pattern} (${result.steps.think.technique_id}). Est. Severity: ${result.steps.think.severity}. Confidence: ${result.steps.think.confidence}`);
+      }
+      if (result.consensus && result.consensus.forensics_summary && result.consensus.forensics_summary.findings && result.consensus.forensics_summary.findings.length > 0) {
+        let forensicsHtml = '<div style="margin-top: 4px; padding-left: 10px; border-left: 2px solid #f43f5e; font-family: inherit;">';
+        result.consensus.forensics_summary.findings.forEach(finding => {
+          forensicsHtml += `<div style="margin-bottom: 2px; color: var(--text-secondary); font-size: 9px;">🕵️ ${finding}</div>`;
+        });
+        forensicsHtml += '</div>';
+        addAgentActivityLog(data.incident_id, 'forensics', 'completed', `<strong>Correlated Forensics Timeline:</strong>${forensicsHtml}`);
+      }
+      if (result.steps.plan) {
+        addAgentActivityLog(data.incident_id, 'plan', 'completed', `Formulated ${result.steps.plan.actions.length} action(s): ${result.steps.plan.actions.map(a => a.type).join(', ')}`);
+      }
+      if (result.steps.validate) {
+        addAgentActivityLog(data.incident_id, 'validate', 'completed', `Validation result: ${result.steps.validate.reason}`);
+      }
+      if (result.explanation && result.explanation.reason_checklist) {
+        let checklistHtml = '<div style="margin-top: 4px; padding-left: 10px; border-left: 2px solid #06b6d4; font-family: inherit;">';
+        result.explanation.reason_checklist.forEach(reason => {
+          checklistHtml += `<div style="margin-bottom: 2px; color: var(--text-secondary); font-size: 9px;">📋 ${reason}</div>`;
+        });
+        checklistHtml += '</div>';
+        addAgentActivityLog(data.incident_id, 'explain', 'completed', `<strong>Autonomous Rationale Checklist:</strong>${checklistHtml}`);
+      }
+      if (result.steps.execute) {
+        result.steps.execute.forEach(ex => {
+          addAgentActivityLog(data.incident_id, 'execute', 'completed', `Executed action '${ex.action.type}' -> success: ${ex.result.success}`);
+        });
+      }
+      if (result.steps.verify) {
+        addAgentActivityLog(data.incident_id, 'verify', 'completed', `Mitigation verification: ${result.steps.verify.status} (effectiveness: ${result.steps.verify.effectiveness})`);
+      }
+      if (result.steps.learn) {
+        addAgentActivityLog(data.incident_id, 'learn', 'completed', 'Reinforcement learning loop committed data to memory database.');
+      }
+    }
+  });
+  
+  source.addEventListener('planner_failed', (e) => {
+    const data = JSON.parse(e.data);
+    showToast(`❌ Planner loop failed for incident: ${data.incident_id.substring(0,8)}`, 'err');
+    addAgentActivityLog(data.incident_id, 'execute', 'failed', `Error: ${data.error}`);
+  });
+  
+  source.onerror = (err) => {
+    console.error("SSE Connection error", err);
+  };
 }
 
 /* Guardian Mode */

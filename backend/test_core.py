@@ -105,6 +105,26 @@ def test_copilot_responses():
         assert res.status_code == 200
         assert "Threat Tool Reference" in res.json()["response"]
 
+        # Test TNCKB Hospital response
+        res = client.post("/api/v1/copilot", headers=headers, json={"prompt": "Show TNCKB security template for public hospitals"})
+        assert res.status_code == 200
+        assert "Hospitals & Health Centers" in res.json()["response"]
+
+        # Test TNCKB School response
+        res = client.post("/api/v1/copilot", headers=headers, json={"prompt": "What is the EMIS database security policy?"})
+        assert res.status_code == 200
+        assert "School & Educational Institutions" in res.json()["response"]
+
+        # Test Defense Memory response
+        res = client.post("/api/v1/copilot", headers=headers, json={"prompt": "Show past remediation logs from Defense Memory"})
+        assert res.status_code == 200
+        assert "Defense Memory" in res.json()["response"]
+
+        # Test Compliance response
+        res = client.post("/api/v1/copilot", headers=headers, json={"prompt": "Verify compliance status for CERT-In guidelines and DPDP act."})
+        assert res.status_code == 200
+        assert "Regulatory Readiness" in res.json()["response"]
+
 def test_new_intelligence_features():
     with TestClient(app) as client:
         # 1. Login
@@ -335,6 +355,41 @@ def test_guardian_ai_officer_copilot():
         res = client.post("/api/v1/copilot", headers=headers, json={"prompt": "What vulnerabilities does my system have?"})
         assert res.status_code == 200
         assert len(res.json()["response"]) > 50
+
+
+def test_active_directory_defense_and_threat_hunting():
+    from wazuh_ingestor import WazuhIngestor
+    from threat_hunting.campaign_manager import CampaignManager
+    
+    # 1. Test AD event log parsing
+    log_4769 = {
+        "EventID": 4769,
+        "TicketEncryptionType": "0x17",
+        "ServiceName": "krbtgt"
+    }
+    normalized = WazuhIngestor.parse_log("windows_event", log_4769)
+    assert normalized["event_name"] == "Kerberoasting Ticket Request (EventID 4769)"
+    assert normalized["severity"] == "critical"
+    assert "T1558.003" in normalized["mitre"]
+    
+    log_4662 = {
+        "EventID": 4662,
+        "Properties": "{1131f6aa-9c07-11d1-f79f-00c04fc2dcd2}"
+    }
+    normalized = WazuhIngestor.parse_log("windows_event", log_4662)
+    assert "DCSync" in normalized["event_name"]
+    assert normalized["severity"] == "critical"
+    assert "T1003.006" in normalized["mitre"]
+    
+    # 2. Test CampaignManager runs without errors
+    db = SessionLocal()
+    try:
+        res = CampaignManager.run_hunt_campaign(db)
+        assert res["status"] == "completed"
+        assert res["cves_synced"] >= 0
+        assert res["assets_mapped"] >= 0
+    finally:
+        db.close()
 
 
 if __name__ == "__main__":

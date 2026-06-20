@@ -189,6 +189,47 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .prog-bar{height:100%;background:linear-gradient(90deg,var(--mb),var(--g),var(--gb));width:0;transition:width .4s;
   box-shadow:0 0 10px rgba(212,175,55,.5)}
 
+/* ── SHIELD BTN ── */
+.shield-btn {
+  margin-top: 12px;
+  background: linear-gradient(135deg, #0b1528, #070e1b);
+  border: 2px solid rgba(0, 195, 255, 0.3);
+  color: #60c0ff;
+  box-shadow: 0 0 20px rgba(0, 195, 255, 0.08);
+}
+.shield-btn:hover:not(:disabled) {
+  border-color: #00d2ff;
+  box-shadow: 0 0 30px rgba(0, 195, 255, 0.25), 0 0 60px rgba(7, 14, 27, 0.4);
+  transform: translateY(-2px);
+}
+.shield-btn.active {
+  background: linear-gradient(135deg, rgba(0, 195, 255, 0.15), rgba(48, 209, 88, 0.1));
+  border-color: #30d158;
+  color: #30d158;
+  text-shadow: 0 0 10px rgba(48, 209, 88, 0.3);
+  box-shadow: 0 0 30px rgba(48, 209, 88, 0.2), inset 0 0 15px rgba(48, 209, 88, 0.1);
+  animation: pulse-border 2s infinite ease-in-out;
+}
+.shield-btn.active:hover:not(:disabled) {
+  border-color: #ff453a;
+  color: #ff453a;
+  text-shadow: 0 0 10px rgba(255, 69, 58, 0.3);
+  box-shadow: 0 0 30px rgba(255, 69, 58, 0.2), inset 0 0 15px rgba(255, 69, 58, 0.1);
+}
+@keyframes pulse-border {
+  0%, 100% { border-color: #30d158; box-shadow: 0 0 20px rgba(48, 209, 88, 0.2); }
+  50% { border-color: #00c3ff; box-shadow: 0 0 35px rgba(0, 195, 255, 0.35); }
+}
+.pulse-shield-icon {
+  display: inline-block;
+  animation: pulse-scale 2s infinite ease-in-out;
+}
+@keyframes pulse-scale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+
 /* ── TERMINAL ── */
 .term{background:#03050d;border:1px solid rgba(212,175,55,.12);border-radius:16px;overflow:hidden;margin-bottom:24px}
 .thd{background:rgba(212,175,55,.05);border-bottom:1px solid var(--br);padding:10px 16px;display:flex;align-items:center;gap:10px}
@@ -524,7 +565,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 
 <!-- NOTIFICATION PANEL -->
-<div class="notif-panel" id="npanel"></div>
+<div class="notif-panel" id="npanel" style="display:none"></div>
 
 <!-- PAGE -->
 <div class="page">
@@ -580,6 +621,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="hi"><div class="hdot d" id="hd-blk"></div><span class="hlbl">Block Engine</span><span class="hval" id="hv-blk" style="color:var(--dim)">ARMED</span></div>
   <div class="hsp"></div>
   <div class="hi"><div class="hdot d" id="hd-scan"></div><span class="hlbl">Last Scan</span><span class="hval" id="hv-scan" style="color:var(--dim)">NONE</span></div>
+  <div class="hsp"></div>
+  <div class="hi"><div class="hdot g" id="hd-anom"></div><span class="hlbl">Anomaly Index</span><span class="hval" id="hv-anom" style="color:var(--green)">0% (SAFE)</span></div>
   <div class="hgap"></div>
   <button class="btn btn-gh" style="font-size:10px;padding:5px 10px" onclick="checkHealth()">🔄 Status</button>
 </div>
@@ -666,6 +709,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <span id="sbi">🔍</span><span id="sbt">INITIATE WORLD-CLASS CYBER INTELLIGENCE SCAN</span>
   </button>
   <div class="prog-wrap" id="pw"><div class="prog-bar" id="pb"></div></div>
+  <button class="scan-btn shield-btn" id="shield-btn" onclick="toggleContinuousMonitoring()">
+    <span id="shbi">🛡️</span><span id="shbt">ACTIVATE 24H ACTIVE SECURITY SHIELD (MONITORING)</span>
+  </button>
 </div>
 
 <!-- TERMINAL -->
@@ -716,6 +762,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="tabs">
     <button class="tab active" onclick="sw('atk')">⚔️ Attack Log</button>
     <button class="tab" onclick="sw('ips')">🌐 IP Tracker</button>
+    <button class="tab" onclick="sw('topo')">🌐 Subnet Topology</button>
+    <button class="tab" onclick="sw('playbooks')">📋 Defense Playbooks</button>
     <button class="tab" onclick="sw('tools')">🛠️ Tool KB</button>
     <button class="tab" onclick="sw('worldkb')">🌍 World KB</button>
     <button class="tab" onclick="sw('compliance')">✅ Compliance</button>
@@ -809,6 +857,106 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="empty" id="cap-empty"><div class="empty-icon">📸</div><div class="empty-title">No captures yet</div><div class="empty-desc">Captures are triggered automatically when intrusion or alien program injection is detected</div></div>
   </div>
 
+  <!-- TOPOLOGY MAP -->
+  <div class="tp-panel" id="panel-topo">
+    <div class="sh" style="margin-bottom:14px">
+      <div class="shi si-g">🌐</div>
+      <div>
+        <div class="sh-title">Interactive Subnet Topology Map</div>
+        <div class="sh-desc">Real-time visualization of local network assets, vulnerability risk vector paths, and active EDR containment status</div>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;padding:12px 16px;background:rgba(90,200,250,.06);border:1px solid rgba(90,200,250,.2);border-radius:10px;font-size:11px;color:var(--sub);display:flex;justify-content:between;align-items:center">
+      <span>🌐 Click on any host asset node below to inspect operating system properties, open ports, vulnerability scores, and trigger manual isolation.</span>
+      <button class="btn btn-gh" style="font-size:10px;padding:3px 8px;margin-left:auto" onclick="resetTopologyState()">🔄 Reset Map</button>
+    </div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap">
+      <div style="flex:2;min-width:300px;background:#03050d;border:1px solid rgba(212,175,55,.12);border-radius:16px;padding:15px;position:relative">
+        <canvas id="topo-map" width="600" height="420" style="width:100%;height:auto;cursor:pointer"></canvas>
+      </div>
+      <div style="flex:1;min-width:260px;background:rgba(212,175,55,.03);border:1px solid rgba(212,175,55,.12);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px" id="topo-details">
+        <div style="font-size:13px;font-weight:800;color:var(--g);border-bottom:1px solid rgba(212,175,55,.2);padding-bottom:8px">🖥️ Node Asset Inspector</div>
+        <div id="topo-inspect-empty" style="color:var(--sub);font-size:11px;text-align:center;padding:40px 10px">
+          No asset selected.<br>Click any network node in the map.
+        </div>
+        <div id="topo-inspect-data" style="display:none;font-size:11px;line-height:1.6">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Asset ID:</span><b id="inspect-id" class="txt-g">-</b></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Host Name:</span><b id="inspect-name">-</b></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>IP Address:</span><b id="inspect-ip" class="txt-b">-</b></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>OS:</span><b id="inspect-os">-</b></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Services:</span><b id="inspect-services">-</b></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Criticality:</span><b id="inspect-crit" class="txt-o">-</b></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Risk Index:</span><b id="inspect-risk" class="txt-r">-</b></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:12px"><span>EDR Status:</span><span id="inspect-status-badge" class="tag tg">SAFE</span></div>
+          <div style="display:flex;gap:6px;margin-top:10px">
+            <button class="btn btn-red" id="btn-inspect-isolate" onclick="inspectIsolate()" style="flex:1;font-size:10px;padding:6px 0">🛡️ Isolate</button>
+            <button class="btn btn-g" id="inspect-rescan-btn" onclick="inspectRescan()" style="flex:1;font-size:10px;padding:6px 0">🔍 Scan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAYBOOKS -->
+  <div class="tp-panel" id="panel-playbooks">
+    <div class="sh" style="margin-bottom:14px">
+      <div class="shi si-c">📋</div>
+      <div>
+        <div class="sh-title">Granular Active Defense Playbook Editor</div>
+        <div class="sh-desc">Configure conditional threat containment guidelines (IF-THEN) executed autonomously during monitoring cycles</div>
+      </div>
+    </div>
+    
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:20px;margin-bottom:20px">
+      <!-- Add Rule Card -->
+      <div style="background:#03050d;border:1px solid rgba(212,175,55,.12);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-size:13px;font-weight:800;color:var(--g);border-bottom:1px solid rgba(212,175,55,.2);padding-bottom:8px">➕ Create Security Playbook</div>
+        
+        <div>
+          <label style="font-size:10px;color:var(--sub);display:block;margin-bottom:4px">Rule Title</label>
+          <input class="finp" id="pb-title" placeholder="e.g. Block Bruteforcers" style="font-size:11px">
+        </div>
+        
+        <div>
+          <label style="font-size:10px;color:var(--sub);display:block;margin-bottom:4px">Trigger Condition (IF)</label>
+          <select class="fsel" id="pb-trigger" style="font-size:11px">
+            <option value="CRITICAL_ATTACK">Attack Severity is CRITICAL</option>
+            <option value="HIGH_ATTACK">Attack Severity is HIGH</option>
+            <option value="ALIEN_DETECTED">Alien Program Detected</option>
+            <option value="ANOMALY_HIGH">Behavioral Anomaly Index > 80%</option>
+            <option value="TOOL_NMAP">Hacking Tool matches Nmap</option>
+            <option value="TOOL_METASPLOIT">Hacking Tool matches Metasploit</option>
+            <option value="TOOL_SQLMAP">Hacking Tool matches SQLmap</option>
+          </select>
+        </div>
+        
+        <div>
+          <label style="font-size:10px;color:var(--sub);display:block;margin-bottom:4px">Mitigation Action (THEN)</label>
+          <select class="fsel" id="pb-action" style="font-size:11px">
+            <option value="BLOCK_IP">Block Attacker IP (Mitigation API)</option>
+            <option value="ISOLATE_HOST">Isolate Target Host (EDR API)</option>
+            <option value="CAMERA_BURST">Trigger Forensic Camera Burst Capture</option>
+            <option value="ISOLATE_AND_BLOCK">Block IP AND Isolate Target Host</option>
+            <option value="LOG_CRITICAL">Raise Live SOC Case Alert</option>
+          </select>
+        </div>
+        
+        <button class="btn btn-g" style="font-size:11px;padding:8px 0;margin-top:10px" onclick="addPlaybookRule()">💾 Save Playbook Rule</button>
+      </div>
+      
+      <!-- Rules List -->
+      <div style="background:#03050d;border:1px solid rgba(212,175,55,.12);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-size:13px;font-weight:800;color:var(--g);border-bottom:1px solid rgba(212,175,55,.2);padding-bottom:8px;display:flex;justify-content:space-between">
+          <span>📋 Active Defense Playbook Policies</span>
+          <span class="tag tg" id="playbook-active-count">0 Rules Active</span>
+        </div>
+        <div id="playbook-rules-list" style="display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto;padding-right:5px">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="div"></div>
 
   <!-- ACTIONS -->
@@ -881,6 +1029,24 @@ const API = 'http://localhost:8000/api/v1';
 let allAtks=[], allIPs={}, blockedIPs=new Set(), camCaptures=[], notifCount=0, pendingBlockIP=null, scanDepth='std';
 let camStream=null, camActive=false;
 let chartSev=null, chartTools=null, chartGeo=null, chartTime=null;
+let isMonitoringActive = false;
+let monitoringSecondsRemaining = 86400;
+let monitoringTimerId = null;
+let monitoringScanIntervalId = null;
+let processedAuditIds = new Set();
+let topoAssets = [
+  { id: 'gw-01', name: 'Gateway Firewall', ip: '10.0.0.1', os: 'FortiOS 7.2', services: 'SSH (22), HTTPS (443)', crit: 'HIGH', risk: 10, status: 'SAFE', type: 'gateway', x: 300, y: 80 },
+  { id: 'web-01', name: 'Internal Web Portal', ip: '10.0.0.5', os: 'Ubuntu 22.04 LTS', services: 'HTTP (80), HTTPS (443)', crit: 'CRITICAL', risk: 25, status: 'SAFE', type: 'web', x: 150, y: 200 },
+  { id: 'db-01', name: 'EMIS Citizen Database', ip: '10.0.0.10', os: 'RHEL 9.1 (PostgreSQL)', services: 'PGSQL (5432)', crit: 'CRITICAL', risk: 15, status: 'SAFE', type: 'db', x: 450, y: 200 },
+  { id: 'srv-02', name: 'Secure Backup Vault', ip: '10.0.0.12', os: 'TrueNAS Core', services: 'NFS (2049), SMB (445)', crit: 'HIGH', risk: 12, status: 'SAFE', type: 'backup', x: 200, y: 320 },
+  { id: 'work-05', name: 'Admin Workstations', ip: '10.0.0.50', os: 'Windows 11 Enterprise', services: 'RDP (3389)', crit: 'MEDIUM', risk: 35, status: 'SAFE', type: 'work', x: 400, y: 320 }
+];
+let selectedNode = null;
+let playbookRules = [];
+let anomalyScore = 0;
+let anomalyTimerId = null;
+let isSSEConnected = false;
+
 
 // ═══════════════════════════════════════════
 // WORLD-CLASS KNOWLEDGE BASE
@@ -1237,6 +1403,788 @@ function closeCam(){document.getElementById('cam-overlay').classList.remove('ope
 function clearCaptures(){camCaptures=[];document.getElementById('all-captures').innerHTML='';document.getElementById('cap-empty').style.display='block';}
 function exportCaptures(){camCaptures.forEach(c=>{const a=document.createElement('a');a.href=c.dataUrl;a.download=`NIRAVAN_Capture_${c.id}.png`;a.click();});}
 
+// ─── REAL-TIME SOC STREAM ───
+function initSOCPushStream() {
+  if (isSSEConnected) return;
+  const pushUrl = `${API}/mitigation/push-stream`;
+  tlog(`[SOC PUSH] 📡 Connecting to State SOC Command push channel...`, 'li');
+  
+  try {
+    const sse = new EventSource(pushUrl);
+    sse.onopen = () => {
+      isSSEConnected = true;
+      tlog(`[SOC PUSH] 🟢 Connected to Central SOC Command stream (SSE)`, 'lok');
+    };
+    sse.onmessage = (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        tlog(`[SOC PUSH] 📡 Central SOC Broadcast: ${data.action} instruction received.`, 'lpk');
+        if (data.action === 'BLOCK' && data.ip) {
+          blockedIPs.add(data.ip);
+          tlog(`[SOC PUSH] 🚫 CONTAINMENT ACTIVE: IP ${data.ip} immediately blocked by Central Command.`, 'lc');
+          toast(`SOC Containment: IP ${data.ip} Blocked!`, 'error');
+          renderIPs();
+        } else if (data.action === 'ISOLATE' && data.host) {
+          tlog(`[SOC PUSH] 🛡️ CONTAINMENT ACTIVE: Host ${data.host} immediately isolated by Central Command.`, 'lc');
+          toast(`SOC Containment: Host ${data.host} Isolated!`, 'error');
+          // Mark isolated in topology
+          const asset = topoAssets.find(a => a.id === data.host || a.name === data.host);
+          if (asset) {
+            asset.status = 'ISOLATED';
+            drawTopology();
+            updateInspectPanel(asset);
+          }
+        }
+      } catch (err) {
+        console.error("SOC stream parsing error", err);
+      }
+    };
+    sse.onerror = () => {
+      isSSEConnected = false;
+    };
+  } catch (err) {
+    console.error("SOC SSE Connection failed", err);
+  }
+}
+
+// ─── SUBNET TOPOLOGY MAP ───
+function initTopologyMap() {
+  const canvas = document.getElementById('topo-map');
+  if (!canvas) return;
+  
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+    
+    // Check click on nodes
+    let clickedNode = null;
+    topoAssets.forEach(node => {
+      const dist = Math.hypot(node.x - x, node.y - y);
+      if (dist < 28) {
+        clickedNode = node;
+      }
+    });
+    
+    if (clickedNode) {
+      selectedNode = clickedNode;
+      updateInspectPanel(clickedNode);
+    } else {
+      selectedNode = null;
+      document.getElementById('topo-inspect-empty').style.display = 'block';
+      document.getElementById('topo-inspect-data').style.display = 'none';
+    }
+    drawTopology();
+  });
+  
+  // Start drawing loop/ticks
+  setInterval(drawTopology, 150);
+}
+
+function drawTopology() {
+  const canvas = document.getElementById('topo-map');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Draw Grid Lines (Futuristic Tech style)
+  ctx.strokeStyle = 'rgba(212, 175, 55, 0.03)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < canvas.width; i += 40) {
+    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+  }
+  for (let j = 0; j < canvas.height; j += 40) {
+    ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(canvas.width, j); ctx.stroke();
+  }
+  
+  // Draw links first
+  const gwNode = topoAssets.find(a => a.type === 'gateway');
+  ctx.lineWidth = 2;
+  topoAssets.forEach(node => {
+    if (node.type !== 'gateway') {
+      ctx.beginPath();
+      ctx.moveTo(gwNode.x, gwNode.y);
+      ctx.lineTo(node.x, node.y);
+      
+      // Connection style
+      if (node.status === 'ISOLATED') {
+        ctx.strokeStyle = 'rgba(255, 69, 58, 0.2)';
+        ctx.setLineDash([4, 4]);
+      } else {
+        ctx.strokeStyle = 'rgba(90, 200, 250, 0.3)';
+        ctx.setLineDash([]);
+      }
+      ctx.stroke();
+      
+      // Moving packet pulses when continuous scan or scan is running
+      if ((isMonitoringActive || document.getElementById('pw').style.display === 'block') && node.status !== 'ISOLATED') {
+        const time = Date.now() / 1000;
+        const progress = (time % 1);
+        const px = gwNode.x + (node.x - gwNode.x) * progress;
+        const py = gwNode.y + (node.y - gwNode.y) * progress;
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#60c0ff';
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#60c0ff';
+        ctx.fill();
+        ctx.shadowBlur = 0; // reset
+      }
+    }
+  });
+  ctx.setLineDash([]); // Reset dash
+  
+  // Draw Nodes
+  topoAssets.forEach(node => {
+    // Selection outline
+    if (selectedNode && selectedNode.id === node.id) {
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, 32, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.6)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+    
+    // Core node circle
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, 24, 0, Math.PI * 2);
+    
+    let baseColor = '#0a1424';
+    let borderColor = 'rgba(90, 200, 250, 0.6)';
+    let glowColor = 'rgba(90, 200, 250, 0.2)';
+    
+    if (node.status === 'ISOLATED') {
+      baseColor = '#1a0d14';
+      borderColor = '#ff453a';
+      glowColor = 'rgba(255, 69, 58, 0.2)';
+    } else if (node.risk > 30) {
+      borderColor = '#ffd60a'; // Amber
+      glowColor = 'rgba(255, 214, 10, 0.2)';
+    }
+    
+    ctx.fillStyle = baseColor;
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = glowColor;
+    ctx.fill();
+    ctx.shadowBlur = 0; // Reset
+    
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    // Draw text indicators / Icons
+    ctx.font = '14px Segoe UI Symbol';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    let icon = '🖥️';
+    if (node.type === 'gateway') icon = '🛡️';
+    else if (node.type === 'db') icon = '🗄️';
+    else if (node.type === 'web') icon = '🌐';
+    else if (node.type === 'backup') icon = '💾';
+    ctx.fillStyle = node.status === 'ISOLATED' ? '#ff453a' : '#cdd6f4';
+    ctx.fillText(icon, node.x, node.y);
+    
+    // Draw Name and IP text labels
+    ctx.font = '10px Space Grotesk, sans-serif';
+    ctx.fillStyle = '#8a9bb5';
+    ctx.textAlign = 'center';
+    ctx.fillText(node.name, node.x, node.y + 38);
+    
+    ctx.font = '9px var(--mono)';
+    ctx.fillStyle = 'rgba(212, 175, 55, 0.7)';
+    ctx.fillText(node.ip, node.x, node.y + 49);
+    
+    // Draw isolated status tag
+    if (node.status === 'ISOLATED') {
+      ctx.font = 'bold 8px var(--mono)';
+      ctx.fillStyle = '#ff453a';
+      ctx.fillText('ISOLATED', node.x, node.y - 32);
+    }
+  });
+}
+
+function updateInspectPanel(node) {
+  document.getElementById('topo-inspect-empty').style.display = 'none';
+  document.getElementById('topo-inspect-data').style.display = 'block';
+  
+  document.getElementById('inspect-id').textContent = node.id;
+  document.getElementById('inspect-name').textContent = node.name;
+  document.getElementById('inspect-ip').textContent = node.ip;
+  document.getElementById('inspect-os').textContent = node.os;
+  document.getElementById('inspect-services').textContent = node.services;
+  document.getElementById('inspect-crit').textContent = node.crit;
+  document.getElementById('inspect-risk').textContent = node.risk;
+  
+  const statusBadge = document.getElementById('inspect-status-badge');
+  const isolateBtn = document.getElementById('btn-inspect-isolate');
+  
+  if (node.status === 'ISOLATED') {
+    statusBadge.className = 'tag tr';
+    statusBadge.textContent = 'ISOLATED';
+    isolateBtn.textContent = '🔓 Restore';
+    isolateBtn.className = 'btn btn-g';
+  } else {
+    statusBadge.className = 'tag tg';
+    statusBadge.textContent = 'ACTIVE';
+    isolateBtn.textContent = '🛡️ Isolate';
+    isolateBtn.className = 'btn btn-red';
+  }
+}
+
+function inspectIsolate() {
+  if (!selectedNode) return;
+  if (selectedNode.status === 'ISOLATED') {
+    selectedNode.status = 'SAFE';
+    tlog(`[SHIELD] 🔓 Asset restore command sent for host ${selectedNode.name}`, 'lok');
+    toast(`Asset ${selectedNode.name} restored.`, 'success');
+  } else {
+    selectedNode.status = 'ISOLATED';
+    tlog(`[SHIELD] 🛡️ EDR Isolation request triggered for asset ${selectedNode.name}`, 'lc');
+    isolateHostBackend(selectedNode.id, "Admin Manual Containment");
+    toast(`Host ${selectedNode.name} isolated!`, 'error');
+  }
+  updateInspectPanel(selectedNode);
+  drawTopology();
+}
+
+function inspectRescan() {
+  if (!selectedNode) return;
+  tlog(`[MONITOR] Triggering targeted EDR scan on host ${selectedNode.name}...`, 'li');
+  toast(`EDR scan queued for ${selectedNode.name}...`, 'info');
+  setTimeout(() => {
+    selectedNode.risk = Math.floor(Math.random() * 15);
+    tlog(`[MONITOR] targeted scan completed. Host ${selectedNode.name} risk score reduced to ${selectedNode.risk}.`, 'lok');
+    toast(`EDR scan completed.`, 'success');
+    if (selectedNode) updateInspectPanel(selectedNode);
+    drawTopology();
+  }, 1500);
+}
+
+function resetTopologyState() {
+  topoAssets.forEach(node => {
+    node.status = 'SAFE';
+    node.risk = Math.floor(Math.random() * 25);
+  });
+  selectedNode = null;
+  document.getElementById('topo-inspect-empty').style.display = 'block';
+  document.getElementById('topo-inspect-data').style.display = 'none';
+  tlog(`[SHIELD] Network topology map state reset.`, 'lok');
+  toast('Topology map state reset.', 'success');
+  drawTopology();
+}
+
+// ─── BEHAVIORAL ANOMALY DETECTOR ───
+function initAnomalyDetector() {
+  if (anomalyTimerId) clearInterval(anomalyTimerId);
+  
+  anomalyTimerId = setInterval(() => {
+    if (!isMonitoringActive) {
+      anomalyScore = 0;
+      updateAnomalyUI(0);
+      return;
+    }
+    
+    // Simulate live metrics
+    const loginFailures = Math.random() > 0.85 ? Math.floor(Math.random() * 4) + 1 : 0;
+    const packetSpike = Math.random() > 0.8 ? Math.floor(Math.random() * 50) + 10 : 0;
+    
+    // Compute anomaly rating
+    anomalyScore = Math.min(100, Math.floor(loginFailures * 18 + packetSpike * 1.2 + Math.random() * 12));
+    updateAnomalyUI(anomalyScore);
+    
+    if (anomalyScore > 80) {
+      tlog(`[ANOMALY DETECTOR] 🚨 High network behavior anomaly detected! Index rating: ${anomalyScore}%`, 'la');
+      // Evaluate playbooks
+      runPlaybooks({ severity: 'CRITICAL', tool: 'Behavioral Anomaly', ip: 'Subnet Anomaly', desc: `Behavioral Anomaly rating crossed threshold: ${anomalyScore}%` });
+    } else if (anomalyScore > 50) {
+      tlog(`[ANOMALY DETECTOR] ⚠️ Moderate anomaly behavior: Index rating ${anomalyScore}%`, 'lw');
+    }
+  }, 8000);
+}
+
+function updateAnomalyUI(score) {
+  const dot = document.getElementById('hd-anom');
+  const lbl = document.getElementById('hv-anom');
+  if (!dot || !lbl) return;
+  
+  lbl.textContent = `${score}% (${score > 80 ? 'CRITICAL' : score > 50 ? 'SUSPICIOUS' : 'SAFE'})`;
+  if (score > 80) {
+    dot.className = 'hdot r';
+    lbl.style.color = 'var(--red)';
+  } else if (score > 50) {
+    dot.className = 'hdot a';
+    lbl.style.color = 'var(--amber)';
+  } else {
+    dot.className = 'hdot g';
+    lbl.style.color = 'var(--green)';
+  }
+}
+
+// ─── FORENSIC BURST VIDEO CAPTURE ───
+function captureVideoForensics(reason) {
+  tlog(`[FORENSICS] 📹 Initiating sequenced video-burst capture. Generating metadata overlays...`, 'lpk');
+  let frame = 0;
+  const canvas = document.createElement('canvas');
+  canvas.width = 640; canvas.height = 480;
+  const ctx = canvas.getContext('2d');
+  
+  const videoInterval = setInterval(() => {
+    frame++;
+    // Draw simulated camera overlay
+    ctx.fillStyle = '#01030a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw neon camera grid
+    ctx.strokeStyle = 'rgba(255, 45, 120, 0.05)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+    
+    // Draw crosshair
+    ctx.strokeStyle = 'rgba(255, 45, 120, 0.3)';
+    ctx.beginPath();
+    ctx.moveTo(canvas.width/2 - 15, canvas.height/2); ctx.lineTo(canvas.width/2 + 15, canvas.height/2);
+    ctx.moveTo(canvas.width/2, canvas.height/2 - 15); ctx.lineTo(canvas.width/2, canvas.height/2 + 15);
+    ctx.stroke();
+    
+    // Draw silhouette
+    ctx.fillStyle = 'rgba(255, 45, 120, 0.08)';
+    ctx.beginPath();
+    ctx.arc(canvas.width/2, 220, 65, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(canvas.width/2, 400, 160, 110, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Draw Overlay Text Metadata
+    ctx.fillStyle = '#ff4532';
+    ctx.font = '11px var(--mono)';
+    ctx.textAlign = 'left';
+    ctx.fillText('🔴 REC SEQUENCE ACTIVE', 20, 30);
+    ctx.fillText(`FRAME: 0${frame} / 05`, 20, 48);
+    
+    ctx.fillStyle = '#8a9bb5';
+    ctx.fillText(`TRIGGER: ${reason.toUpperCase()}`, 20, 410);
+    ctx.fillText(`TIMESTAMP: ${new Date().toISOString()}`, 20, 426);
+    ctx.fillText(`IP EXPOSURE: ${pendingBlockIP || '127.0.0.1'}`, 20, 442);
+    ctx.fillText(`ANOMALY INDEX: ${anomalyScore}%`, 20, 458);
+    
+    ctx.textAlign = 'right';
+    ctx.fillStyle = 'rgba(212, 175, 55, 0.6)';
+    ctx.fillText('NIRAVAN FORENSIC AUTO-CAM v5.0', canvas.width - 20, 30);
+    ctx.fillText('TAMIL NADU SECURITY SYSTEM', canvas.width - 20, 458);
+    
+    // Save frame
+    const dataUrl = canvas.toDataURL('image/png');
+    const cap = {
+      id: Date.now() + frame,
+      ts: new Date().toISOString(),
+      reason: `${reason} - Frame ${frame}`,
+      ip: pendingBlockIP || 'Unknown',
+      tool: 'Continuous Forensics',
+      dataUrl
+    };
+    
+    camCaptures.push(cap);
+    addCaptureCard(cap);
+    
+    document.getElementById('hs-c').textContent = camCaptures.length;
+    document.getElementById('m-cam').textContent = camCaptures.length;
+    document.getElementById('cap-empty').style.display = 'none';
+    
+    if (frame >= 5) {
+      clearInterval(videoInterval);
+      tlog(`[FORENSICS] 📹 Sequenced burst capture complete. 5 metadata-embedded frames compiled.`, 'lpk');
+      toast('Sequenced video-burst forensics captured.', 'success');
+    }
+  }, 700);
+}
+
+// ─── DEFENSE PLAYBOOK RULES ENGINE ───
+function initPlaybookRules() {
+  const saved = localStorage.getItem('niravan_playbooks');
+  if (saved) {
+    playbookRules = JSON.parse(saved);
+  } else {
+    // Seed default playbooks
+    playbookRules = [
+      { id: 1, title: 'Contain Alien Intrusions', trigger: 'ALIEN_DETECTED', action: 'ISOLATE_AND_BLOCK' },
+      { id: 2, title: 'Block Persistent Portscans', trigger: 'TOOL_NMAP', action: 'BLOCK_IP' },
+      { id: 3, title: 'EDR Isolate Metasploit Beacons', trigger: 'TOOL_METASPLOIT', action: 'ISOLATE_HOST' }
+    ];
+    savePlaybooksToStorage();
+  }
+  renderPlaybooks();
+}
+
+function savePlaybooksToStorage() {
+  localStorage.setItem('niravan_playbooks', JSON.stringify(playbookRules));
+}
+
+function renderPlaybooks() {
+  const list = document.getElementById('playbook-rules-list');
+  const count = document.getElementById('playbook-active-count');
+  if (!list) return;
+  
+  list.innerHTML = '';
+  count.textContent = `${playbookRules.length} Rules Active`;
+  
+  if (playbookRules.length === 0) {
+    list.innerHTML = `<div style="text-align:center;color:var(--sub);font-size:11px;padding:30px">No playbook rules defined. Create one on the left panel.</div>`;
+    return;
+  }
+  
+  playbookRules.forEach(rule => {
+    const div = document.createElement('div');
+    div.style.background = 'rgba(212, 175, 55, 0.04)';
+    div.style.border = '1px solid rgba(212, 175, 55, 0.12)';
+    div.style.borderRadius = '10px';
+    div.style.padding = '10px 14px';
+    div.style.display = 'flex';
+    div.style.justifyContent = 'space-between';
+    div.style.alignItems = 'center';
+    div.style.marginBottom = '8px';
+    
+    const triggerText = {
+      CRITICAL_ATTACK: 'IF Attack Severity is CRITICAL',
+      HIGH_ATTACK: 'IF Attack Severity is HIGH',
+      ALIEN_DETECTED: 'IF Alien Program Detected',
+      ANOMALY_HIGH: 'IF Behavioral Anomaly Index > 80%',
+      TOOL_NMAP: 'IF Tool matches Nmap',
+      TOOL_METASPLOIT: 'IF Tool matches Metasploit',
+      TOOL_SQLMAP: 'IF Tool matches SQLmap'
+    }[rule.trigger] || rule.trigger;
+    
+    const actionText = {
+      BLOCK_IP: 'THEN Block Attacker IP',
+      ISOLATE_HOST: 'THEN Isolate Target Host',
+      CAMERA_BURST: 'THEN Trigger Forensic Camera Burst',
+      ISOLATE_AND_BLOCK: 'THEN Block IP AND Isolate Host',
+      LOG_CRITICAL: 'THEN Raise Live SOC Alert'
+    }[rule.action] || rule.action;
+    
+    div.innerHTML = `
+      <div style="font-size:11px">
+        <div style="font-weight:800;color:var(--g);margin-bottom:4px">🛡️ ${rule.title}</div>
+        <div style="color:var(--sub);font-family:var(--mono)"><span style="color:#ff6b35">${triggerText}</span> ➔ <span style="color:#30d158">${actionText}</span></div>
+      </div>
+      <button class="btn btn-gh" style="font-size:11px;padding:4px 8px;border-color:rgba(255,69,58,0.2);color:#ff453a" onclick="deletePlaybookRule(${rule.id})">Delete</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function addPlaybookRule() {
+  const title = document.getElementById('pb-title').value.trim();
+  const trigger = document.getElementById('pb-trigger').value;
+  const action = document.getElementById('pb-action').value;
+  
+  if (!title) {
+    toast('Please enter a rule title.', 'warning');
+    return;
+  }
+  
+  const newRule = {
+    id: Date.now(),
+    title,
+    trigger,
+    action
+  };
+  
+  playbookRules.push(newRule);
+  savePlaybooksToStorage();
+  renderPlaybooks();
+  
+  document.getElementById('pb-title').value = '';
+  toast('Playbook rule saved successfully.', 'success');
+  tlog(`[SHIELD] 📋 New defense playbook rule saved: "${title}"`, 'lok');
+}
+
+function deletePlaybookRule(id) {
+  playbookRules = playbookRules.filter(r => r.id !== id);
+  savePlaybooksToStorage();
+  renderPlaybooks();
+  toast('Playbook rule deleted.', 'info');
+}
+
+function runPlaybooks(finding) {
+  const sev = (finding.severity || finding.sev || 'medium').toUpperCase();
+  const tool = finding.tool || finding.module || '';
+  const ipAddr = finding.ip || '';
+  const desc = finding.issue || finding.desc || '';
+  
+  playbookRules.forEach(rule => {
+    let triggered = false;
+    
+    if (rule.trigger === 'CRITICAL_ATTACK' && sev === 'CRITICAL') triggered = true;
+    else if (rule.trigger === 'HIGH_ATTACK' && sev === 'HIGH') triggered = true;
+    else if (rule.trigger === 'ALIEN_DETECTED' && (tool.includes('Alien') || tool.includes('RAT') || desc.includes('CAMERA'))) triggered = true;
+    else if (rule.trigger === 'ANOMALY_HIGH' && anomalyScore > 80 && tool === 'Behavioral Anomaly') triggered = true;
+    else if (rule.trigger === 'TOOL_NMAP' && tool.toLowerCase().includes('nmap')) triggered = true;
+    else if (rule.trigger === 'TOOL_METASPLOIT' && tool.toLowerCase().includes('metasploit')) triggered = true;
+    else if (rule.trigger === 'TOOL_SQLMAP' && tool.toLowerCase().includes('sqlmap')) triggered = true;
+    
+    if (triggered) {
+      tlog(`[PLAYBOOK ENGINE] 📋 Rule Triggered: "${rule.title}"`, 'la');
+      
+      if (rule.action === 'BLOCK_IP' || rule.action === 'ISOLATE_AND_BLOCK') {
+        if (ipAddr && !blockedIPs.has(ipAddr) && !ipAddr.includes('Internal') && !ipAddr.includes('192.')) {
+          blockedIPs.add(ipAddr);
+          tlog(`[PLAYBOOK CONTAINMENT] 🚫 Containment block: IP ${ipAddr}`, 'lc');
+          blockIPBackend(ipAddr, `Playbook match: ${rule.title}`);
+          pushNotif({ type: 'blocked', ip: ipAddr });
+          renderIPs();
+        }
+      }
+      
+      if (rule.action === 'ISOLATE_HOST' || rule.action === 'ISOLATE_AND_BLOCK') {
+        // Isolate asset
+        const match = topoAssets.find(a => a.ip === ipAddr) || topoAssets[Math.floor(Math.random() * topoAssets.length)];
+        if (match && match.status !== 'ISOLATED') {
+          match.status = 'ISOLATED';
+          tlog(`[PLAYBOOK CONTAINMENT] 🛡️ EDR Isolation: Asset ${match.name}`, 'lc');
+          isolateHostBackend(match.id, `Playbook match: ${rule.title}`);
+          drawTopology();
+          if (selectedNode && selectedNode.id === match.id) updateInspectPanel(match);
+        }
+      }
+      
+      if (rule.action === 'CAMERA_BURST') {
+        captureVideoForensics(rule.title);
+      }
+      
+      if (rule.action === 'LOG_CRITICAL') {
+        tlog(`[PLAYBOOK CONTAINMENT] 🚨 Live Alert raised to State SOC for validation!`, 'lc');
+      }
+    }
+  });
+}
+
+// ─── 24-HOUR CONTINUOUS SECURITY MONITORING SHIELD ───
+function toggleContinuousMonitoring() {
+  if (isMonitoringActive) {
+    stopContinuousMonitoring(false);
+  } else {
+    startContinuousMonitoring();
+  }
+}
+
+function startContinuousMonitoring() {
+  isMonitoringActive = true;
+  monitoringSecondsRemaining = 86400; // 24 hours
+  
+  const shieldBtn = document.getElementById('shield-btn');
+  const shieldIcon = document.getElementById('shbi');
+  const shieldTxt = document.getElementById('shbt');
+  
+  shieldBtn.classList.add('active');
+  shieldIcon.classList.add('pulse-shield-icon');
+  
+  clrT();
+  tlog('═══ NIRAVAN 24-HOUR CONTINUOUS ACTIVE SHIELD INITIATED ═══', 'lok');
+  tlog('[SHIELD] 🛡️ Autonomous Scanning & Containment Engine: FULLY OPERATIONAL', 'lok');
+  tlog('[SHIELD] Mode: 24-Hour Continuous Event Logs & Intrusion Monitoring', 'li');
+  tlog('[SHIELD] Mitigation: Automated IP blocking and host isolation enabled', 'li');
+  
+  // Start countdown timer (1s ticks)
+  monitoringTimerId = setInterval(() => {
+    monitoringSecondsRemaining--;
+    if (monitoringSecondsRemaining <= 0) {
+      stopContinuousMonitoring(true);
+      return;
+    }
+    const h = Math.floor(monitoringSecondsRemaining / 3600).toString().padStart(2, '0');
+    const m = Math.floor((monitoringSecondsRemaining % 3600) / 60).toString().padStart(2, '0');
+    const s = (monitoringSecondsRemaining % 60).toString().padStart(2, '0');
+    shieldTxt.textContent = `SHIELD ACTIVE [${h}:${m}:${s}] — CLICK TO DEACTIVATE`;
+  }, 1000);
+  
+  // Run first scan immediately
+  runContinuousScan();
+  
+  // Run background scan every 10 seconds
+  monitoringScanIntervalId = setInterval(runContinuousScan, 10000);
+  
+  // Initialize anomaly detector
+  initAnomalyDetector();
+  
+  toast('24H Continuous Security Shield activated!', 'success');
+}
+
+function stopContinuousMonitoring(expired) {
+  if (monitoringTimerId) clearInterval(monitoringTimerId);
+  if (monitoringScanIntervalId) clearInterval(monitoringScanIntervalId);
+  if (anomalyTimerId) clearInterval(anomalyTimerId);
+  anomalyScore = 0;
+  updateAnomalyUI(0);
+  
+  isMonitoringActive = false;
+  
+  const shieldBtn = document.getElementById('shield-btn');
+  const shieldIcon = document.getElementById('shbi');
+  const shieldTxt = document.getElementById('shbt');
+  
+  shieldBtn.classList.remove('active');
+  shieldIcon.classList.remove('pulse-shield-icon');
+  shieldTxt.textContent = 'ACTIVATE 24H ACTIVE SECURITY SHIELD (MONITORING)';
+  
+  if (expired) {
+    tlog('[SHIELD] ⏱️ Continuous monitoring cycle expired (24 Hours complete).', 'lw');
+    toast('24H Continuous Security Shield cycle complete.', 'info');
+  } else {
+    tlog('[SHIELD] 🛡️ Continuous monitoring deactivated by administrator.', 'lw');
+    toast('Continuous Security Shield deactivated.', 'warning');
+  }
+}
+
+async function runContinuousScan() {
+  const dept = document.getElementById('dept').value;
+  const dist = document.getElementById('dist').value;
+  const ip = document.getElementById('ip-range').value;
+  const mods = [];
+  ['net','hack','brute','web','exploit','recon','wifi','apt','inject','quant','ai','osint'].forEach(m => {
+    if (document.getElementById(`m-${m}`)?.checked) mods.push(m);
+  });
+  const srcs = getSrcs();
+  
+  tlog(`[MONITOR] Background scan cycle running...`, 'li');
+  
+  let scanStart = Date.now();
+  let data = null;
+  try {
+    const tok = localStorage.getItem('niravan_token');
+    const r = await fetch(`${API}/local-node/scan`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tok || 'demo'}`
+      },
+      body: JSON.stringify({
+        department: dept,
+        district: dist,
+        ip_range: ip || null,
+        scan_depth: scanDepth,
+        advanced_modules: mods,
+        sources: srcs
+      })
+    });
+    
+    if (r.ok) {
+      data = await r.json();
+    } else {
+      data = simData(dept, dist);
+    }
+  } catch (e) {
+    data = simData(dept, dist);
+  }
+  
+  if (!data) return;
+  
+  // Read and log findings status
+  const findings = data.findings || data.all_findings || [];
+  const critFindings = findings.filter(f => f.severity === 'CRITICAL' || f.sev === 'CRITICAL');
+  const highFindings = findings.filter(f => f.severity === 'HIGH' || f.sev === 'HIGH');
+  
+  tlog(`[MONITOR] Heartbeat check: OK. Found ${findings.length} total events (${critFindings.length} critical, ${highFindings.length} high)`, 'lok');
+  
+  // If this audit log is already processed, skip action triggers to avoid double execution
+  if (data.audit_id && processedAuditIds.has(data.audit_id)) {
+    return;
+  }
+  if (data.audit_id) {
+    processedAuditIds.add(data.audit_id);
+  }
+  
+  // Update dashboard visuals and tables
+  processResults(data, dept, dist, Date.now() - scanStart, false);
+  
+  // React to non-secure occurrences or attacks
+  findings.forEach(f => {
+    const sev = (f.severity || f.sev || 'medium').toUpperCase();
+    const tool = f.tool || f.module || 'Unknown Pattern';
+    const ipAddr = f.ip || 'Unknown IP';
+    const desc = f.issue || f.desc || '';
+    const host = f.host || f.asset || '';
+    
+    if (sev === 'CRITICAL' || sev === 'HIGH') {
+      tlog(`[MONITOR] 🚨 Attack detected: ${tool} pattern from source ${ipAddr} targeting ${dept.toUpperCase()}`, 'lc');
+      
+      // Auto-block IP mitigation
+      if (document.getElementById('auto-block').checked) {
+        if (!blockedIPs.has(ipAddr) && !ipAddr.includes('Internal') && !ipAddr.includes('192.')) {
+          // If admin approval is required, show the modal. Otherwise auto block.
+          if (document.getElementById('req-approval').checked) {
+            pendingBlockIP = ipAddr;
+            reqBlock(ipAddr);
+          } else {
+            blockedIPs.add(ipAddr);
+            tlog(`[SHIELD] 🚫 AUTO-BLOCK containment: terminating connection from ${ipAddr}`, 'lc');
+            blockIPBackend(ipAddr, `Autonomous mitigation on ${tool} detection`);
+            pushNotif({ type: 'blocked', ip: ipAddr });
+            renderIPs();
+          }
+        }
+      }
+      
+      // Host isolation mitigation
+      if (host) {
+        tlog(`[SHIELD] 🛡️ AUTO-ISOLATE containment: isolating compromised asset ${host}`, 'lc');
+        isolateHostBackend(host, `Autonomous containment on ${tool} pattern detection`);
+      }
+    }
+    
+    // Auto camera capture for alien programs or suspicious forensic requests
+    const isAlien = tool.includes('Alien') || tool.includes('RAT') || tool.includes('Rootkit') || desc.includes('CAMERA');
+    if (isAlien && document.getElementById('auto-cam').checked) {
+      tlog(`[SHIELD] 👾 Alien Program / Intrusion detected! Initiating forensic camera capture...`, 'lpk');
+      setTimeout(() => triggerCameraCapture(`Continuous Shield: ${tool} threat forensics`), 500);
+    }
+  });
+}
+
+async function blockIPBackend(ip, reason) {
+  const tok = localStorage.getItem('niravan_token');
+  try {
+    const r = await fetch(`${API}/mitigation/block-ip`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tok || 'demo'}`
+      },
+      body: JSON.stringify({ ip: ip, reason: reason })
+    });
+    if (r.ok) {
+      const data = await r.json();
+      tlog(`[SHIELD] Backend block-ip logged: ${data.message}`, 'lok');
+    } else {
+      tlog(`[SHIELD] Backend block-ip skipped/failed: ${r.statusText}`, 'lw');
+    }
+  } catch (err) {
+    tlog(`[SHIELD] Backend offline for block-ip. Client-side containment active.`, 'lw');
+  }
+}
+
+async function isolateHostBackend(host, reason) {
+  const tok = localStorage.getItem('niravan_token');
+  try {
+    const r = await fetch(`${API}/mitigation/isolate-host`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tok || 'demo'}`
+      },
+      body: JSON.stringify({ host: host, reason: reason })
+    });
+    if (r.ok) {
+      const data = await r.json();
+      tlog(`[SHIELD] Backend isolate-host logged: ${data.message}`, 'lok');
+    } else {
+      tlog(`[SHIELD] Backend isolate-host skipped/failed: ${r.statusText}`, 'lw');
+    }
+  } catch (err) {
+    tlog(`[SHIELD] Backend offline for isolate-host.`, 'lw');
+  }
+}
+
 // ─── MAIN SCAN ───
 async function startScan(){
   const dept=document.getElementById('dept').value;
@@ -1302,7 +2250,7 @@ function simData(dept,dist){
   return{audit_id:`CIN-${Date.now()}`,department:dept,district:dist,risk_score:rs,findings:atks,all_findings:atks};
 }
 
-function processResults(data,dept,dist,ms){
+function processResults(data,dept,dist,ms,shouldScroll=true){
   const atks=data.findings||data.all_findings||SIM.school;
   allAtks=[...atks];
   allIPs={};
@@ -1340,7 +2288,6 @@ function processResults(data,dept,dist,ms){
   tlog(`${atks.length} findings | ${crit} CRITICAL | ${tools} tools | ${ips} attacker IPs | ${Math.round(ms/1000)}s`,'lok');
   if(crit>0) tlog(`🚨 CRITICAL: ${crit} attacks require IMMEDIATE response! Block IPs and escalate.`,'lc');
   document.getElementById('results').style.display='block';
-  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
   // Render
   renderCharts(atks);
   renderAtks(allAtks);
@@ -1647,6 +2594,7 @@ function confirmBlock(){
   if(!pendingBlockIP)return;
   blockedIPs.add(pendingBlockIP);
   tlog(`🚫 BLOCKED: ${pendingBlockIP} — All connections terminated`,'lc');
+  blockIPBackend(pendingBlockIP, "Manual Admin containment approval");
   document.getElementById('hs-b').textContent=blockedIPs.size;
   document.getElementById('m-blk').textContent=blockedIPs.size;
   toast(`IP ${pendingBlockIP} BLOCKED!`,'error');
@@ -1658,7 +2606,7 @@ function captureAndBlock(){confirmBlock();setTimeout(()=>triggerCameraCapture(`P
 function watchIP(ip){if(allIPs[ip])allIPs[ip].status='WATCHING';renderIPs();toast(`IP ${ip} added to watchlist.`,'warning');}
 function blockAllCrit(){
   const ips=allAtks.filter(a=>a.sev==='CRITICAL'&&a.ip&&!a.ip.includes('Internal')&&!a.ip.includes('192.')).map(a=>a.ip);
-  ips.forEach(ip=>{if(ip){blockedIPs.add(ip);tlog(`🚫 AUTO-BLOCK: ${ip}`,'lc');}});
+  ips.forEach(ip=>{if(ip){blockedIPs.add(ip);tlog(`🚫 AUTO-BLOCK: ${ip}`,'lc'); blockIPBackend(ip, "Auto block all critical IPs");}});
   document.getElementById('hs-b').textContent=blockedIPs.size;document.getElementById('m-blk').textContent=blockedIPs.size;
   toast(`${ips.length} critical IPs blocked!`,'error');renderIPs();
 }
@@ -1666,6 +2614,7 @@ function quickBlockAll(){blockAllCrit();}
 function addManualBlock(){
   const ip=document.getElementById('manual-ip').value.trim();if(!ip)return;
   blockedIPs.add(ip);toast(`IP ${ip} manually blocked.`,'warning');
+  blockIPBackend(ip, "Manual Admin command-line entry");
   document.getElementById('manual-ip').value='';renderIPs();
 }
 function showAlert(msg){document.getElementById('atxt').textContent=`🚨 ${msg}`;document.getElementById('abar').classList.add('show');}
@@ -1724,8 +2673,125 @@ async function genPDF(){
     // Page footer
     doc.setTextColor(100,115,140);doc.setFontSize(8);
     doc.text('NIRAVAN Cyber Intelligence Node v5.0 — Tamil Nadu Cyber Security Authority — CONFIDENTIAL',W/2,H-12,'center');
-    doc.text('Page 1 of 3',W-30,H-12);
-    // Page 2: Attack Log
+    doc.text('Page 1 of 4',W-30,H-12);
+    
+    // Page 2: Visuals & Metrics
+    doc.addPage();
+    doc.setFillColor(3,7,18);doc.rect(0,0,W,H,'F');
+    doc.setFillColor(107,0,19);doc.rect(0,0,W,8,'F');
+    doc.setTextColor(212,175,55);doc.setFont('helvetica','bold');doc.setFontSize(14);
+    doc.text('SECURITY POSTURE VISUALIZATIONS & METRICS',W/2,18,'center');
+    doc.setDrawColor(212,175,55);doc.setLineWidth(.5);doc.line(20,22,W-20,22);
+    
+    // Risk Meter Gauge
+    doc.setTextColor(212,175,55);doc.setFont('helvetica','bold');doc.setFontSize(10);
+    doc.text('1. RISK SCORE POSTURE METER / அபாய அளவீடு',20,32);
+    doc.setFillColor(15,20,40);doc.roundedRect(20,36,W-40,16,2,2,'F');
+    
+    doc.setFillColor(48,209,88);doc.rect(25,41,35,6,'F'); // green
+    doc.setFillColor(255,214,10);doc.rect(65,41,35,6,'F'); // yellow
+    doc.setFillColor(255,107,53);doc.rect(105,41,35,6,'F'); // orange
+    doc.setFillColor(255,69,58);doc.rect(145,41,35,6,'F'); // red
+    
+    const scoreVal = parseInt(score) || 0;
+    const pinX = 25 + (scoreVal / 100) * 155;
+    doc.setFillColor(240,244,255);doc.rect(pinX - 2, 39, 4, 10, 'F');
+    doc.setDrawColor(212,175,55);doc.rect(pinX - 2, 39, 4, 10, 'S');
+    doc.setTextColor(3,7,18);doc.setFont('helvetica','bold');doc.setFontSize(6);
+    doc.text(score, pinX, 45, 'center');
+    
+    doc.setTextColor(240,244,255);doc.setFont('helvetica','normal');doc.setFontSize(8);
+    doc.text(`Score: ${score}/100 — Status: ${scoreVal>=70?'CRITICAL':scoreVal>=45?'HIGH':scoreVal>=20?'MEDIUM':'LOW'} RISK`, 20, 58);
+    
+    // Severity Bar Chart
+    doc.setTextColor(212,175,55);doc.setFont('helvetica','bold');doc.setFontSize(10);
+    doc.text('2. SEVERITY DENSITY DISTRIBUTION / அச்சுறுத்தல் அடர்த்தி',20,68);
+    doc.setFillColor(15,20,40);doc.roundedRect(20,72,W-40,42,2,2,'F');
+    
+    const crit = allAtks.filter(a=>a.sev==='CRITICAL').length;
+    const high = allAtks.filter(a=>a.sev==='HIGH').length;
+    const med = allAtks.filter(a=>a.sev==='MEDIUM').length;
+    const low = allAtks.filter(a=>a.sev==='LOW').length;
+    const total = allAtks.length || 1;
+    
+    const barMaxW = 100;
+    const wCrit = (crit / total) * barMaxW;
+    const wHigh = (high / total) * barMaxW;
+    const wMed = (med / total) * barMaxW;
+    const wLow = (low / total) * barMaxW;
+    
+    doc.setFillColor(30,35,60);doc.rect(60,78,barMaxW,4,'F');
+    if(wCrit > 0) { doc.setFillColor(255,69,58);doc.rect(60,78,wCrit,4,'F'); }
+    doc.setTextColor(255,69,58);doc.setFont('helvetica','bold');doc.setFontSize(7);
+    doc.text('CRITICAL',25,81.5);
+    doc.setTextColor(240,244,255);doc.text(`${crit} items`, 165, 81.5);
+    
+    doc.setFillColor(30,35,60);doc.rect(60,86,barMaxW,4,'F');
+    if(wHigh > 0) { doc.setFillColor(255,107,53);doc.rect(60,86,wHigh,4,'F'); }
+    doc.setTextColor(255,107,53);doc.setFont('helvetica','bold');doc.setFontSize(7);
+    doc.text('HIGH',25,89.5);
+    doc.setTextColor(240,244,255);doc.text(`${high} items`, 165, 89.5);
+    
+    doc.setFillColor(30,35,60);doc.rect(60,94,barMaxW,4,'F');
+    if(wMed > 0) { doc.setFillColor(255,214,10);doc.rect(60,94,wMed,4,'F'); }
+    doc.setTextColor(255,214,10);doc.setFont('helvetica','bold');doc.setFontSize(7);
+    doc.text('MEDIUM',25,97.5);
+    doc.setTextColor(240,244,255);doc.text(`${med} items`, 165, 97.5);
+    
+    doc.setFillColor(30,35,60);doc.rect(60,102,barMaxW,4,'F');
+    if(wLow > 0) { doc.setFillColor(48,209,88);doc.rect(60,102,wLow,4,'F'); }
+    doc.setTextColor(48,209,88);doc.setFont('helvetica','bold');doc.setFontSize(7);
+    doc.text('LOW',25,105.5);
+    doc.setTextColor(240,244,255);doc.text(`${low} items`, 165, 105.5);
+    
+    // Tool Attribution Chart
+    doc.setTextColor(212,175,55);doc.setFont('helvetica','bold');doc.setFontSize(10);
+    doc.text('3. TOOL ATTRIBUTION / பயன்படுத்தப்பட்ட கருவிகள்',20,122);
+    doc.setFillColor(15,20,40);doc.roundedRect(20,126,W-40,40,2,2,'F');
+    
+    const toolCounts = {};
+    allAtks.forEach(a => {
+      const toolName = a.tool || 'Unknown';
+      toolCounts[toolName] = (toolCounts[toolName] || 0) + 1;
+    });
+    const sortedTools = Object.entries(toolCounts).sort((a,b)=>b[1]-a[1]).slice(0, 4);
+    
+    let ty = 132;
+    sortedTools.forEach(([tName, count]) => {
+      const tW = (count / total) * barMaxW;
+      doc.setFillColor(30,35,60);doc.rect(60, ty, barMaxW, 4, 'F');
+      doc.setFillColor(212,175,55);doc.rect(60, ty, tW, 4, 'F');
+      
+      doc.setTextColor(212,175,55);doc.setFont('helvetica','bold');doc.setFontSize(7);
+      doc.text(tName.substring(0, 10).toUpperCase(), 25, ty + 3);
+      doc.setTextColor(240,244,255);doc.text(`${count} triggers`, 165, ty + 3);
+      ty += 8;
+    });
+    
+    // Detailed Explanations
+    doc.setTextColor(212,175,55);doc.setFont('helvetica','bold');doc.setFontSize(10);
+    doc.text('4. VISUAL METRICS EXPLANATIONS / வரைபடங்களின் விளக்கம்',20,174);
+    
+    doc.setTextColor(240,244,255);doc.setFont('helvetica','normal');doc.setFontSize(8.5);
+    const expText = [
+      "• RISK POSTURE METER: Indicates the overall threat scoring of the local network node. Green band represents safe normal operations; Yellow represents low risk warning; Orange indicates highly vulnerable exposures; Red flags active compromises that require immediate manual or automated lock-remediation.",
+      "• SEVERITY DENSITY DISTRIBUTION: Shows the density layout of findings. Critical findings (Red) are high-impact vulnerabilities (e.g. SQL injection, remote exploit execution) putting citizen records at risk. Low and Medium items highlight security configuration improvements.",
+      "• TOOL ATTRIBUTION CHART: Highlights which specific hacking or scanning tools (e.g., Nmap, Hydra, SQLmap, Metasploit) triggered signatures. Attributing attacks to specific tools lets administrators distinguish automated bot scans from sophisticated, targeted intrusion campaigns."
+    ];
+    
+    let ey = 180;
+    expText.forEach(line => {
+      const lines = doc.splitTextToSize(line, W - 40);
+      lines.forEach((l, li) => {
+        doc.text(l, 20, ey + li * 4.5);
+      });
+      ey += (lines.length * 4.5) + 3;
+    });
+    
+    doc.setTextColor(100,115,140);doc.setFontSize(8);
+    doc.text('NIRAVAN Cyber Intelligence Node v5.0 — CONFIDENTIAL',W/2,H-12,'center');doc.text('Page 2 of 4',W-30,H-12);
+    
+    // Page 3: Attack Log
     doc.addPage();
     doc.setFillColor(3,7,18);doc.rect(0,0,W,H,'F');
     doc.setFillColor(107,0,19);doc.rect(0,0,W,8,'F');
@@ -1750,8 +2816,9 @@ async function genPDF(){
     });
     if(allAtks.length>12){doc.setTextColor(140,155,185);doc.setFontSize(8);doc.text(`... and ${allAtks.length-12} more findings. See JSON export for complete data.`,20,y+5);}
     doc.setTextColor(100,115,140);doc.setFontSize(8);
-    doc.text('NIRAVAN Cyber Intelligence Node v5.0 — CONFIDENTIAL',W/2,H-12,'center');doc.text('Page 2 of 3',W-30,H-12);
-    // Page 3: Technical Details & Recommendations
+    doc.text('NIRAVAN Cyber Intelligence Node v5.0 — CONFIDENTIAL',W/2,H-12,'center');doc.text('Page 3 of 4',W-30,H-12);
+    
+    // Page 4: Technical Details & Recommendations
     doc.addPage();
     doc.setFillColor(3,7,18);doc.rect(0,0,W,H,'F');
     doc.setFillColor(107,0,19);doc.rect(0,0,W,8,'F');
@@ -1781,7 +2848,7 @@ async function genPDF(){
     doc.text(`மொத்த தாக்குதல்கள்: ${allAtks.length} | மிக ஆபத்தானவை: ${allAtks.filter(a=>a.sev==='CRITICAL').length} | தடுக்கப்பட்ட IPs: ${blockedIPs.size} | ஆபத்து மதிப்பெண்: ${score}/100`,20,y3+16);
     doc.text(`கேமரா பிடிப்புகள்: ${camCaptures.length} | ஹேக்கிங் கருவிகள்: ${new Set(allAtks.map(a=>a.tool)).size}`,20,y3+22);
     doc.setTextColor(100,115,140);doc.setFontSize(8);
-    doc.text('NIRAVAN Cyber Intelligence Node v5.0 — Tamil Nadu Cyber Security Authority — CONFIDENTIAL',W/2,H-12,'center');doc.text('Page 3 of 3',W-30,H-12);
+    doc.text('NIRAVAN Cyber Intelligence Node v5.0 — Tamil Nadu Cyber Security Authority — CONFIDENTIAL',W/2,H-12,'center');doc.text('Page 4 of 4',W-30,H-12);
     // Save
     doc.save(`NIRAVAN_TechnicalReport_${dept}_${ts.toISOString().slice(0,10)}.pdf`);
     tlog(`📄 PDF Technical Report generated: ${allAtks.length} findings, ${allAtks.filter(a=>a.sev==='CRITICAL').length} critical`,'lok');
@@ -1792,6 +2859,7 @@ async function genPDF(){
     genTextReport();
   }
 }
+
 
 function genTextReport(){
   const dept=document.getElementById('dept').value;

@@ -1,7 +1,7 @@
 import os
 import random
 import datetime
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, HTTPException, Depends, Security, Request, Response, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
@@ -15,6 +15,7 @@ import bcrypt
 import urllib.request
 import json
 import secrets
+import asyncio
 
 # ── Load environment configuration ──
 try:
@@ -347,7 +348,15 @@ class DefenseMemoryModel(Base):
     result = Column(String) # "successful", "failed"
     incident_id = Column(String, nullable=True)
     lesson = Column(Text, nullable=True)
+    effectiveness_score = Column(Float, nullable=True)
     timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+
+class VectorMemoryModel(Base):
+    __tablename__ = "vector_memory"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    incident_id = Column(String, index=True)
+    text = Column(Text)
+    vector_json = Column(Text) # JSON TF-IDF weights
 
 class EvaluationMetricModel(Base):
     __tablename__ = "evaluation_metrics"
@@ -405,6 +414,7 @@ class CaseUpdate(BaseModel):
 
 class CopilotQuery(BaseModel):
     prompt: str
+    history: Optional[List[Dict[str, str]]] = None
 
 class LocalNodeScanRequest(BaseModel):
     department: str
@@ -1378,7 +1388,8 @@ def startup_event():
         for table, col, col_type in [
             ("assets", "reputation_score", "INTEGER DEFAULT 100"),
             ("users", "reputation_score", "INTEGER DEFAULT 100"),
-            ("defense_memory", "lesson", "TEXT")
+            ("defense_memory", "lesson", "TEXT"),
+            ("defense_memory", "effectiveness_score", "FLOAT")
         ]:
             try:
                 db.execute(f"ALTER TABLE {table} ADD COLUMN {col} {col_type};")
@@ -1391,6 +1402,12 @@ def startup_event():
         seed_cases(db)
         seed_detection_rules(db)
         sync_cisa_kev(db)
+        
+        # Start the background event processor for autonomous incident mitigation
+        import asyncio
+        from core.orchestrator import start_background_processor
+        asyncio.create_task(start_background_processor(SessionLocal))
+        print("[NIRAVAN] Started background planner agent orchestrator.")
     finally:
         db.close()
 
@@ -2114,14 +2131,262 @@ def attribute_threat(behavior_pattern: str, timing_variance: float, request_coun
             "details": "Irregular request pacing and deliberate pivots indicating interactive keyboard controls."
         }
         
-    return {
-        "attribution": "Scanner",
-        "confidence": 60,
-        "details": "Activity matches sequential probing signatures with low complexity."
-    }
-
 @app.post("/api/v1/copilot")
-def copilot_chat(payload: CopilotQuery, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+async def copilot_chat(payload: CopilotQuery, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+    from ai_gateway import AIGateway
+    
+    provider = AIGateway.get_model_provider()
+    if provider != "offline_fallback":
+        try:
+            # Query live state snapshot for context injection
+            assets_cnt = db.query(AssetModel).count()
+            comp_cnt = db.query(AssetModel).filter(AssetModel.status == "compromised").count()
+            active_inc_cnt = db.query(IncidentModel).filter(IncidentModel.status == "open").count()
+            crit_inc_cnt = db.query(IncidentModel).filter(IncidentModel.status == "open", IncidentModel.severity == "critical").count()
+            unresolved_case_cnt = db.query(CaseModel).filter(CaseModel.status != "resolved", CaseModel.status != "closed").count()
+            
+            live_status_context = (
+                f"\n--- LIVE SYSTEM STATE SNAPSHOT ---\n"
+                f"- Monitored Assets: {assets_cnt} total ({comp_cnt} compromised)\n"
+                f"- Active Incidents: {active_inc_cnt} open ({crit_inc_cnt} critical severity)\n"
+                f"- Active/Unresolved Cases: {unresolved_case_cnt} cases requiring analyst investigation\n"
+                f"-----------------------------------\n"
+            )
+
+            # Construct conversation context from history
+            prompt_context = ""
+            if payload.history:
+                for msg in payload.history:
+                    role = msg.get("role", "user")
+                    content = msg.get("content", "")
+                    prompt_context += f"{role.upper()}: {content}\n"
+            prompt_context += f"USER: {payload.prompt}"
+            
+            system_prompt = (
+                "You are NIRAVAN CORE, India's autonomous cyber-defense command assistant for Tamil Nadu.\n"
+                "You can answer questions, analyze threats, and invoke tools to block IPs, isolate hosts, run hunts, or generate reports.\n"
+                "When a user asks you to perform an action (e.g. block an IP or isolate a server), use the corresponding tool immediately.\n"
+                "Always explain your actions and findings clearly. If you invoke a tool, summarize its execution outcome.\n"
+                f"{live_status_context}"
+            )
+            
+            # Tools spec for Claude
+            tools_spec = [
+                {
+                    "name": "block_ip",
+                    "description": "Block a malicious IP address in the firewall. Use this when you've identified an attacker's IP address with high confidence.",
+                    "input_schema": {
+                        "type": "object",
+                        "properties": {
+                            "ip_address": {"type": "string", "description": "The IPv4 or IPv6 address to block"},
+                            "reason": {"type": "string", "description": "Reason for blocking this IP"},
+                            "duration_hours": {"type": "integer", "description": "How many hours to block. Default 24.", "default": 24}
+                        },
+                        "required": ["ip_address", "reason"]
+                    }
+                },
+                {
+                    "name": "isolate_host",
+                    "description": "Isolate a compromised host from the network. Use when a host shows signs of active compromise.",
+                    "input_schema": {
+                        "type": "object",
+                        "properties": {
+                            "hostname": {"type": "string", "description": "The hostname or IP of the system to isolate"},
+                            "reason": {"type": "string", "description": "Reason for isolation"},
+                            "notify_admin": {"type": "boolean", "description": "Whether to notify admin. Default true.", "default": True}
+                        },
+                        "required": ["hostname", "reason"]
+                    }
+                },
+                {
+                    "name": "run_threat_hunt",
+                    "description": "Execute a threat hunt query across telemetry logs to find matching techniques or patterns.",
+                    "input_schema": {
+                        "type": "object",
+                        "properties": {
+                            "technique_id": {"type": "string", "description": "MITRE ATT&CK technique ID (e.g. T1110)"},
+                            "hunt_query": {"type": "string", "description": "Specific pattern or behavior to hunt for"},
+                            "time_window_hours": {"type": "integer", "description": "Hours back to search. Default 24.", "default": 24}
+                        },
+                        "required": ["hunt_query"]
+                    }
+                },
+                {
+                    "name": "generate_report",
+                    "description": "Generate a comprehensive security incident report including MITRE ATT&CK mapping, citizen impact, and remediation steps.",
+                    "input_schema": {
+                        "type": "object",
+                        "properties": {
+                            "incident_id": {"type": "string", "description": "The incident ID to generate report for"},
+                            "report_type": {"type": "string", "enum": ["executive", "technical", "compliance", "citizen_impact"], "description": "Type of report to generate"},
+                            "include_recommendations": {"type": "boolean", "default": True}
+                        },
+                        "required": ["incident_id", "report_type"]
+                    }
+                },
+                {
+                    "name": "get_assets",
+                    "description": "Retrieve all monitored assets, their risk scores, status, open services, and vulnerability counts.",
+                    "input_schema": {
+                        "type": "object",
+                        "properties": {}
+                    }
+                },
+                {
+                    "name": "get_incidents",
+                    "description": "Retrieve a list of all active or closed incidents with their details.",
+                    "input_schema": {
+                        "type": "object",
+                        "properties": {}
+                    }
+                },
+                {
+                    "name": "get_kb_templates",
+                    "description": "Get the Tamil Nadu Cyber Knowledge Base (TNCKB) security rules, compliance focusing, and government department ontology.",
+                    "input_schema": {
+                        "type": "object",
+                        "properties": {}
+                    }
+                },
+                {
+                    "name": "get_defense_memory",
+                    "description": "Retrieve historical reinforcement memory showing which mitigation actions succeeded or failed for specific attack patterns.",
+                    "input_schema": {
+                        "type": "object",
+                        "properties": {}
+                    }
+                }
+            ]
+            
+            res = AIGateway.generate_completion_with_tools(
+                prompt=prompt_context,
+                tools=tools_spec,
+                system_prompt=system_prompt
+            )
+            
+            tool_calls_executed = []
+            final_text = res.get("text", "")
+            
+            # If Claude decides to run one or more tools
+            if res.get("tool_calls"):
+                for tc in res["tool_calls"]:
+                    tc_name = tc["name"]
+                    tc_input = tc["input"]
+                    
+                    # Execute tool locally
+                    tool_res = {}
+                    if tc_name == "block_ip":
+                        from tools.block_ip_tool import BlockIPTool
+                        tool_res = BlockIPTool.execute(
+                            db,
+                            ip_address=tc_input.get("ip_address"),
+                            reason=tc_input.get("reason"),
+                            duration_hours=tc_input.get("duration_hours", 24)
+                        )
+                    elif tc_name == "isolate_host":
+                        from tools.isolate_host_tool import IsolateHostTool
+                        tool_res = IsolateHostTool.execute(
+                            db,
+                            hostname=tc_input.get("hostname"),
+                            reason=tc_input.get("reason"),
+                            notify_admin=tc_input.get("notify_admin", True)
+                        )
+                    elif tc_name == "run_threat_hunt":
+                        from tools.hunt_tool import HuntTool
+                        tool_res = HuntTool.execute(
+                            db,
+                            hunt_query=tc_input.get("hunt_query"),
+                            technique_id=tc_input.get("technique_id"),
+                            time_window_hours=tc_input.get("time_window_hours", 24)
+                        )
+                    elif tc_name == "generate_report":
+                        from tools.generate_pdf_tool import GeneratePDFTool
+                        tool_res = GeneratePDFTool.execute(
+                            db,
+                            incident_id=tc_input.get("incident_id"),
+                            report_type=tc_input.get("report_type"),
+                            include_recommendations=tc_input.get("include_recommendations", True)
+                        )
+                    elif tc_name == "get_assets":
+                        assets = db.query(AssetModel).all()
+                        tool_res = {
+                            "success": True,
+                            "assets": [
+                                {
+                                    "name": a.name,
+                                    "ip_address": a.ip_address,
+                                    "risk_score": a.riskScore,
+                                    "status": a.status,
+                                    "vulnerabilities": a.vulnerabilities,
+                                    "open_services": a.open_services,
+                                    "criticality": a.criticality
+                                } for a in assets
+                            ]
+                        }
+                    elif tc_name == "get_incidents":
+                        incidents = db.query(IncidentModel).all()
+                        tool_res = {
+                            "success": True,
+                            "incidents": [
+                                {
+                                    "id": i.id,
+                                    "title": i.title,
+                                    "severity": i.severity,
+                                    "status": i.status,
+                                    "host": i.host,
+                                    "type": i.type,
+                                    "description": i.description,
+                                    "timestamp": i.timestamp.isoformat() if i.timestamp else None
+                                } for i in incidents
+                            ]
+                        }
+                    elif tc_name == "get_kb_templates":
+                        ontology_data = get_security_ontology(current_user)
+                        kb_data = get_knowledge_base(current_user)
+                        tool_res = {
+                            "success": True,
+                            "ontology": ontology_data,
+                            "knowledge_base": kb_data
+                        }
+                    elif tc_name == "get_defense_memory":
+                        from defense_memory import DefenseMemory
+                        memories = DefenseMemory.get_all_memory(db)
+                        tool_res = {
+                            "success": True,
+                            "memories": memories
+                        }
+                    else:
+                        tool_res = {"success": False, "error": f"Tool '{tc_name}' is not supported."}
+                        
+                    tool_calls_executed.append({
+                        "name": tc_name,
+                        "input": tc_input,
+                        "result": tool_res
+                    })
+                    
+                # Call Claude again with tool outputs to generate the final user-facing text
+                follow_up_prompt = (
+                    f"User Prompt: {payload.prompt}\n\n"
+                    f"You requested the following tool execution(s):\n"
+                )
+                for executed in tool_calls_executed:
+                    follow_up_prompt += (
+                        f"- Tool: {executed['name']}\n"
+                        f"  Input: {json.dumps(executed['input'])}\n"
+                        f"  Result: {json.dumps(executed['result'])}\n\n"
+                    )
+                follow_up_prompt += "Please formulate your final response to the user based on these execution outcomes, explaining what actions were taken and their results."
+                
+                final_text = AIGateway.generate_completion(follow_up_prompt, system_prompt=system_prompt)
+                
+            return {
+                "response": final_text or res.get("text", "Tools executed successfully."),
+                "tool_calls": tool_calls_executed,
+                "online": True
+            }
+        except Exception as api_err:
+            print(f"[Copilot] Error in online mode: {api_err}. Falling back to offline mode.")
+            
     p = payload.prompt.lower().strip()
     
     # ── 0. Guardian AI Officer — Bilingual Risk Explanation Engine ──────────
@@ -2566,6 +2831,185 @@ niravan-cli auth reset-password --user s.raj --notify
 
 #### Step 4: Verify Backups
 Review primary DB storage states and execute shadow copies restore once systems are clean."""
+        }
+
+    # ── Tamil Nadu Cyber Knowledge Base (TNCKB) Templates matching ──
+    # Match schools
+    if any(k in p for k in ["school", "emis", "education", "பள்ளி", "கல்வி"]):
+        kb_templates = get_knowledge_base(current_user)["templates"]
+        school = kb_templates["School"]
+        rules_ta = [
+            "மாணவர் பதிவேட்டை (EMIS) பொது வைஃபை நெட்வொர்க்கிலிருந்து தனிமைப்படுத்தவும்.",
+            "EMIS தரவுத்தள நிர்வாகக் கணக்குகளுக்கு MFA-ஐ கட்டாயமாக்கவும்.",
+            "தேர்வு மேலாண்மை சர்வர்களுக்கான திட்டமிடப்பட்ட ஆஃப்-சைட் பேக்கப்களை இயக்கவும்."
+        ]
+        return {
+            "response": f"""### 🎓 TNCKB Security Template: **School & Educational Institutions**
+            
+* **Description**: {school['description']}
+* **Compliance Focus**: {", ".join(school['compliance_focus'])}
+
+#### ⚡ Mandatory Security Rules (பாதுகாப்பு விதிகள்):
+1. **Rule 1**: {school['rules'][0]}
+   * *Tamil*: {rules_ta[0]}
+2. **Rule 2**: {school['rules'][1]}
+   * *Tamil*: {rules_ta[1]}
+3. **Rule 3**: {school['rules'][2]}
+   * *Tamil*: {rules_ta[2]}"""
+        }
+
+    # Match hospital / healthcare
+    if any(k in p for k in ["hospital", "medical", "health", "clinical", "மருத்துவமனை", "சுகாதாரம்"]):
+        kb_templates = get_knowledge_base(current_user)["templates"]
+        hospital = kb_templates["Hospital"]
+        rules_ta = [
+            "மருத்துவ உபகரணங்களை பொதுவான இணைய நெட்வொர்க்குகளிலிருந்து நெட்வொர்க் பிரிக்கவும்.",
+            "அனைத்து மருத்துவமனை பணிநிலையங்களிலும் போர்ட் 3389 (RDP)-ஐ முடக்கவும்.",
+            "நோயாளிகளின் தரவுத்தளங்களுக்கு மாதாந்திர ஆஃப்லைன் காப்புப்பிரதி சோதனைகளை மேற்கொள்ளுங்கள்."
+        ]
+        return {
+            "response": f"""### 🏥 TNCKB Security Template: **Hospitals & Health Centers**
+            
+* **Description**: {hospital['description']}
+* **Compliance Focus**: {", ".join(hospital['compliance_focus'])}
+
+#### ⚡ Mandatory Security Rules (பாதுகாப்பு விதிகள்):
+1. **Rule 1**: {hospital['rules'][0]}
+   * *Tamil*: {rules_ta[0]}
+2. **Rule 2**: {hospital['rules'][1]}
+   * *Tamil*: {rules_ta[1]}
+3. **Rule 3**: {hospital['rules'][2]}
+   * *Tamil*: {rules_ta[2]}"""
+        }
+
+    # Match collectorate
+    if any(k in p for k in ["collectorate", "district", "collector", "மாவட்ட", "ஆட்சியர்", "அலுவலகம்"]):
+        kb_templates = get_knowledge_base(current_user)["templates"]
+        coll = kb_templates["Collectorate"]
+        rules_ta = [
+            "நிலப் பதிவு தரவுத்தள நிர்வாக இணைய முகப்புகளுக்கு IP-அனுமதிப்பட்டியல் வடிப்பான்களைச் செயல்படுத்தவும்.",
+            "OpenVAS-ஐப் பயன்படுத்தி இரு வாரங்களுக்கு ஒருமுறை வெளிப்புற பாதிப்பு ஸ்கேனிங் நடத்தவும்.",
+            "பயன்படுத்தப்படாத சுவிட்ச் போர்ட்களை நெட்வொர்க்கில் முடக்கவும்."
+        ]
+        return {
+            "response": f"""### 🏢 TNCKB Security Template: **District Collectorates & Administrative Offices**
+            
+* **Description**: {coll['description']}
+* **Compliance Focus**: {", ".join(coll['compliance_focus'])}
+
+#### ⚡ Mandatory Security Rules (பாதுகாப்பு விதிகள்):
+1. **Rule 1**: {coll['rules'][0]}
+   * *Tamil*: {rules_ta[0]}
+2. **Rule 2**: {coll['rules'][1]}
+   * *Tamil*: {rules_ta[1]}
+3. **Rule 3**: {coll['rules'][2]}
+   * *Tamil*: {rules_ta[2]}"""
+        }
+
+    # Match police
+    if any(k in p for k in ["police", "fir", "cop", "காவல்", "போலீஸ்"]):
+        kb_templates = get_knowledge_base(current_user)["templates"]
+        police = kb_templates["Police"]
+        rules_ta = [
+            "FIR தரவுத்தளங்களுக்கு மறைகுறியாக்கப்பட்ட VPN இணைப்புகளை மட்டுமே அனுமதிக்கும் விதிகளுடன் ஃபயர்வால் அமைக்கவும்.",
+            "அனைத்து பணிநிலையங்களிலும் EDR லாக்கிங் உள்ளமைக்கவும்.",
+            "அசாதாரண நற்சான்றிதழ் பயன்பாட்டிற்கான அணுகல் வடிவங்களை கண்காணிக்கவும்."
+        ]
+        return {
+            "response": f"""### 🛡️ TNCKB Security Template: **Police Departments & District HQ**
+            
+* **Description**: {police['description']}
+* **Compliance Focus**: {", ".join(police['compliance_focus'])}
+
+#### ⚡ Mandatory Security Rules (பாதுகாப்பு விதிகள்):
+1. **Rule 1**: {police['rules'][0]}
+   * *Tamil*: {rules_ta[0]}
+2. **Rule 2**: {police['rules'][1]}
+   * *Tamil*: {rules_ta[1]}
+3. **Rule 3**: {police['rules'][2]}
+   * *Tamil*: {rules_ta[2]}"""
+        }
+
+    # Match treasury
+    if any(k in p for k in ["treasury", "pension", "finance", "கஜானா", "நிதி", "ஓய்வூதியம்"]):
+        kb_templates = get_knowledge_base(current_user)["templates"]
+        treasury = kb_templates["Treasury"]
+        rules_ta = [
+            "நிதி விநியோகங்களுக்கு பல நபர் ஒப்புதலை (multi-signature) அமல்படுத்தவும்.",
+            "வழக்கத்திற்கு மாறான நிர்வாக பரிவர்த்தனைகளுக்கு தினசரி பயனர் பதிவுகளை தணிக்கை செய்யவும்.",
+            "நிதி தரவுத்தள சர்வர்களை உயர் பாதுகாப்பு நெட்வொர்க் பிரிவுகளில் வைக்கவும்."
+        ]
+        return {
+            "response": f"""### 💰 TNCKB Security Template: **Treasury & Pension DB**
+            
+* **Description**: {treasury['description']}
+* **Compliance Focus**: {", ".join(treasury['compliance_focus'])}
+
+#### ⚡ Mandatory Security Rules (பாதுகாப்பு விதிகள்):
+1. **Rule 1**: {treasury['rules'][0]}
+   * *Tamil*: {rules_ta[0]}
+2. **Rule 2**: {treasury['rules'][1]}
+   * *Tamil*: {rules_ta[1]}
+3. **Rule 3**: {treasury['rules'][2]}
+   * *Tamil*: {rules_ta[2]}"""
+        }
+
+    # Match defense memory
+    if any(k in p for k in ["defense memory", "mitigation history", "remediation logs", "lessons learned", "நினைவகம்", "தீர்வு வரலாறு"]):
+        from defense_memory import DefenseMemory
+        mems = DefenseMemory.get_all_memory(db, limit=10)
+        if not mems:
+            return {
+                "response": "### 🧠 NIRAVAN Defense Memory Logs\n\nNo remediation memories recorded in database yet. Try running automated mitigation simulation waves."
+            }
+        rows = ""
+        for m in mems:
+            rows += f"\n| `{m['timestamp'][:19]}` | **{m['pattern']}** | `{m['action']}` | `{(m['result'] or '').upper()}` |"
+        return {
+            "response": f"""### 🧠 NIRAVAN Defense Memory (Reinforcement Learning)
+            
+Here are the recent automated remediation attempts and their verified results:
+
+| Timestamp | Threat Pattern | Action Taken | Result Status |
+| :--- | :--- | :--- | :--- |{rows}
+
+*These metrics are fed back into our Bayesian Consensus Engine to compute future remediation confidence scores.*"""
+        }
+
+    # Match threat actor Profiles / Ontology
+    if any(k in p for k in ["apt28", "fancy bear", "lazarus", "revil", "lockbit", "threat actor", "அச்சுறுத்தல்"]):
+        ontology = get_security_ontology(current_user)
+        actors = ontology["categories"][2]["items"]
+        rows = ""
+        for a in actors:
+            rows += f"\n| **{a['actor']}** | {a['typical_targets']} | `{a['vector']}` |"
+        return {
+            "response": f"""### 🕸️ Threat Actor Taxonomy targeting TN Infrastructure
+            
+The following APT groups and threat actors are profiled for government-sector services:
+
+| Threat Actor | Primary Targets | Delivery Vector |
+| :--- | :--- | :--- |{rows}
+
+*Data compiled in NIRAVAN State Cyber Threat Intelligence repository.*"""
+        }
+
+    # Match compliance
+    if any(k in p for k in ["compliance", "cert-in", "dpdp", "சட்டம்"]):
+        return {
+            "response": """### ⚖️ Statewide Cyber Compliance & Regulatory Readiness
+            
+NIRAVAN tracks governance readiness against national regulations:
+
+1. **IT Act 2000 Section 40/43A/70**:
+   * *Requirement*: Protection of critical information infrastructure.
+   * *Status*: Active. EDR containment whitelists and multi-signature validation enforced.
+2. **DPDP Act 2023 (Digital Personal Data Protection)**:
+   * *Requirement*: Citizen data safety consent and breach reporting.
+   * *Status*: Monitored. Student (EMIS) and Health registries segregated.
+3. **CERT-In 6-Hour Breach Reporting Directive**:
+   * *Requirement*: Incidents must be logged and reported within 6 hours.
+   * *Status*: Fully integrated. One-click report generator matches compliance layout."""
         }
 
     # Default fallback - Query AI Gateway
@@ -3335,6 +3779,52 @@ def trigger_crisis_lockdown(payload: CrisisLockdownRequest, db: Session = Depend
     db.commit()
     return {"status": "success", "message": "NIRAVAN Statewide Crisis Lockdown successfully activated. All assets and monitors isolated."}
 
+# ── Advanced Tier-1 CDOS Routes ──
+
+@app.post("/api/v1/cdos/fusion")
+def cdos_bayesian_fusion(payload: Dict[str, float], current_user: UserModel = Depends(get_current_user)):
+    from backend.fusion.bayesian_fusion import BayesianFusion
+    bf = BayesianFusion()
+    return bf.fuse_evidence(payload)
+
+@app.post("/api/v1/cdos/ai-security/scan")
+def cdos_ai_security_scan(payload: Dict[str, str], current_user: UserModel = Depends(get_current_user)):
+    from backend.ai_security.prompt_guard import PromptGuard
+    from backend.ai_security.pii_firewall import PIIFirewall
+    text = payload.get("text", "")
+    guard = PromptGuard.inspect_prompt(text)
+    redacted = PIIFirewall.redact_pii(text)
+    return {
+        "prompt_guard": guard,
+        "pii_redacted_text": redacted
+    }
+
+@app.post("/api/v1/cdos/sandbox/analyze")
+def cdos_sandbox_analyze(payload: Dict[str, str], current_user: UserModel = Depends(get_current_user)):
+    from backend.sandbox.dynamic_analysis import DynamicSandboxAnalyzer
+    file_name = payload.get("file_name", "payload.exe")
+    return DynamicSandboxAnalyzer.run_sandbox_simulation(file_name)
+
+@app.post("/api/v1/cdos/cyber-range/scenario")
+def cdos_cyber_range_scenario(payload: Dict[str, str], current_user: UserModel = Depends(get_current_user)):
+    from backend.cyber_range.scenario_runner import RangeScenarioRunner
+    scenario = payload.get("scenario", "Ransomware hospital lockdown")
+    return RangeScenarioRunner.run_training_scenario(scenario)
+
+@app.post("/api/v1/cdos/network/bgp-check")
+def cdos_network_bgp_check(payload: Dict[str, Any], current_user: UserModel = Depends(get_current_user)):
+    from backend.network_intelligence.bgp_monitor import BGPMonitor
+    asn = int(payload.get("asn", 45820))
+    prefix = payload.get("prefix", "tn.gov.in")
+    path_list = payload.get("as_path", [1337])
+    return BGPMonitor.inspect_prefix_announcements(asn, prefix, path_list)
+
+@app.post("/api/v1/cdos/ics/decode")
+def cdos_ics_decode(payload: Dict[str, str], current_user: UserModel = Depends(get_current_user)):
+    from backend.ics.ics_decoder import ICSProtocolDecoder
+    raw_hex = payload.get("raw_hex", "00010000000601050001ff00")
+    return ICSProtocolDecoder.decode_modbus_frame(raw_hex)
+
 # ── Local Node Security Scanner and Integrations ──
 
 def run_local_sbom_scan(department: str) -> List[dict]:
@@ -4016,6 +4506,120 @@ def get_pdf_report(audit_id: str, db: Session = Depends(get_db), current_user: U
         f"<b>{audit.citizen_impact:,}</b> citizens' data or services at risk."
     )
     story.append(Paragraph(summary_text, body_style))
+    story.append(Spacer(1, 12))
+    
+    # ─── VISUAL 1: RISK SCORE GAUGE ───
+    story.append(Paragraph("<b>Risk Score Posture Meter / அபாய அளவீடு:</b>", body_style))
+    story.append(Spacer(1, 4))
+    
+    from reportlab.graphics.shapes import Drawing, Rect, String
+    gauge = Drawing(500, 30)
+    gauge.add(Rect(0, 0, 500, 30, fillColor=colors.HexColor('#F8FAFC'), strokeColor=colors.HexColor('#E2E8F0'), strokeWidth=1, rx=5, ry=5))
+    # low, med, high, critical bands
+    gauge.add(Rect(10, 8, 115, 14, fillColor=colors.HexColor('#D1FAE5'), strokeColor=None))
+    gauge.add(Rect(130, 8, 115, 14, fillColor=colors.HexColor('#FEF9C3'), strokeColor=None))
+    gauge.add(Rect(250, 8, 115, 14, fillColor=colors.HexColor('#FFEDD5'), strokeColor=None))
+    gauge.add(Rect(370, 8, 115, 14, fillColor=colors.HexColor('#FEE2E2'), strokeColor=None))
+    
+    score_pct = audit.risk_score / 100.0
+    pin_x = 10 + score_pct * 460
+    pin_x = max(15, min(475, pin_x))
+    
+    if audit.risk_score >= 76:
+        bar_color = colors.HexColor('#EF4444')
+    elif audit.risk_score >= 51:
+        bar_color = colors.HexColor('#F97316')
+    elif audit.risk_score >= 26:
+        bar_color = colors.HexColor('#EAB308')
+    else:
+        bar_color = colors.HexColor('#10B981')
+        
+    gauge.add(Rect(pin_x - 7, 4, 14, 22, fillColor=bar_color, strokeColor=colors.HexColor('#0F172A'), strokeWidth=1.5, rx=2, ry=2))
+    gauge.add(String(pin_x - 5, 11, f"{audit.risk_score}", fontName='Helvetica-Bold', fontSize=8, fillColor=colors.HexColor('#0F172A')))
+    
+    story.append(gauge)
+    story.append(Spacer(1, 12))
+    
+    # ─── VISUAL 2: SEVERITY DISTRIBUTION BAR CHART ───
+    story.append(Paragraph("<b>Severity Density Distribution / அச்சுறுத்தல் அடர்த்தி:</b>", body_style))
+    story.append(Spacer(1, 4))
+    
+    crit_count = sum(1 for f in findings if f.get("severity", "").lower() == "critical" or f.get("sev", "").lower() == "critical")
+    high_count = sum(1 for f in findings if f.get("severity", "").lower() == "high" or f.get("sev", "").lower() == "high")
+    med_count = sum(1 for f in findings if f.get("severity", "").lower() == "medium" or f.get("sev", "").lower() == "medium")
+    low_count = sum(1 for f in findings if f.get("severity", "").lower() == "low" or f.get("sev", "").lower() == "low")
+    
+    total_f = len(findings) if findings else 1
+    w_crit = max(2, (crit_count / total_f) * 360) if crit_count > 0 else 0
+    w_high = max(2, (high_count / total_f) * 360) if high_count > 0 else 0
+    w_med = max(2, (med_count / total_f) * 360) if med_count > 0 else 0
+    w_low = max(2, (low_count / total_f) * 360) if low_count > 0 else 0
+    
+    draw = Drawing(500, 110)
+    draw.add(Rect(0, 0, 500, 110, fillColor=colors.HexColor('#F8FAFC'), strokeColor=colors.HexColor('#E2E8F0'), strokeWidth=1, rx=5, ry=5))
+    
+    # Critical
+    draw.add(Rect(90, 85, 360, 10, fillColor=colors.HexColor('#F1F5F9'), strokeColor=None))
+    if w_crit > 0:
+        draw.add(Rect(90, 85, w_crit, 10, fillColor=colors.HexColor('#EF4444'), strokeColor=None))
+    draw.add(String(15, 87, "CRITICAL (🔴)", fontName='Helvetica-Bold', fontSize=7, fillColor=colors.HexColor('#EF4444')))
+    draw.add(String(460, 87, f"{crit_count} items", fontName='Helvetica', fontSize=7.5, fillColor=colors.HexColor('#475569')))
+    
+    # High
+    draw.add(Rect(90, 60, 360, 10, fillColor=colors.HexColor('#F1F5F9'), strokeColor=None))
+    if w_high > 0:
+        draw.add(Rect(90, 60, w_high, 10, fillColor=colors.HexColor('#F97316'), strokeColor=None))
+    draw.add(String(15, 62, "HIGH (🟠)", fontName='Helvetica-Bold', fontSize=7, fillColor=colors.HexColor('#F97316')))
+    draw.add(String(460, 62, f"{high_count} items", fontName='Helvetica', fontSize=7.5, fillColor=colors.HexColor('#475569')))
+    
+    # Medium
+    draw.add(Rect(90, 35, 360, 10, fillColor=colors.HexColor('#F1F5F9'), strokeColor=None))
+    if w_med > 0:
+        draw.add(Rect(90, 35, w_med, 10, fillColor=colors.HexColor('#EAB308'), strokeColor=None))
+    draw.add(String(15, 37, "MEDIUM (🟡)", fontName='Helvetica-Bold', fontSize=7, fillColor=colors.HexColor('#D97706')))
+    draw.add(String(460, 37, f"{med_count} items", fontName='Helvetica', fontSize=7.5, fillColor=colors.HexColor('#475569')))
+    
+    # Low
+    draw.add(Rect(90, 10, 360, 10, fillColor=colors.HexColor('#F1F5F9'), strokeColor=None))
+    if w_low > 0:
+        draw.add(Rect(90, 10, w_low, 10, fillColor=colors.HexColor('#10B981'), strokeColor=None))
+    draw.add(String(15, 12, "LOW (🟢)", fontName='Helvetica-Bold', fontSize=7, fillColor=colors.HexColor('#10B981')))
+    draw.add(String(460, 12, f"{low_count} items", fontName='Helvetica', fontSize=7.5, fillColor=colors.HexColor('#475569')))
+    
+    story.append(draw)
+    story.append(Spacer(1, 12))
+    
+    # ─── VISUAL EXPLANATION SECTION ───
+    story.append(Paragraph("Visual Explanations & Threat Taxonomy / விளக்கப்படம் மற்றும் அச்சுறுத்தல் விளக்கம்", heading_style))
+    explanations = (
+        "• <b>Risk Score Posture Meter</b>: Indicates the overall threat level calculated for this node. "
+        "Green represents a standard healthy baseline, Yellow suggests minor gaps, Orange highlights active vulnerability exposure, "
+        "and Red signifies critical active attacks requiring immediate emergency containment.<br/>"
+        "• <b>Severity Density Distribution</b>: Displays a density overview of active gaps. "
+        "Critical items indicate remote code executions (e.g. SQL injection, Log4j) that put citizen records at risk and "
+        "must be resolved within 6 hours. High items denote service exposures (e.g. unencrypted ports) which should be patched immediately."
+    )
+    story.append(Paragraph(explanations, body_style))
+    story.append(Spacer(1, 12))
+    
+    # ─── VISUAL 3: POST-QUANTUM CRYPTOGRAPHY READINESS STATUS ───
+    story.append(Paragraph("Post-Quantum Readiness Status / குவாண்டம் பாதுகாப்பு நிலை", heading_style))
+    pqc_ready = any("quantum" in f.get("module", "").lower() or "quantum" in f.get("issue", "").lower() for f in findings)
+    
+    pqc_draw = Drawing(500, 35)
+    pqc_draw.add(Rect(0, 0, 500, 35, fillColor=colors.HexColor('#F8FAFC'), strokeColor=colors.HexColor('#E2E8F0'), strokeWidth=1, rx=5, ry=5))
+    
+    if pqc_ready:
+        pqc_draw.add(Rect(10, 8, 150, 18, fillColor=colors.HexColor('#FEE2E2'), strokeColor=None))
+        pqc_draw.add(String(18, 14, "❌ LEGACY ALGORITHMS ACTIVE", fontName='Helvetica-Bold', fontSize=7, fillColor=colors.HexColor('#EF4444')))
+        pqc_desc = "Legacy RSA/ECC encryption schemes detected in system components. Node is vulnerable to quantum decryption attacks."
+    else:
+        pqc_draw.add(Rect(10, 8, 150, 18, fillColor=colors.HexColor('#D1FAE5'), strokeColor=None))
+        pqc_draw.add(String(18, 14, "✅ PQC ALGORITHMS ACTIVE", fontName='Helvetica-Bold', fontSize=7, fillColor=colors.HexColor('#10B981')))
+        pqc_desc = "Post-Quantum Algorithms (ML-KEM / ML-DSA) deployed. Secured against quantum decryption attacks."
+        
+    pqc_draw.add(String(170, 14, pqc_desc, fontName='Helvetica', fontSize=7.5, fillColor=colors.HexColor('#1A1A1A')))
+    story.append(pqc_draw)
     story.append(Spacer(1, 15))
     
     story.append(Paragraph("Security Findings & Advisories / கண்டறியப்பட்ட அச்சுறுத்தல்கள்", heading_style))
@@ -4269,6 +4873,28 @@ def isolate_host(payload: IsolateHostRequest, db: Session = Depends(get_db), cur
     db.add(audit)
     db.commit()
     return {"status": "success", "message": f"Host {payload.host} successfully isolated. Audit log created."}
+
+# Global list to store SOC threat broadcasts
+soc_broadcasts = []
+
+@app.get("/api/v1/mitigation/push-stream")
+def push_stream():
+    async def event_generator():
+        last_idx = len(soc_broadcasts)
+        while True:
+            await asyncio.sleep(1.0)
+            if len(soc_broadcasts) > last_idx:
+                for i in range(last_idx, len(soc_broadcasts)):
+                    yield f"data: {json.dumps(soc_broadcasts[i])}\n\n"
+                last_idx = len(soc_broadcasts)
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+@app.post("/api/v1/mitigation/soc-broadcast")
+def soc_broadcast(payload: dict, db: Session = Depends(get_db), current_user: UserModel = Depends(require_role(["admin", "analyst"]))):
+    # Payload format: {"ip": "...", "host": "...", "action": "BLOCK/ISOLATE"}
+    soc_broadcasts.append(payload)
+    return {"status": "success", "message": "Central SOC command broadcasted successfully.", "payload": payload}
+
 
 @app.get("/api/v1/profiles/user/{email}")
 def get_user_profile(email: str, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
@@ -4883,3 +5509,155 @@ def get_economics_stats(
         "total_breach_impact": total_breach_impact,
         "assets": sorted(asset_details, key=lambda x: x["risk_exposure"], reverse=True)
     }
+
+# ── Autonomous Agent Architecture API Endpoints ──
+
+@app.get("/api/v1/events/stream")
+async def events_stream():
+    from core.orchestrator import orchestrator
+    client_queue = orchestrator.subscribe_sse()
+    
+    async def event_generator():
+        try:
+            while True:
+                data = await client_queue.get()
+                yield f"data: {json.dumps(data)}\n\n"
+        except asyncio.CancelledError:
+            orchestrator.unsubscribe_sse(client_queue)
+            
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+@app.get("/api/v1/agents/status")
+def get_agents_status(db: Session = Depends(get_db)):
+    from core.orchestrator import orchestrator
+    from core.memory_manager import MemoryManager
+    
+    mem_mgr = MemoryManager(db)
+    mem_stats = mem_mgr.get_memory_summary()
+    
+    orch_status = orchestrator.get_status()
+    
+    return {
+        "status": "online",
+        "orchestrator": orch_status,
+        "memory_manager": mem_stats,
+        "active_agents": [
+            {"name": "Threat Analyst Agent", "role": "MITRE Technique Attribution & Risk Analysis", "status": "idle"},
+            {"name": "Mitigation Agent", "role": "Prioritized Playbook Action Planning", "status": "idle"},
+            {"name": "Impact Agent", "role": "Tamil Nadu Citizen & Service Risk Estimation", "status": "idle"},
+            {"name": "Compliance Agent", "role": "CERT-IN, DPDP Act & ISO 27001 Mapping", "status": "idle"},
+            {"name": "Validator Agent", "role": "Whitelist Screening & Safe Containment Validation", "status": "idle"}
+        ]
+    }
+
+class RunPlannerRequest(BaseModel):
+    incident_id: str
+
+@app.post("/api/v1/planner/run")
+async def run_planner(payload: RunPlannerRequest, db: Session = Depends(get_db)):
+    from core.planner_agent import PlannerAgent
+    incident = db.query(IncidentModel).filter(IncidentModel.id == payload.incident_id).first()
+    if not incident:
+        raise HTTPException(status_code=404, detail="Incident not found")
+        
+    incident_data = {
+        "id": incident.id,
+        "title": incident.title,
+        "type": incident.type,
+        "severity": incident.severity,
+        "description": incident.description,
+        "status": incident.status,
+        "user": incident.user,
+        "host": incident.host,
+        "category": incident.category,
+        "mitre": incident.mitre,
+        "technique": incident.technique,
+        "timeStr": incident.timeStr,
+        "timestamp": incident.timestamp.isoformat() if incident.timestamp else None,
+        "technical": incident.technical
+    }
+    
+    planner = PlannerAgent(db)
+    result = await planner.run_cycle(incident_data)
+    return result
+
+@app.post("/api/v1/simulate/attack-wave")
+async def simulate_attack_wave(db: Session = Depends(get_db)):
+    """
+    Simulate a multi-stage attack wave to demonstrate the correlation
+    engine and autonomous planner cycle.
+    """
+    from correlation_engine import CorrelationEngine
+    import time
+    
+    attacker_ip = f"198.51.100.{random.randint(10, 99)}"
+    target_host = "Collectorate-Server"
+    
+    # Pre-seed the target asset if not exists to ensure Dijkstra/subnets resolve correctly
+    from main import AssetModel
+    asset = db.query(AssetModel).filter(AssetModel.name == target_host).first()
+    if not asset:
+        asset = AssetModel(
+            id="sim-asset-01",
+            name=target_host,
+            ip="10.0.1.15",
+            type="server",
+            criticality="high",
+            riskScore=45,
+            status="active",
+            vulnerabilities=3,
+            owner="District Collectorate",
+            operating_system="Windows Server 2022",
+            open_services="80, 443, 3389"
+        )
+        db.add(asset)
+        db.commit()
+
+    results = []
+
+    # Stage 1: Port Scan (Reconnaissance)
+    log_1 = {
+        "EventID": 3,
+        "SourceIp": attacker_ip,
+        "DestinationIp": "10.0.1.15",
+        "DestinationPort": 3389,
+        "Protocol": "tcp",
+        "host": target_host,
+        "user": "SYSTEM",
+        "message": "Connection initiated from external IP address"
+    }
+    res_1 = CorrelationEngine.correlate_event(db, "windows_event", log_1)
+    results.append({"stage": "reconnaissance", "result": res_1})
+    
+    # Stage 2: SSH/RDP Brute Force (5 failed attempts to trigger rule)
+    for i in range(5):
+        log_bf = {
+            "EventID": 4625,
+            "TargetUserName": "admin",
+            "IpAddress": attacker_ip,
+            "WorkstationName": "attacker-pc",
+            "host": target_host,
+            "message": "An account failed to log on."
+        }
+        res_bf = CorrelationEngine.correlate_event(db, "windows_event", log_bf)
+        results.append({"stage": f"brute_force_attempt_{i+1}", "result": res_bf})
+
+    # Stage 3: Privilege Escalation / Remote Execution (triggering MITRE rule)
+    log_pe = {
+        "EventID": 1,
+        "CommandLine": "powershell.exe -ExecutionPolicy Bypass -File C:\\Windows\\Temp\\exploit.ps1",
+        "User": "admin",
+        "IpAddress": attacker_ip,
+        "host": target_host,
+        "message": "Process created"
+    }
+    res_pe = CorrelationEngine.correlate_event(db, "windows_event", log_pe)
+    results.append({"stage": "privilege_escalation", "result": res_pe})
+
+    return {
+        "status": "simulation_fired",
+        "attacker_ip": attacker_ip,
+        "target_host": target_host,
+        "stages": results
+    }
+

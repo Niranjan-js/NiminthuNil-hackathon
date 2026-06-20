@@ -219,9 +219,151 @@ window.NIRAVAN_AI = {
     if (q.includes('qri') || q.includes('quantum risk') || q.includes('risk score') || q.includes('risk index')) {
       return this.respondQRI(qri, qriInfo);
     }
+    if (q.includes('school') || q.includes('emis') || q.includes('education') || q.includes('பள்ளி') || q.includes('கல்வி')) {
+      return this.respondSchoolTemplate();
+    }
+    if (q.includes('hospital') || q.includes('medical') || q.includes('health') || q.includes('clinical') || q.includes('மருத்துவமனை') || q.includes('சுகாதாரம்')) {
+      return this.respondHospitalTemplate();
+    }
+    if (q.includes('collectorate') || q.includes('district') || q.includes('collector') || q.includes('மாவட்ட') || q.includes('ஆட்சியர்') || q.includes('அலுவலகம்')) {
+      return this.respondCollectorateTemplate();
+    }
+    if (q.includes('police') || q.includes('fir') || q.includes('cop') || q.includes('காவல்') || q.includes('போலீஸ்')) {
+      return this.respondPoliceTemplate();
+    }
+    if (q.includes('treasury') || q.includes('pension') || q.includes('finance') || q.includes('கஜானா') || q.includes('நிதி') || q.includes('ஓய்வூதியம்')) {
+      return this.respondTreasuryTemplate();
+    }
+    if (q.includes('defense memory') || q.includes('mitigation history') || q.includes('remediation logs') || q.includes('lessons learned') || q.includes('நினைவகம்') || q.includes('தீர்வு வரலாறு')) {
+      return this.respondLocalDefenseMemory();
+    }
+    if (q.includes('apt28') || q.includes('fancy bear') || q.includes('lazarus') || q.includes('revil') || q.includes('lockbit') || q.includes('threat actor') || q.includes('அச்சுறுத்தல்')) {
+      return this.respondActors();
+    }
 
     // Default intelligent response
     return this.respondDefault(question, qri);
+  },
+
+  respondSchoolTemplate() {
+    return `
+      <h3>🎓 TNCKB Security Template: School & Educational Institutions</h3>
+      <p><strong>Description:</strong> Security profile template for schools and educational institutions.</p>
+      <p><strong>Compliance Focus:</strong> DPDP Act 2023 Student Data Consent, CERT-In 6-Hour reporting rules for student database breaches</p>
+      <h4>⚡ Mandatory Security Rules (பாதுகாப்பு விதிகள்):</h4>
+      <ol>
+        <li><strong>Rule 1:</strong> Isolate Student Registry (EMIS) from general student Wi-Fi networks.<br>
+            <em>Tamil:</em> மாணவர் பதிவேட்டை (EMIS) பொது வைஃபை நெட்வொர்க்கிலிருந்து தனிமைப்படுத்தவும்.</li>
+        <li><strong>Rule 2:</strong> Mandate MFA for EMIS database administrative accounts.<br>
+            <em>Tamil:</em> EMIS தரவுத்தள நிர்வாகக் கணக்குகளுக்கு MFA-ஐ கட்டாயமாக்கவும்.</li>
+        <li><strong>Rule 3:</strong> Enable scheduled off-site backups for exam management servers.<br>
+            <em>Tamil:</em> தேர்வு மேலாண்மை சர்வர்களுக்கான திட்டமிடப்பட்ட ஆஃப்-சைட் பேக்கப்களை இயக்கவும்.</li>
+      </ol>
+    `;
+  },
+  respondHospitalTemplate() {
+    return `
+      <h3>🏥 TNCKB Security Template: Hospitals & Health Centers</h3>
+      <p><strong>Description:</strong> Security profile template for public hospitals and primary health centers.</p>
+      <p><strong>Compliance Focus:</strong> DPDP Act 2023 Health Data Protection, NIST CSF Critical Services Availability Guidelines</p>
+      <h4>⚡ Mandatory Security Rules (பாதுகாப்பு விதிகள்):</h4>
+      <ol>
+        <li><strong>Rule 1:</strong> Network segregate medical diagnostic equipment from general web networks.<br>
+            <em>Tamil:</em> மருத்துவ உபகரணங்களை பொதுவான இணைய நெட்வொர்க்குகளிலிருந்து நெட்வொர்க் பிரிக்கவும்.</li>
+        <li><strong>Rule 2:</strong> Block port 3389 (RDP) on all hospital administrative workstations.<br>
+            <em>Tamil:</em> அனைத்து மருத்துவமனை பணிநிலையங்களிலும் போர்ட் 3389 (RDP)-ஐ முடக்கவும்.</li>
+        <li><strong>Rule 3:</strong> Perform monthly offline backup tests for patient record databases.<br>
+            <em>Tamil:</em> நோயாளிகளின் தரவுத்தளங்களுக்கு மாதாந்திர ஆஃப்லைன் காப்புப்பிரதி சோதனைகளை மேற்கொள்ளுங்கள்.</li>
+      </ol>
+    `;
+  },
+  respondCollectorateTemplate() {
+    return `
+      <h3>🏢 TNCKB Security Template: District Collectorates & Administrative Offices</h3>
+      <p><strong>Description:</strong> Security profile template for district collectorates and local administrative offices.</p>
+      <p><strong>Compliance Focus:</strong> IT Act Section 43A Security Practices, CERT-In Ransomware Mitigation Directives</p>
+      <h4>⚡ Mandatory Security Rules (பாதுகாப்பு விதிகள்):</h4>
+      <ol>
+        <li><strong>Rule 1:</strong> Implement IP-whitelist filters on land record database administrative portals.<br>
+            <em>Tamil:</em> நிலப் பதிவு தரவுத்தள நிர்வாக இணைய முகப்புகளுக்கு IP-அனுமதிப்பட்டியல் வடிப்பான்களைச் செயல்படுத்தவும்.</li>
+        <li><strong>Rule 2:</strong> Conduct bi-weekly external vulnerability scanning using Greenbone/OpenVAS.<br>
+            <em>Tamil:</em> OpenVAS-ஐப் பயன்படுத்தி இரு வாரங்களுக்கு ஒருமுறை வெளிப்புற பாதிப்பு ஸ்கேனிங் நடத்தவும்.</li>
+        <li><strong>Rule 3:</strong> Ensure local network switches disable unused ethernet ports.<br>
+            <em>Tamil:</em> பயன்படுத்தப்படாத சுவிட்ச் போர்ட்களை நெட்வொர்க்கில் முடக்கவும்.</li>
+      </ol>
+    `;
+  },
+  respondPoliceTemplate() {
+    return `
+      <h3>🛡️ TNCKB Security Template: Police Departments & District HQ</h3>
+      <p><strong>Description:</strong> Security profile template for police departments and district headquarters.</p>
+      <p><strong>Compliance Focus:</strong> State Cyber Security Policy Guidelines, IT Act Section 72A Data Privacy</p>
+      <h4>⚡ Mandatory Security Rules (பாதுகாப்பு விதிகள்):</h4>
+      <ol>
+        <li><strong>Rule 1:</strong> Enforce strict firewall rules allowing only encrypted VPN connections to FIR databases.<br>
+            <em>Tamil:</em> FIR தரவுத்தளங்களுக்கு மறைகுறியாக்கப்பட்ட VPN இணைப்புகளை மட்டுமே அனுமதிக்கும் விதிகளுடன் ஃபயர்வால் அமைக்கவும்.</li>
+        <li><strong>Rule 2:</strong> Configure endpoint EDR logging on all field workstations.<br>
+            <em>Tamil:</em> அனைத்து பணிநிலையங்களிலும் EDR லாக்கிங் உள்ளமைக்கவும்.</li>
+        <li><strong>Rule 3:</strong> Monitor access log patterns for unusual credential usage.<br>
+            <em>Tamil:</em> அசாதாரண நற்சான்றிதழ் பயன்பாட்டிற்கான அணுகல் வடிவங்களை கண்காணிக்கவும்.</li>
+      </ol>
+    `;
+  },
+  respondTreasuryTemplate() {
+    return `
+      <h3>💰 TNCKB Security Template: Treasury & Pension DB</h3>
+      <p><strong>Description:</strong> Security profile template for district treasury and state pension databases.</p>
+      <p><strong>Compliance Focus:</strong> RBI Security Guidelines, IT Act Section 70 Critical Information Infrastructure</p>
+      <h4>⚡ Mandatory Security Rules (பாதுகாப்பு விதிகள்):</h4>
+      <ol>
+        <li><strong>Rule 1:</strong> Implement multi-signature validation for financial disbursements.<br>
+            <em>Tamil:</em> நிதி விநியோகங்களுக்கு பல நபர் ஒப்புதலை (multi-signature) அமல்படுத்தவும்.</li>
+        <li><strong>Rule 2:</strong> Audit user logs daily for atypical administrative transactions.<br>
+            <em>Tamil:</em> வழக்கத்திற்கு மாறான நிர்வாக பரிவர்த்தனைகளுக்கு தினசரி பயனர் பதிவுகளை தணிக்கை செய்யவும்.</li>
+        <li><strong>Rule 3:</strong> Isolate financial database servers in high-security subnet zones.<br>
+            <em>Tamil:</em> நிதி தரவுத்தள சர்வர்களை உயர் பாதுகாப்பு நெட்வொர்க் பிரிவுகளில் வைக்கவும்.</li>
+      </ol>
+    `;
+  },
+  respondLocalDefenseMemory() {
+    const logs = window.NIRAVAN_DATA.events || [];
+    const deceptions = logs.filter(l => l.type === 'DECEPTION_TRIGGERED' || l.severity === 'critical');
+    let rows = deceptions.slice(0, 5).map(l => {
+      let timeStr = l.timeStr || "Just now";
+      return `<tr><td>${timeStr}</td><td><strong>${l.title}</strong></td><td><code>${l.host || 'N/A'}</code></td><td><span class="badge high">${l.category || 'Threat'}</span></td><td><span class="badge success">Remediated</span></td></tr>`;
+    }).join('');
+    
+    return `
+      <h3>🧠 NIRAVAN Defense Memory (Reinforcement Learning)</h3>
+      <p>Recent automated remediation attempts and verified outcomes:</p>
+      <table class="data-table" style="width:100%; font-size:0.65rem; border-collapse:collapse; margin-top:10px;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border-subtle); text-align:left;">
+            <th>Time</th><th>Threat / Event</th><th>Target Host</th><th>Category</th><th>Remediation Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows || '<tr><td colspan="5" style="text-align:center;">No recent mitigation memory entries in data</td></tr>'}
+        </tbody>
+      </table>
+    `;
+  },
+  respondActors() {
+    return `
+      <h3>🕸️ Profiled Threat Actors targeting TN Infrastructure</h3>
+      <table class="data-table" style="width:100%; font-size:0.65rem; border-collapse:collapse; margin-top:10px;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border-subtle); text-align:left;">
+            <th>Threat Actor</th><th>Primary Targets</th><th>Delivery Vector</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>APT28 (Fancy Bear)</strong></td><td>Critical Infrastructure, Government Networks</td><td>VPN Vulnerability Exploits, Phishing</td></tr>
+          <tr><td><strong>Lazarus Group</strong></td><td>Financial Portals, Government Treasury</td><td>Spearphishing, Watering Hole</td></tr>
+          <tr><td><strong>REvil / LockBit</strong></td><td>Municipal / Public Services, Healthcare</td><td>RDP Brute force, Unpatched Web services</td></tr>
+        </tbody>
+      </table>
+    `;
   },
 
   respondDeception() {

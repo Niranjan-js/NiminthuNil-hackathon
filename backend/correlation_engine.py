@@ -396,6 +396,36 @@ class CorrelationEngine:
             # Update Knowledge Graph Nodes/Edges in DB
             CorrelationEngine.update_attack_graph(db, triggered_incident, asset)
             
+            # Wire into the autonomous orchestrator event bus
+            try:
+                import asyncio
+                from core.orchestrator import orchestrator
+                
+                incident_data = {
+                    "id": triggered_incident.id,
+                    "title": triggered_incident.title,
+                    "type": triggered_incident.type,
+                    "severity": triggered_incident.severity,
+                    "description": triggered_incident.description,
+                    "status": triggered_incident.status,
+                    "user": triggered_incident.user,
+                    "host": triggered_incident.host,
+                    "category": triggered_incident.category,
+                    "mitre": triggered_incident.mitre,
+                    "technique": triggered_incident.technique,
+                    "timeStr": triggered_incident.timeStr,
+                    "timestamp": triggered_incident.timestamp.isoformat() if triggered_incident.timestamp else None,
+                    "technical": triggered_incident.technical
+                }
+                
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    loop.create_task(orchestrator.enqueue_event(incident_data))
+                else:
+                    loop.run_until_complete(orchestrator.enqueue_event(incident_data))
+            except Exception as o_err:
+                print(f"[Correlation-Engine] Failed to enqueue to orchestrator: {o_err}")
+            
             return {
                 "status": "triggered",
                 "rule": rule_name,
