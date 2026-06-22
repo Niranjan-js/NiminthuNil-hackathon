@@ -17,6 +17,12 @@ from benchmarks import run_network
 from benchmarks import run_ics
 from benchmarks import run_autonomous
 from benchmarks import run_agents
+from benchmarks import run_iot
+from benchmarks import run_mqtt
+from benchmarks import run_zigbee
+from benchmarks import run_botnet
+from benchmarks import run_firmware
+from benchmarks import run_ot_iot
 
 def compile_scorecard():
     print("====================================================")
@@ -90,6 +96,42 @@ def compile_scorecard():
         results.append(run_agents.run_benchmark())
     except Exception as e:
         results.append({"domain": "Multi-Agent Swarm & XAI", "passed": False, "error": str(e)})
+
+    # 12. IoT Anomaly
+    try:
+        results.append(run_iot.run_benchmark())
+    except Exception as e:
+        results.append({"domain": "IoT ML Anomaly Detection", "passed": False, "error": str(e)})
+
+    # 13. MQTT
+    try:
+        results.append(run_mqtt.run_benchmark())
+    except Exception as e:
+        results.append({"domain": "MQTT Protocol Decoding", "passed": False, "error": str(e)})
+
+    # 14. Zigbee/BLE/CoAP
+    try:
+        results.append(run_zigbee.run_benchmark())
+    except Exception as e:
+        results.append({"domain": "IoT Protocol Layers (Zigbee/BLE/CoAP)", "passed": False, "error": str(e)})
+
+    # 15. Botnet
+    try:
+        results.append(run_botnet.run_benchmark())
+    except Exception as e:
+        results.append({"domain": "IoT Botnet signature detection", "passed": False, "error": str(e)})
+
+    # 16. Firmware Scanner
+    try:
+        results.append(run_firmware.run_benchmark())
+    except Exception as e:
+        results.append({"domain": "Firmware Security Scanning", "passed": False, "error": str(e)})
+
+    # 17. OT/IoT Composite
+    try:
+        results.append(run_ot_iot.run_benchmark())
+    except Exception as e:
+        results.append({"domain": "OT/IoT Composite Defense", "passed": False, "error": str(e)})
 
     # Compile Markdown scorecard report
     md_content = """# Ultimate CDOS Scorecard: NIRAVAN Benchmark Lab

@@ -1,6 +1,7 @@
 import os
 import random
 import datetime
+import logging
 from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, HTTPException, Depends, Security, Request, Response, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,6 +17,9 @@ import urllib.request
 import json
 import secrets
 import asyncio
+
+logger = logging.getLogger("niravan.main")
+
 
 # ── Load environment configuration ──
 try:
@@ -370,9 +374,102 @@ class EvaluationMetricModel(Base):
     accuracy = Column(Float)
     timestamp = Column(DateTime, default=datetime.datetime.utcnow)
 
+class IoTDeviceModel(Base):
+    __tablename__ = "iot_devices"
+    id = Column(String, primary_key=True, index=True)
+    ip = Column(String)
+    mac = Column(String)
+    hostname = Column(String)
+    vendor = Column(String)
+    model = Column(String)
+    device_type = Column(String)
+    category = Column(String)
+    open_ports = Column(String, nullable=True) # comma separated
+    protocols_detected = Column(String, nullable=True) # comma separated
+    firmware_version = Column(String, nullable=True)
+    discovery_method = Column(String, nullable=True)
+    risk_tier = Column(Integer, default=4)
+    risk_score = Column(Integer, default=0)
+    last_seen = Column(String, nullable=True)
+    network_segment = Column(String, nullable=True)
+    is_on_asset_register = Column(Boolean, default=True)
+
+class IoTIncidentModel(Base):
+    __tablename__ = "iot_incidents"
+    id = Column(String, primary_key=True, index=True)
+    device_id = Column(String, index=True)
+    threat_type = Column(String)
+    severity = Column(String)
+    description = Column(String)
+    status = Column(String, default="open")  # open, contained, escalated, suppressed
+    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+    mitre_technique = Column(String, nullable=True)
+    actions_taken = Column(String, nullable=True) # comma separated
+    anomaly_score = Column(Float, default=0.0)
+
+class FirmwareVulnModel(Base):
+    __tablename__ = "firmware_vulns"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    vendor = Column(String)
+    model = Column(String)
+    firmware_version = Column(String)
+    cve_id = Column(String)
+    cvss_score = Column(Float)
+    cisa_kev = Column(Boolean, default=False)
+    description = Column(String, nullable=True)
+    remediation = Column(String, nullable=True)
+
 Base.metadata.create_all(bind=engine)
 
 # ── Pydantic Request/Response Models ──
+class IoTDiscoverRequest(BaseModel):
+    subnet: str = "192.168.10.0/24"
+    protocols: Optional[List[str]] = None
+    passive: bool = False
+
+class IoTScanRequest(BaseModel):
+    device_id: str
+
+class IoTDecodeRequest(BaseModel):
+    protocol: str
+    raw_hex: Optional[str] = None
+    payload_hex: Optional[str] = None  # alias accepted from frontend
+
+    @property
+    def resolved_hex(self) -> str:
+        return self.raw_hex or self.payload_hex or ""
+
+class IoTBehaviorRequest(BaseModel):
+    device_id: str
+    traffic_sample: Optional[dict] = None
+
+class IoTBotnetRequest(BaseModel):
+    device_id: str
+    traffic: Optional[dict] = None
+    traffic_sample: Optional[dict] = None  # alias accepted from frontend
+    cmd_history: Optional[List[str]] = None
+
+    @property
+    def resolved_traffic(self) -> Optional[dict]:
+        return self.traffic or self.traffic_sample
+
+class IoTMLRequest(BaseModel):
+    device_id: str
+    traffic_sample: Optional[dict] = None
+
+class IoTContainRequest(BaseModel):
+    device_id: str
+    threat_type: str
+
+class IoTScenarioRequest(BaseModel):
+    scenario_name: str
+    environment: str = "Hospital"
+    include_response: bool = True
+
+class IoTForensicsRequest(BaseModel):
+    device_id: str
+    incident_id: Optional[str] = None
+
 class FeedbackCreate(BaseModel):
     feedback_type: str
     comments: Optional[str] = None
@@ -563,6 +660,8 @@ _allowed_origins = [
     "http://127.0.0.1:8000",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
 ]
 if _allowed_origin and _allowed_origin not in _allowed_origins:
     _allowed_origins.append(_allowed_origin)
@@ -1824,6 +1923,18 @@ def get_admin_audit_logs(db: Session = Depends(get_db), current_user: UserModel 
             "details": aa.details
         } for aa in actions]
     }
+
+@app.get("/api/v1/audit-logs")
+def get_audit_logs(db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+    audits = db.query(AuditLogModel).order_by(AuditLogModel.timestamp.desc()).limit(100).all()
+    return [{
+        "id": a.id,
+        "timestamp": a.timestamp.isoformat(),
+        "user_email": a.user_email,
+        "action": a.action,
+        "detail": a.detail,
+        "ip_address": a.ip_address
+    } for a in audits]
 
 @app.get("/api/v1/admin/login-logs")
 def get_admin_login_logs(db: Session = Depends(get_db), current_user: UserModel = Depends(require_role(["admin"]))):
@@ -5660,4 +5771,632 @@ async def simulate_attack_wave(db: Session = Depends(get_db)):
         "target_host": target_host,
         "stages": results
     }
+
+
+# ── OT/IoT Defense Layer Endpoints ──
+from backend.ot_iot.asset_discovery import IoTAssetDiscovery
+from backend.ot_iot.device_fingerprint import DeviceFingerprint
+from backend.ot_iot.mac_vendor_lookup import MacVendorLookup
+from backend.ot_iot.topology_mapper import IoTTopologyMapper
+from backend.ot_iot.device_classifier import DeviceClassifier
+from backend.ot_iot.firmware_identifier import FirmwareIdentifier
+from backend.ot_iot.firmware_scanner import FirmwareScanner
+from backend.ot_iot.firmware_hash_db import FirmwareHashDB
+
+from backend.ot_iot.coap_decoder import CoAPDecoder
+from backend.ot_iot.zigbee_decoder import ZigbeeDecoder
+from backend.ot_iot.bluetooth_decoder import BLEDecoder
+from backend.ot_iot.snmp_decoder import SNMPDecoder
+from backend.ot_iot.mqtt_decoder import MQTTDecoder
+from backend.ics.opcua_decoder import OPCUADecoder
+from backend.ics.s7comm_decoder import S7CommDecoder
+from backend.ics.iec104_decoder import IEC104Decoder
+
+from backend.ot_iot.iot_behavior_analyzer import IoTBehaviorAnalyzer
+from backend.ot_iot.traffic_baseline import TrafficBaseline
+from backend.ot_iot.botnet_detector import BotnetDetector
+from backend.ot_iot.mirai_detector import MiraiDetector
+from backend.ot_iot.iot_threat_hunter import IoTThreatHunter
+from backend.ot_iot.iot_ml_detector import IoTMLDetector
+from backend.ot_iot.iot_response_engine import IoTResponseEngine
+from backend.ot_iot.iot_knowledge_graph import IoTKnowledgeGraph
+from backend.ot_iot.digital_twin import DigitalTwin
+from backend.ot_iot.attack_emulator import OTIoTAttackEmulator
+from backend.ot_iot.scenario_runner import OTIoTScenarioRunner
+from backend.ot_iot.shadow_iot_detector import ShadowIoTDetector
+from backend.ot_iot.risk_engine import IoTRiskEngine
+from backend.ot_iot.ics_attack_mapper import ICSAttackMapper
+from backend.ot_iot.iot_cve_mapper import IoTCVEMapper
+from backend.ot_iot.vendor_feed import VendorFeedAggregator
+from backend.ot_iot.iot_forensics import IoTForensics
+
+
+@app.post("/api/v1/ot-iot/discover")
+def ot_iot_discover(payload: IoTDiscoverRequest, db: Session = Depends(get_db)):
+    """Trigger IoT/OT asset discovery on a subnet."""
+    try:
+        result = IoTAssetDiscovery.discover(
+            subnet=payload.subnet,
+            protocols=payload.protocols,
+            passive=payload.passive
+        )
+        
+        # Save discovered devices to DB
+        devices_saved = []
+        for dev in result.get("devices", []):
+            # Check if device already exists
+            db_device = db.query(IoTDeviceModel).filter(IoTDeviceModel.id == dev["id"]).first()
+            if not db_device:
+                db_device = IoTDeviceModel(
+                    id=dev["id"],
+                    ip=dev["ip"],
+                    mac=dev["mac"],
+                    hostname=dev["hostname"],
+                    vendor=dev["vendor"],
+                    model=dev["model"],
+                    device_type=dev["device_type"],
+                    category=dev["category"],
+                    open_ports=",".join(map(str, dev["open_ports"])),
+                    protocols_detected=",".join(dev["protocols_detected"]),
+                    firmware_version=dev["firmware_version"],
+                    discovery_method=dev["discovery_method"],
+                    risk_tier=dev["risk_tier"],
+                    risk_score=0,
+                    last_seen=dev["last_seen"],
+                    network_segment=dev["network_segment"],
+                    is_on_asset_register=dev["is_on_asset_register"]
+                )
+                db.add(db_device)
+                devices_saved.append(dev["id"])
+        db.commit()
+        
+        return {
+            "status": "success",
+            "subnet": payload.subnet,
+            "scan_mode": result.get("scan_mode"),
+            "total_discovered": result.get("total_discovered"),
+            "new_devices_registered": len(devices_saved),
+            "devices": result.get("devices"),
+            "by_category": result.get("by_category"),
+            "ot_critical_count": result.get("ot_critical_count"),
+            "shadow_iot_count": result.get("shadow_iot_count")
+        }
+    except Exception as e:
+        logger.exception("Error during IoT discovery")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/v1/ot-iot/devices")
+def ot_iot_list_devices(db: Session = Depends(get_db)):
+    """List all discovered IoT/OT devices from DB."""
+    try:
+        devices = db.query(IoTDeviceModel).all()
+        result = []
+        for d in devices:
+            result.append({
+                "id": d.id,
+                "ip": d.ip,
+                "mac": d.mac,
+                "hostname": d.hostname,
+                "vendor": d.vendor,
+                "model": d.model,
+                "device_type": d.device_type,
+                "category": d.category,
+                "open_ports": [int(p) for p in d.open_ports.split(",")] if d.open_ports else [],
+                "protocols_detected": d.protocols_detected.split(",") if d.protocols_detected else [],
+                "firmware_version": d.firmware_version,
+                "discovery_method": d.discovery_method,
+                "risk_tier": d.risk_tier,
+                "risk_score": d.risk_score,
+                "last_seen": d.last_seen,
+                "network_segment": d.network_segment,
+                "is_on_asset_register": d.is_on_asset_register
+            })
+        return result
+    except Exception as e:
+        logger.exception("Error listing IoT devices")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/v1/ot-iot/devices/{device_id}")
+def ot_iot_get_device(device_id: str, db: Session = Depends(get_db)):
+    """Get details of a specific device, enriched with its fingerprint."""
+    try:
+        d = db.query(IoTDeviceModel).filter(IoTDeviceModel.id == device_id).first()
+        if not d:
+            raise HTTPException(status_code=404, detail="Device not found")
+        
+        device_info = {
+            "id": d.id,
+            "ip": d.ip,
+            "mac": d.mac,
+            "hostname": d.hostname,
+            "vendor": d.vendor,
+            "model": d.model,
+            "device_type": d.device_type,
+            "category": d.category,
+            "open_ports": [int(p) for p in d.open_ports.split(",")] if d.open_ports else [],
+            "protocols_detected": d.protocols_detected.split(",") if d.protocols_detected else [],
+            "firmware_version": d.firmware_version,
+            "risk_tier": d.risk_tier,
+            "risk_score": d.risk_score,
+            "network_segment": d.network_segment,
+            "is_on_asset_register": d.is_on_asset_register
+        }
+        
+        # Enriched fingerprint analysis
+        fingerprint = DeviceFingerprint.fingerprint_device(device_info)
+        
+        return {
+            "device_info": device_info,
+            "fingerprint": fingerprint
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Error getting device details")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/v1/ot-iot/firmware/scan")
+def ot_iot_firmware_scan(payload: IoTScanRequest, db: Session = Depends(get_db)):
+    """Scan device firmware for vulnerabilities and default credentials."""
+    try:
+        d = db.query(IoTDeviceModel).filter(IoTDeviceModel.id == payload.device_id).first()
+        if not d:
+            raise HTTPException(status_code=404, detail="Device not found")
+        
+        scanner = FirmwareScanner()
+        scan_report = scanner.scan(d.vendor, d.model, d.firmware_version)
+        
+        # Update device risk score in DB
+        d.risk_score = int(scan_report.get("risk_score", 0))
+        
+        # Save found vulnerabilities to DB
+        db.query(FirmwareVulnModel).filter(
+            FirmwareVulnModel.vendor == d.vendor,
+            FirmwareVulnModel.model == d.model,
+            FirmwareVulnModel.firmware_version == d.firmware_version
+        ).delete()
+        
+        for cve in scan_report.get("cves", []):
+            vuln = FirmwareVulnModel(
+                vendor=d.vendor,
+                model=d.model,
+                firmware_version=d.firmware_version,
+                cve_id=cve["cve_id"],
+                cvss_score=cve.get("cvss", cve.get("cvss_score", 0.0)),
+                cisa_kev=cve.get("cisa_kev", False),
+                description=cve.get("description", ""),
+                remediation=cve.get("remediation", "Apply vendor updates and upgrade firmware.")
+            )
+            db.add(vuln)
+        db.commit()
+
+        # Enrich response with frontend-expected keys
+        scan_report.setdefault("overall_risk_score", scan_report.get("risk_score", 0.0))
+        scan_report.setdefault("vulnerabilities", scan_report.get("cves", []))
+        return scan_report
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Error during firmware scan")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/v1/ot-iot/protocol/decode")
+def ot_iot_protocol_decode(payload: IoTDecodeRequest):
+    """Decode a protocol frame and analyze it for suspicious content."""
+    try:
+        proto = payload.protocol.lower().replace("-", "").replace("_", "")
+        raw_hex = payload.resolved_hex
+        
+        result = {"valid": False, "error": "Unsupported protocol"}
+        
+        if proto == "mqtt":
+            result = MQTTDecoder.decode_packet(raw_hex)
+        elif proto == "coap":
+            result = CoAPDecoder.decode_packet(raw_hex)
+        elif proto == "zigbee":
+            result = ZigbeeDecoder.decode_frame(raw_hex)
+        elif proto in ["ble", "bluetooth"]:
+            result = BLEDecoder.decode_packet(raw_hex)
+        elif proto == "snmp":
+            result = SNMPDecoder.decode_packet(raw_hex)
+        elif proto == "opcua":
+            result = OPCUADecoder.decode_packet(raw_hex)
+        elif proto == "s7comm":
+            result = S7CommDecoder.decode_packet(raw_hex)
+        elif proto == "iec104":
+            result = IEC104Decoder.decode_packet(raw_hex)
+        elif proto == "modbus":
+            from backend.ics.ics_decoder import ICSProtocolDecoder
+            result = ICSProtocolDecoder.decode_modbus_frame(raw_hex)
+        
+        return result
+    except Exception as e:
+        logger.exception("Error decoding protocol packet")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/v1/ot-iot/behavior/analyze")
+def ot_iot_behavior_analyze(payload: IoTBehaviorRequest, db: Session = Depends(get_db)):
+    """Analyze device traffic behavior for anomalies against profiles."""
+    try:
+        d = db.query(IoTDeviceModel).filter(IoTDeviceModel.id == payload.device_id).first()
+        if not d:
+            raise HTTPException(status_code=404, detail="Device not found")
+        
+        device_info = {
+            "id": d.id,
+            "ip": d.ip,
+            "mac": d.mac,
+            "device_type": d.device_type,
+            "category": d.category
+        }
+        
+        analyzer = IoTBehaviorAnalyzer()
+        analysis = analyzer.analyze(device_info, payload.traffic_sample)
+        
+        # Save incident if anomalous
+        if analysis.get("anomaly_score", 0.0) > 0.5:
+            incident_id = f"inc-{random.randint(1000, 9999)}"
+            desc = f"Behavioral Anomaly detected on {d.hostname}: " + ", ".join(analysis.get("anomalies_detected", []))
+            
+            db_incident = IoTIncidentModel(
+                id=incident_id,
+                device_id=d.id,
+                threat_type="Behavioral Anomaly",
+                severity="High" if analysis.get("anomaly_score", 0.0) > 0.8 else "Medium",
+                description=desc,
+                status="open",
+                mitre_technique=",".join(analysis.get("mitre_techniques", [])),
+                actions_taken=analysis.get("recommended_action", "Alert SOC"),
+                anomaly_score=analysis.get("anomaly_score", 0.0)
+            )
+            db.add(db_incident)
+            db.commit()
+            
+            # Link back incident ID
+            analysis["incident_id"] = incident_id
+            
+        return analysis
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Error during behavior analysis")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/v1/ot-iot/botnet/detect")
+def ot_iot_botnet_detect(payload: IoTBotnetRequest, db: Session = Depends(get_db)):
+    """Scan device telemetry and command logs for botnet signatures."""
+    try:
+        d = db.query(IoTDeviceModel).filter(IoTDeviceModel.id == payload.device_id).first()
+        if not d:
+            raise HTTPException(status_code=404, detail="Device not found")
+        
+        detector = BotnetDetector()
+        detection = detector.detect(d.ip, payload.resolved_traffic, payload.cmd_history)
+        
+        if detection.get("threats_detected"):
+            severity = detection.get("highest_severity", "High")
+            incident_id = f"inc-{random.randint(1000, 9999)}"
+            desc = f"Botnet infection signature detected on {d.hostname} ({d.ip}): " + ", ".join(detection.get("threats_detected", []))
+            
+            db_incident = IoTIncidentModel(
+                id=incident_id,
+                device_id=d.id,
+                threat_type="Botnet Compromise",
+                severity=severity,
+                description=desc,
+                status="open",
+                mitre_technique="T0886",
+                actions_taken=detection.get("recommended_action", "Isolate device"),
+                anomaly_score=1.0
+            )
+            db.add(db_incident)
+            db.commit()
+            
+            detection["incident_id"] = incident_id
+            
+        return detection
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Error during botnet detection")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/v1/ot-iot/ml/detect")
+def ot_iot_ml_detect(payload: IoTMLRequest, db: Session = Depends(get_db)):
+    """Orchestrate ML models (Isolation Forest/Autoencoder/LSTM) for anomaly detection."""
+    try:
+        d = db.query(IoTDeviceModel).filter(IoTDeviceModel.id == payload.device_id).first()
+        if not d:
+            raise HTTPException(status_code=404, detail="Device not found")
+        
+        detector = IoTMLDetector()
+        verdict = detector.analyze(d.id, d.device_type, payload.traffic_sample)
+        
+        ensemble = verdict.get("ensemble_verdict", {})
+        if ensemble.get("is_anomaly"):
+            incident_id = f"inc-{random.randint(1000, 9999)}"
+            desc = f"ML Ensemble Anomaly detection verdict on {d.hostname}: Anomaly Type: {ensemble.get('anomaly_type')}"
+            
+            db_incident = IoTIncidentModel(
+                id=incident_id,
+                device_id=d.id,
+                threat_type="ML Anomaly",
+                severity="High" if ensemble.get("confidence", 0.0) > 0.8 else "Medium",
+                description=desc,
+                status="open",
+                mitre_technique="T0806",
+                actions_taken=verdict.get("recommended_action", "VLAN Isolate"),
+                anomaly_score=float(ensemble.get("confidence", 0.5))
+            )
+            db.add(db_incident)
+            db.commit()
+            
+            verdict["incident_id"] = incident_id
+            
+        return verdict
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Error during ML anomaly detection")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/v1/ot-iot/response/contain")
+def ot_iot_response_contain(payload: IoTContainRequest, db: Session = Depends(get_db)):
+    """Execute autonomous response containment actions for a compromised IoT device."""
+    try:
+        d = db.query(IoTDeviceModel).filter(IoTDeviceModel.id == payload.device_id).first()
+        if not d:
+            raise HTTPException(status_code=404, detail="Device not found")
+        
+        device_info = {
+            "id": d.id,
+            "ip": d.ip,
+            "mac": d.mac,
+            "device_type": d.device_type,
+            "risk_tier": d.risk_tier,
+            "hostname": d.hostname
+        }
+        
+        engine = IoTResponseEngine()
+        threat = {"threat_type": payload.threat_type}
+        response_result = engine.respond(device_info, threat)
+        
+        # Update device status
+        if response_result.get("status") == "contained":
+            d.status = "contained"
+            db.commit()
+            
+        return response_result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Error executing containment")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/v1/ot-iot/digital-twin/scenario")
+def ot_iot_digital_twin_scenario(payload: IoTScenarioRequest):
+    """Run an attack-defense simulation scenario against a digital twin environment."""
+    try:
+        runner = OTIoTScenarioRunner()
+        result = runner.run_scenario(
+            scenario_name=payload.scenario_name,
+            environment=payload.environment,
+            include_response=payload.include_response
+        )
+        # Add stages key mapping attack_logs for frontend compatibility
+        if "attack_logs" in result and "stages" not in result:
+            result["stages"] = result["attack_logs"]
+        if "detection_alerts" in result:
+            result.setdefault("alerts", result["detection_alerts"])
+        return result
+    except Exception as e:
+        logger.exception("Error running digital twin scenario")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/v1/ot-iot/knowledge-graph")
+def ot_iot_get_knowledge_graph(db: Session = Depends(get_db)):
+    """Export the IoT topology knowledge graph compiled from discovered devices."""
+    try:
+        devices = db.query(IoTDeviceModel).all()
+        
+        # Compile asset details
+        device_list = []
+        for d in devices:
+            device_list.append({
+                "id": d.id,
+                "ip": d.ip,
+                "mac": d.mac,
+                "hostname": d.hostname,
+                "vendor": d.vendor,
+                "model": d.model,
+                "device_type": d.device_type,
+                "category": d.category,
+                "risk_tier": d.risk_tier,
+                "risk_score": d.risk_score
+            })
+            
+        # Auto-generate connections: devices on same subnet communicate
+        auto_connections = []
+        for i, dev_a in enumerate(device_list):
+            for dev_b in device_list[i + 1:]:
+                ip_a = dev_a.get("ip", "")
+                ip_b = dev_b.get("ip", "")
+                # Same /24 subnet => likely communicate
+                subnet_a = ".".join(ip_a.split(".")[:3]) if ip_a else ""
+                subnet_b = ".".join(ip_b.split(".")[:3]) if ip_b else ""
+                if subnet_a and subnet_a == subnet_b:
+                    cat_a = dev_a.get("category", "")
+                    cat_b = dev_b.get("category", "")
+                    rel = "controls" if "OT" in cat_a or "PLC" in cat_a else "communicates"
+                    auto_connections.append({
+                        "src": dev_a.get("id"),
+                        "dst": dev_b.get("id"),
+                        "rel_type": rel,
+                        "port": 502 if ("OT" in cat_a or "Modbus" in str(dev_a)) else 443,
+                        "protocol": "Modbus" if ("OT" in cat_a) else "HTTPS"
+                    })
+
+        graph_builder = IoTKnowledgeGraph()
+        # Remap device list to match graph expected keys
+        for dev in device_list:
+            dev["device_id"] = dev.get("id", dev.get("ip"))
+            dev["type"] = dev.get("device_type", "unknown")
+        graph_builder.build_from_discovery({"devices": device_list, "connections": auto_connections})
+
+        nodes = []
+        for node_id, node_data in graph_builder._nodes.items():
+            nodes.append(node_data)
+
+        links = []
+        for src, dests in graph_builder._edges.items():
+            for dst, edge_data in dests.items():
+                links.append({
+                    "source": src,
+                    "target": dst,
+                    "rel_type": edge_data.get("rel_type"),
+                    "properties": edge_data.get("properties")
+                })
+                
+        return {
+            "nodes": nodes,
+            "links": links,
+            "summary": {
+                "devices_added": len(nodes),
+                "relationships_added": len(links)
+            }
+        }
+    except Exception as e:
+        logger.exception("Error generating knowledge graph")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/v1/ot-iot/forensics/collect")
+def ot_iot_forensics_collect(payload: IoTForensicsRequest, db: Session = Depends(get_db)):
+    """Trigger forensic evidence collection on a target IoT/OT device."""
+    try:
+        d = db.query(IoTDeviceModel).filter(IoTDeviceModel.id == payload.device_id).first()
+        if not d:
+            raise HTTPException(status_code=404, detail="Device not found")
+        
+        device_info = {
+            "id": d.id,
+            "ip": d.ip,
+            "mac": d.mac,
+            "hostname": d.hostname,
+            "device_type": d.device_type,
+            "category": d.category
+        }
+        
+        forensics = IoTForensics()
+        report = forensics.collect_evidence(device_info, payload.incident_id)
+        return report
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Error during forensics collection")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+
+@app.get("/")
+@app.get("/index.html")
+def read_root():
+    index_path = os.path.join(parent_dir, "index.html")
+    return FileResponse(index_path)
+
+
+@app.get("/local.html")
+def read_local():
+    local_path = os.path.join(parent_dir, "local.html")
+    return FileResponse(local_path)
+
+
+app.mount("/css", StaticFiles(directory=os.path.join(parent_dir, "css")), name="css")
+app.mount("/js", StaticFiles(directory=os.path.join(parent_dir, "js")), name="js")
+
+
+# ── Missing OT/IoT Endpoints ──────────────────────────────────────────────────
+
+@app.get("/api/v1/ot-iot/incidents")
+def ot_iot_list_incidents(
+    status: Optional[str] = None,
+    severity: Optional[str] = None,
+    limit: int = 50,
+    db: Session = Depends(get_db)
+):
+    """List all IoT/OT security incidents with optional filtering."""
+    try:
+        query = db.query(IoTIncidentModel)
+        if status:
+            query = query.filter(IoTIncidentModel.status == status)
+        if severity:
+            query = query.filter(IoTIncidentModel.severity == severity)
+        incidents = query.order_by(IoTIncidentModel.id.desc()).limit(limit).all()
+        return [
+            {
+                "id": inc.id,
+                "device_id": inc.device_id,
+                "threat_type": inc.threat_type,
+                "severity": inc.severity,
+                "description": inc.description,
+                "status": inc.status,
+                "mitre_technique": inc.mitre_technique,
+                "actions_taken": inc.actions_taken,
+                "anomaly_score": inc.anomaly_score
+            }
+            for inc in incidents
+        ]
+    except Exception as e:
+        logger.exception("Error listing IoT incidents")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/v1/ot-iot/ml/anomaly")
+def ot_iot_ml_anomaly(payload: IoTMLRequest, db: Session = Depends(get_db)):
+    """Alias for /api/v1/ot-iot/ml/detect — ML-based anomaly detection."""
+    return ot_iot_ml_detect(payload, db)
+
+
+@app.get("/api/v1/ot-iot/stats")
+def ot_iot_stats(db: Session = Depends(get_db)):
+    """Return OT/IoT security statistics dashboard data."""
+    try:
+        total_devices = db.query(IoTDeviceModel).count()
+        critical_devices = db.query(IoTDeviceModel).filter(IoTDeviceModel.risk_tier == "Critical").count()
+        high_devices = db.query(IoTDeviceModel).filter(IoTDeviceModel.risk_tier == "High").count()
+        contained = db.query(IoTDeviceModel).filter(IoTDeviceModel.status == "contained").count()
+        total_incidents = db.query(IoTIncidentModel).count()
+        open_incidents = db.query(IoTIncidentModel).filter(IoTIncidentModel.status == "open").count()
+        total_vulns = db.query(FirmwareVulnModel).count()
+        kev_vulns = db.query(FirmwareVulnModel).filter(FirmwareVulnModel.cisa_kev == True).count()
+
+        return {
+            "total_devices": total_devices,
+            "critical_devices": critical_devices,
+            "high_risk_devices": high_devices,
+            "contained_devices": contained,
+            "total_incidents": total_incidents,
+            "open_incidents": open_incidents,
+            "total_firmware_vulnerabilities": total_vulns,
+            "cisa_kev_vulnerabilities": kev_vulns,
+            "status": "operational"
+        }
+    except Exception as e:
+        logger.exception("Error computing IoT stats")
+        raise HTTPException(status_code=500, detail=str(e))
 

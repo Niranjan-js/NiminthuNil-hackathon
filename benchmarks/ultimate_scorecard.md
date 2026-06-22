@@ -17,6 +17,12 @@ This document aggregates performance metrics and accuracy benchmarks for NIRAVAN
 | ICS & Operational Technology | precision: 1.0, recall: 1.0, f1_score: 1.0 | F1 > 95% | ✅ PASS |
 | Autonomous Response SOAR | mttd_seconds: 12.0, mttr_minutes: 0.025, rollback_accuracy: 1.0 | MTTR < 2 minutes, Rollback Accuracy > 99% | ✅ PASS |
 | Multi-Agent Swarm & XAI | swarm_delegation_correctness: 1.0, consensus_score_output: 0.84, explainability_shap_consistency: 1.0 | Consensus > 95% accuracy, SHAP consistency check | ✅ PASS |
+| IoT ML Anomaly Detection | precision: 0.9767, recall: 0.982, f1_score: 0.979 | F1 > 95% | ✅ PASS |
+| MQTT Protocol Decoding | precision: 1.0, recall: 1.0, f1_score: 1.0 | F1 > 95% | ✅ PASS |
+| IoT Protocol Layers (Zigbee/BLE/CoAP) | precision: 1.0, recall: 1.0, f1_score: 1.0 | F1 > 95% | ✅ PASS |
+| IoT Botnet signature detection | precision: 1.0, recall: 1.0, f1_score: 1.0 | F1 > 95% | ✅ PASS |
+| Firmware Security Scanning | precision: 1.0, recall: 1.0, f1_score: 1.0 | F1 > 95% | ✅ PASS |
+| OT/IoT Composite Defense | precision: 1.0, recall: 1.0, f1_score: 1.0 | F1 > 95% | ✅ PASS |
 
 ---
 

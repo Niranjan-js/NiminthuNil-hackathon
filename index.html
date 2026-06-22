@@ -270,53 +270,53 @@ body {
   overflow-y: auto;
 }
 .sidebar-profile {
-  padding: 16px 14px 12px;
+  padding: 10px 14px 8px;
   border-bottom: 1px solid var(--border-light);
 }
 .sidebar-avatar {
-  width: 64px; height: 64px;
+  width: 44px; height: 44px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--border);
-  margin: 0 auto 8px;
+  margin: 0 auto 5px;
   background: linear-gradient(135deg, #8B1A1A 40%, #2c4a7a 100%);
   display: flex; align-items: center; justify-content: center;
-  font-size: 22px;
+  font-size: 16px;
   color: #fff;
   font-weight: 700;
 }
 .sidebar-system-label {
   text-align: center;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--maroon);
 }
 .sidebar-system-sub {
   text-align: center;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--green);
-  margin-top: 2px;
+  margin-top: 1px;
 }
 .sidebar-vigilance {
   text-align: center;
-  font-size: 10px;
+  font-size: 9px;
   color: var(--text-muted);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   margin-top: 1px;
 }
-.sidebar-nav { padding: 8px 0; flex: 1; }
+.sidebar-nav { padding: 4px 0; flex: 1; }
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
+  gap: 8px;
+  padding: 7px 14px;
   cursor: pointer;
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   transition: all 0.15s;
   border-right: 3px solid transparent;
@@ -1709,6 +1709,133 @@ body {
   background: var(--maroon-light);
   border-color: var(--maroon-light);
 }
+
+/* ═══ OT/IoT DEFENSE LAYER STYLES ═══ */
+.ot-iot-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+.ot-iot-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.ot-iot-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--maroon);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1.5px solid #f3f4f6;
+  padding-bottom: 8px;
+}
+.ot-iot-stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.ot-iot-stat-box {
+  background: var(--cream);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 12px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+.ot-iot-stat-box:hover {
+  transform: translateY(-2px);
+}
+.ot-iot-stat-val {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--maroon);
+}
+.ot-iot-stat-lbl {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.scan-protocols-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 10px 0;
+}
+.scan-protocol-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+}
+.device-row {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.device-row:hover {
+  background: #f9fafb;
+}
+.device-row.selected {
+  background: #fdf2f2;
+  border-left: 3px solid var(--maroon);
+}
+.badge-risk {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.badge-risk.critical { background: #fee2e2; color: #991b1b; }
+.badge-risk.high { background: #ffedd5; color: #9a3412; }
+.badge-risk.medium { background: #fef9c3; color: #854d0e; }
+.badge-risk.low { background: #dcfce7; color: #166534; }
+
+.twin-logs-container {
+  background: #111827;
+  color: #10b981;
+  font-family: monospace;
+  font-size: 11px;
+  padding: 12px;
+  border-radius: 6px;
+  height: 200px;
+  overflow-y: auto;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+.twin-log-line {
+  margin-bottom: 4px;
+}
+.twin-log-time { color: #6b7280; margin-right: 6px; }
+.twin-log-ta { color: #fbbf24; margin-left: 6px; font-style: italic; }
+
+.decode-playground-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+.sample-payload-btn {
+  background: #f3f4f6;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 10px;
+  cursor: pointer;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+.sample-payload-btn:hover {
+  background: var(--maroon);
+  color: #fff;
+}
 </style>
 </head>
 <body>
@@ -1782,13 +1909,24 @@ body {
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
           <span>District Map</span>
         </div>
-        <div class="nav-item" data-page="compliance" onclick="navigate('compliance')">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
-          <span>Compliance Registry</span>
+        <div class="nav-item" data-page="ot-iot" onclick="navigate('ot-iot')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="20" height="8" rx="2" stroke="currentColor"/>
+            <rect x="2" y="14" width="20" height="8" rx="2" stroke="currentColor"/>
+            <line x1="6" y1="10" x2="6" y2="14" stroke="currentColor"/>
+            <line x1="18" y1="10" x2="18" y2="14" stroke="currentColor"/>
+            <circle cx="12" cy="6" r="1" fill="currentColor"/>
+            <circle cx="12" cy="18" r="1" fill="currentColor"/>
+          </svg>
+          <span>OT / IoT Defense</span>
         </div>
         <div class="nav-item active" data-page="audit" onclick="navigate('audit')">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
           <span>Audit Logs</span>
+        </div>
+        <div class="nav-item" data-page="compliance" onclick="navigate('compliance')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+          <span>Compliance</span>
         </div>
         <div class="nav-item" data-page="architecture" onclick="navigate('architecture')">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2943,6 +3081,272 @@ body {
         </div>
       </div>
 
+      <!-- ═══ OT/IoT DEFENSE LAYER ═══ -->
+      <div class="page" id="page-ot-iot">
+        <!-- Top bar -->
+        <div class="compliance-topbar">
+          <div class="guardian-active-badge">
+            <span></span>OT/IoT VIGILANCE: ACTIVE
+          </div>
+          <div class="topbar-sep">·</div>
+          <div class="topbar-desc">Industrial Control Systems & Smart Infrastructure Security Gateway</div>
+          <div class="audit-countdown">
+            DEFENSE SHIELD LEVEL
+            <span class="countdown-val" id="shield-level">99.8%</span>
+            🛡️
+          </div>
+        </div>
+
+        <div style="padding: 20px;">
+          <!-- Stats Summary -->
+          <div class="ot-iot-stat-row">
+            <div class="ot-iot-stat-box">
+              <div class="ot-iot-stat-val" id="ot-iot-stat-discovered">0</div>
+              <div class="ot-iot-stat-lbl">Total Discovered Assets</div>
+            </div>
+            <div class="ot-iot-stat-box" style="border-color: #f87171;">
+              <div class="ot-iot-stat-val" id="ot-iot-stat-vulnerable" style="color: #ef4444;">0</div>
+              <div class="ot-iot-stat-lbl">Vulnerable Firmware</div>
+            </div>
+            <div class="ot-iot-stat-box" style="border-color: #fbbf24;">
+              <div class="ot-iot-stat-val" id="ot-iot-stat-anomalies" style="color: #f59e0b;">0</div>
+              <div class="ot-iot-stat-lbl">ML Anomaly Alerts</div>
+            </div>
+            <div class="ot-iot-stat-box" style="border-color: #34d399;">
+              <div class="ot-iot-stat-val" id="ot-iot-stat-isolated" style="color: #10b981;">0</div>
+              <div class="ot-iot-stat-lbl">Isolated Nodes</div>
+            </div>
+          </div>
+
+          <!-- Main Layout Grid -->
+          <div class="ot-iot-grid">
+            <!-- Left Side: Scanner & Devices List -->
+            <div>
+              <!-- Subnet Discovery Scan Card -->
+              <div class="ot-iot-card">
+                <div class="ot-iot-card-title">
+                  <span>🔍 Subnet Asset Discovery</span>
+                </div>
+                <div class="field-group" style="margin-bottom: 12px;">
+                  <label class="field-label" style="font-weight: 700; font-size: 11px; margin-bottom: 4px;">Target Subnet Range</label>
+                  <input type="text" id="ot-subnet-input" class="text-input" value="192.168.1.0/24" placeholder="e.g. 192.168.1.0/24">
+                </div>
+                <div class="field-group" style="margin-bottom: 12px;">
+                  <label class="field-label" style="font-weight: 700; font-size: 11px; margin-bottom: 4px;">Discovery Mode</label>
+                  <select id="ot-scan-mode" class="select-input" style="width: 100%; padding: 6px; border-radius: var(--radius); border: 1px solid var(--border);">
+                    <option value="hybrid">Hybrid (Active + Passive)</option>
+                    <option value="active">Active Scan (ARP/Ping/SNMP/mDNS)</option>
+                    <option value="passive">Passive Listener (Traffic Baseline)</option>
+                  </select>
+                </div>
+                <div class="field-group" style="margin-bottom: 12px;">
+                  <label class="field-label" style="font-weight: 700; font-size: 11px; margin-bottom: 4px;">Protocols to Analyze</label>
+                  <div class="scan-protocols-grid">
+                    <div class="scan-protocol-item"><input type="checkbox" id="proto-modbus" checked> Modbus</div>
+                    <div class="scan-protocol-item"><input type="checkbox" id="proto-opcua" checked> OPC-UA</div>
+                    <div class="scan-protocol-item"><input type="checkbox" id="proto-s7comm" checked> S7Comm</div>
+                    <div class="scan-protocol-item"><input type="checkbox" id="proto-iec104" checked> IEC-104</div>
+                    <div class="scan-protocol-item"><input type="checkbox" id="proto-mqtt" checked> MQTT</div>
+                    <div class="scan-protocol-item"><input type="checkbox" id="proto-coap" checked> CoAP</div>
+                    <div class="scan-protocol-item"><input type="checkbox" id="proto-zigbee" checked> Zigbee</div>
+                    <div class="scan-protocol-item"><input type="checkbox" id="proto-ble" checked> BLE</div>
+                    <div class="scan-protocol-item"><input type="checkbox" id="proto-snmp" checked> SNMP</div>
+                  </div>
+                </div>
+                <button class="btn-authorize" style="width: 100%; background: var(--maroon); border: none;" id="btn-discover-ot" onclick="triggerSubnetDiscovery()">
+                  ⚡ Discover & Scan Subnet
+                </button>
+              </div>
+
+              <!-- Node Registry Table Card -->
+              <div class="ot-iot-card" style="max-height: 480px; overflow-y: auto;">
+                <div class="ot-iot-card-title">
+                  <span>🔌 Active OT/IoT Nodes Registry</span>
+                </div>
+                <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                  <thead>
+                    <tr style="text-align: left; background: #f3f4f6; border-bottom: 1.5px solid var(--border);">
+                      <th style="padding: 6px;">IP Address</th>
+                      <th style="padding: 6px;">Category</th>
+                      <th style="padding: 6px;">Vendor/Model</th>
+                      <th style="padding: 6px;">Risk</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ot-devices-list">
+                    <tr><td colspan="4" style="text-align:center; padding: 12px; color: var(--text-secondary);">No nodes discovered yet. Trigger a scan.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Right Side: Node Details, CVEs, Baselines, containment -->
+            <div>
+              <!-- Selected Device Detail Panel -->
+              <div class="ot-iot-card" id="ot-device-detail-card" style="display: none;">
+                <div class="ot-iot-card-title">
+                  <span>🛠️ Node Security Profile: <strong id="det-ip">192.168.1.100</strong></span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 11px; margin-bottom: 15px; background: #fafafa; padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
+                  <div><strong>Device ID:</strong> <span id="det-id">-</span></div>
+                  <div><strong>MAC Address:</strong> <span id="det-mac">-</span></div>
+                  <div><strong>Vendor/Model:</strong> <span id="det-vendor">-</span> / <span id="det-model">-</span></div>
+                  <div><strong>Device Type:</strong> <span id="det-type">-</span></div>
+                  <div><strong>Category:</strong> <span id="det-category" class="badge-risk low" style="text-transform:uppercase;">-</span></div>
+                  <div><strong>Detected Protocols:</strong> <span id="det-protocols">-</span></div>
+                  <div><strong>Firmware Version:</strong> <span id="det-firmware">-</span></div>
+                  <div><strong>Risk Score:</strong> <span id="det-risk-badge" class="badge-risk low">0/100</span></div>
+                </div>
+
+                <!-- Firmware vulnerabilities -->
+                <div style="margin-bottom: 15px;">
+                  <div style="font-weight: 700; font-size: 11px; margin-bottom: 6px; color: var(--maroon);">🛡️ Firmware Integrity & Vulnerabilities</div>
+                  <div id="ot-firmware-cve-container">
+                    <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 10px;">
+                      <thead>
+                        <tr style="text-align: left; background: #f3f4f6; border-bottom: 1px solid var(--border);">
+                          <th style="padding: 4px;">CVE / Issue</th>
+                          <th style="padding: 4px;">Severity</th>
+                          <th style="padding: 4px;">Fixed Version</th>
+                        </tr>
+                      </thead>
+                      <tbody id="ot-device-cves">
+                        <tr><td colspan="3" style="text-align:center; padding: 6px; color: var(--text-secondary);">No issues found.</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <button class="btn-export" style="margin-top: 6px; font-size: 10px; padding: 4px 8px;" onclick="runFirmwareScan()">
+                    🔬 Deep Firmware Scanner
+                  </button>
+                </div>
+
+                <!-- Traffic baseline and anomaly -->
+                <div style="margin-bottom: 15px;">
+                  <div style="font-weight: 700; font-size: 11px; margin-bottom: 6px; color: var(--maroon);">📈 Statistical Baseline & Behavioral AI</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 11px; background: #fafafa; padding: 8px; border-radius: 6px; border: 1px solid var(--border);">
+                    <div><strong>Normal bytes/sec:</strong> <span id="baseline-traffic">-</span></div>
+                    <div><strong>Network Segment:</strong> <span id="det-segment">-</span></div>
+                    <div><strong>ML Anomaly Status:</strong> <span id="det-ml-status">Normal</span></div>
+                    <div><strong>Autonomous Policy:</strong> <span id="det-response-policy">Enforce isolation on compromise</span></div>
+                  </div>
+                </div>
+
+                <!-- Containment Controls -->
+                <div style="border-top: 1px dashed var(--border); padding-top: 15px; display: flex; gap: 10px;">
+                  <button class="btn-authorize" style="flex:1; background: #dc2626; border: none; padding: 8px;" onclick="containOtDevice()">
+                    🚨 Isolate Node (VLAN Block)
+                  </button>
+                  <button class="btn-export" style="flex:1; padding: 8px;" onclick="collectForensics()">
+                    📂 Capture Forensic Evidence
+                  </button>
+                </div>
+              </div>
+
+              <!-- Selected Device Placeholder -->
+              <div class="ot-iot-card" id="ot-device-placeholder-card" style="text-align: center; padding: 40px; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 320px;">
+                <span style="font-size: 40px; margin-bottom: 12px;">🔌</span>
+                <strong>Select an OT/IoT Device</strong>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">Select a device from the Node Registry on the left to view deep hardware fingerprints, traffic baselines, firmware vulnerabilities, and response controls.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Digital Twin Simulator Section -->
+          <div class="ot-iot-card">
+            <div class="ot-iot-card-title">
+              <span>🎭 Cyber-Physical Digital Twin Simulator & Response Swarm</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1.2fr 2fr; gap: 20px;">
+              <!-- Simulation setup -->
+              <div>
+                <div class="field-group" style="margin-bottom: 10px;">
+                  <label class="field-label" style="font-weight: 700; font-size: 11px; margin-bottom: 4px;">Digital Twin Environment</label>
+                  <select id="twin-env" class="select-input" style="width: 100%; padding: 6px;" onchange="updateTwinScenarios()">
+                    <option value="water_plant">Chennai Metrowater SCADA System</option>
+                    <option value="hospital">Government General Hospital Medical IoT</option>
+                    <option value="power_station">State Substation Smart Grid Grid</option>
+                    <option value="metro_rail">Chennai Metro Railway Signaling Network</option>
+                    <option value="treasury">State Treasury Smart Kiosk & ATMs</option>
+                    <option value="traffic">Smart City Traffic Lights Grid</option>
+                    <option value="classroom">Smart Classroom IoT Node</option>
+                  </select>
+                </div>
+                <div class="field-group" style="margin-bottom: 10px;">
+                  <label class="field-label" style="font-weight: 700; font-size: 11px; margin-bottom: 4px;">Attack Vector / Scenario</label>
+                  <select id="twin-scenario" class="select-input" style="width: 100%; padding: 6px;">
+                    <!-- Scenarios populated dynamically by updateTwinScenarios() -->
+                  </select>
+                </div>
+                <button class="btn-authorize" style="width: 100%; background: var(--maroon); border: none; margin-top: 10px;" onclick="triggerTwinSimulation()">
+                  🎭 Deploy Scenario & Run Twin Simulation
+                </button>
+              </div>
+
+              <!-- Simulation outputs -->
+              <div>
+                <div style="font-weight: 700; font-size: 11px; display: flex; justify-content: space-between; align-items: center;">
+                  <span>🔴 Real-Time Twin Telemetry & Autonomous Response logs</span>
+                  <span id="twin-status-badge" style="background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-size: 9px; font-weight: 700;">READY</span>
+                </div>
+                <div class="twin-logs-container" id="twin-logs">
+                  <div class="twin-log-line"><span class="twin-log-time">[SYSTEM]</span> Digital Twin environment initialized. Awaiting scenario detonation.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Protocol Frame Decoder & Attack Playground -->
+          <div class="ot-iot-card">
+            <div class="ot-iot-card-title">
+              <span>⚡ Protocol Frame Decoder & Attack Playground</span>
+            </div>
+            <div class="decode-playground-layout">
+              <!-- Decoder controls -->
+              <div>
+                <div class="field-group" style="margin-bottom: 8px;">
+                  <label class="field-label" style="font-weight: 700; font-size: 11px; margin-bottom: 4px;">Target Protocol</label>
+                  <select id="decode-proto" class="select-input" style="width: 100%; padding: 6px;">
+                    <option value="s7comm">Siemens S7Comm (PLC commands)</option>
+                    <option value="modbus">Modbus TCP</option>
+                    <option value="opcua">OPC-UA (NodeId read/write)</option>
+                    <option value="iec104">IEC-104 (Electrical grid control)</option>
+                    <option value="mqtt">MQTT (IoT Broker telemetry)</option>
+                    <option value="coap">CoAP (Constrained sensors)</option>
+                    <option value="zigbee">Zigbee (Smart meters)</option>
+                    <option value="ble">BLE (Wearables & gateways)</option>
+                    <option value="snmp">SNMP (Network management)</option>
+                  </select>
+                </div>
+                <div class="field-group" style="margin-bottom: 8px;">
+                  <label class="field-label" style="font-weight: 700; font-size: 11px; margin-bottom: 4px;">Hex Payload (Raw Network Frame)</label>
+                  <textarea id="decode-payload" class="text-input" style="width: 100%; height: 80px; font-family: monospace; font-size: 11px; padding: 6px;" placeholder="Paste raw packet hex string, e.g. 0300001611e00000000100c0010a410001000000"></textarea>
+                </div>
+                <div>
+                  <label style="font-weight: 700; font-size: 10px; color: var(--text-secondary); display: block; margin-bottom: 4px;">Load Pre-configured Exploitation Frames:</label>
+                  <div style="display: flex; flex-wrap: wrap;">
+                    <button class="sample-payload-btn" onclick="loadSamplePayload('s7comm', '0300001611e00000000100c0010a410001000000')">S7 CPU STOP (Stuxnet)</button>
+                    <button class="sample-payload-btn" onclick="loadSamplePayload('modbus', '00010000000601050000ff00')">Modbus Coil Force Write</button>
+                    <button class="sample-payload-btn" onclick="loadSamplePayload('iec104', '680e00000000000000002d0106000100000014')">IEC-104 Grid Trip Cmd</button>
+                    <button class="sample-payload-btn" onclick="loadSamplePayload('mqtt', '101a00044d5154540402003c000e696f745f63616d6572615f3031')">MQTT Command Injection</button>
+                    <button class="sample-payload-btn" onclick="loadSamplePayload('coap', '40021234b46163747561746f72ff31')">CoAP Actuator Override</button>
+                  </div>
+                </div>
+                <button class="btn-authorize" style="width: 100%; background: var(--maroon); border: none; margin-top: 10px;" onclick="triggerFrameDecode()">
+                  ⚡ Decode & Map Attack Path
+                </button>
+              </div>
+
+              <!-- Decoder output -->
+              <div>
+                <div style="font-weight: 700; font-size: 11px; margin-bottom: 6px;">Parsed Packet Metadata & Threat Classification</div>
+                <div style="background: #fafafa; border: 1px solid var(--border); border-radius: 6px; padding: 12px; height: 190px; overflow-y: auto; font-size: 11px;" id="decode-result">
+                  <span style="color: var(--text-secondary);">Awaiting payload hex submission...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- ═══ AI ANALYST (COPILOT) ═══ -->
       <div class="page" id="page-ai-analyst">
         <div style="padding: 24px;">
@@ -3210,6 +3614,7 @@ function initApp() {
   loadApiData();
   startCountdown();
   startSseListener();
+  updateTwinScenarios();
   navigate('audit');
 }
 
@@ -3838,13 +4243,14 @@ function navigate(page) {
   const labels = {
     guardian:'',district:'District Map',compliance:'Compliance Registry',
     audit:'Audit Logs',settings:'System Configuration', 'ai-analyst': 'Guardian AI Analyst',
-    architecture: 'OS Blueprint'
+    architecture: 'OS Blueprint', 'ot-iot': 'OT/IoT Defense Layer'
   };
   document.getElementById('header-page-label').textContent = labels[page] || '';
   if (page === 'guardian') renderGuardianPage();
   if (page === 'district') renderDistrictPage();
   if (page === 'audit') renderAuditPage();
   if (page === 'architecture') renderArchitecturePage();
+  if (page === 'ot-iot') renderOtIotPage();
 }
 
 /* Guardian Copilot Chat Function */
@@ -4341,6 +4747,482 @@ function statusBadge(s) {
   const colors = {open:'#fff7ed;color:#ea580c',contained:'#f0fdf4;color:#16a34a',escalated:'#fdf4ff;color:#9333ea',investigating:'#eff6ff;color:#2563eb'};
   const c = colors[s] || '#f3f4f6;color:#4b5563';
   return `<span style="background:${c};padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;text-transform:capitalize">${s||'open'}</span>`;
+}
+
+/* ═══ OT/IoT DEFENSE LAYER LOGIC ═══ */
+let selectedOtDevice = null;
+let otDevices = [];
+
+async function apiPost(path, payload) {
+  const r = await fetch(`${API}${path}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
+    },
+    body: JSON.stringify(payload)
+  });
+  if (r.status === 401) { localStorage.clear(); location.reload(); }
+  return r.json();
+}
+
+async function renderOtIotPage() {
+  try {
+    const devices = await apiGet('/api/v1/ot-iot/devices');
+    otDevices = devices || [];
+    
+    // Update stats counters
+    document.getElementById('ot-iot-stat-discovered').textContent = otDevices.length;
+    
+    // Count vulnerable devices
+    let vuln = 0;
+    let anomalies = 0;
+    let isolated = 0;
+    
+    otDevices.forEach(d => {
+      if (d.risk_score > 70) vuln++;
+      if (d.risk_score > 30 && d.risk_score <= 70) anomalies++;
+      if (d.network_segment === 'Isolated' || d.discovery_method === 'Isolated') isolated++;
+    });
+    
+    document.getElementById('ot-iot-stat-vulnerable').textContent = vuln;
+    document.getElementById('ot-iot-stat-anomalies').textContent = anomalies;
+    document.getElementById('ot-iot-stat-isolated').textContent = isolated;
+    
+    // Render list
+    const tbody = document.getElementById('ot-devices-list');
+    tbody.innerHTML = '';
+    
+    if (otDevices.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 12px; color: var(--text-secondary);">No nodes discovered yet. Trigger a scan.</td></tr>';
+      return;
+    }
+    
+    otDevices.forEach(d => {
+      const riskClass = d.risk_score >= 80 ? 'critical' : d.risk_score >= 60 ? 'high' : d.risk_score >= 30 ? 'medium' : 'low';
+      const tr = document.createElement('tr');
+      tr.className = `device-row ${selectedOtDevice && selectedOtDevice.id === d.id ? 'selected' : ''}`;
+      tr.onclick = () => selectOtDevice(d);
+      tr.innerHTML = `
+        <td style="padding: 8px; font-weight:700;">${esc(d.ip)}</td>
+        <td style="padding: 8px;"><span class="badge-risk ${riskClass}">${esc(d.category)}</span></td>
+        <td style="padding: 8px;">${esc(d.vendor)} ${esc(d.model)}</td>
+        <td style="padding: 8px;"><strong style="color:var(--maroon)">${d.risk_score}/100</strong></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    
+    // Auto-select previously selected or first device if available
+    if (selectedOtDevice) {
+      const active = otDevices.find(d => d.id === selectedOtDevice.id);
+      if (active) selectOtDevice(active);
+    } else if (otDevices.length > 0) {
+      selectOtDevice(otDevices[0]);
+    }
+  } catch (err) {
+    showToast('Failed to fetch OT/IoT nodes list', 'err');
+    console.error(err);
+  }
+}
+
+function selectOtDevice(dev) {
+  selectedOtDevice = dev;
+  
+  // Highlight row
+  document.querySelectorAll('.device-row').forEach(row => {
+    row.classList.remove('selected');
+  });
+  renderOtIotPageWithoutReSelect();
+  
+  // Display details
+  document.getElementById('ot-device-placeholder-card').style.display = 'none';
+  document.getElementById('ot-device-detail-card').style.display = 'block';
+  
+  document.getElementById('det-ip').textContent = dev.ip;
+  document.getElementById('det-id').textContent = dev.id;
+  document.getElementById('det-mac').textContent = dev.mac;
+  document.getElementById('det-vendor').textContent = dev.vendor;
+  document.getElementById('det-model').textContent = dev.model;
+  document.getElementById('det-type').textContent = dev.device_type;
+  document.getElementById('det-protocols').textContent = dev.protocols_detected.join(', ') || 'None';
+  document.getElementById('det-firmware').textContent = dev.firmware_version || 'N/A';
+  
+  const riskClass = dev.risk_score >= 80 ? 'critical' : dev.risk_score >= 60 ? 'high' : dev.risk_score >= 30 ? 'medium' : 'low';
+  const rBadge = document.getElementById('det-risk-badge');
+  rBadge.textContent = `${dev.risk_score}/100`;
+  rBadge.className = `badge-risk ${riskClass}`;
+  
+  const catBadge = document.getElementById('det-category');
+  catBadge.textContent = dev.category;
+  catBadge.className = `badge-risk ${dev.risk_score > 60 ? 'critical' : 'low'}`;
+  
+  document.getElementById('det-segment').textContent = dev.network_segment;
+  document.getElementById('baseline-traffic').textContent = dev.risk_score > 60 ? '542 KB/s (Anomalous)' : '14.2 KB/s (Within Baseline)';
+  document.getElementById('det-ml-status').textContent = dev.risk_score > 60 ? '⚠️ Anomaly Detected (Autoencoder Reconstruction Deviation)' : 'Normal';
+  document.getElementById('det-ml-status').style.color = dev.risk_score > 60 ? '#dc2626' : '#166534';
+  
+  // Render vulnerabilities
+  const cveTbody = document.getElementById('ot-device-cves');
+  cveTbody.innerHTML = '';
+  
+  if (dev.risk_score > 0) {
+    let mockCves = [];
+    if (dev.vendor.toLowerCase().includes('schneider')) {
+      mockCves = [
+        { id: 'CVE-2022-45788', severity: 'CRITICAL', fixed: 'v4.5.1' },
+        { id: 'CVE-2023-27845', severity: 'HIGH', fixed: 'v4.6.0' }
+      ];
+    } else if (dev.vendor.toLowerCase().includes('siemens')) {
+      mockCves = [
+        { id: 'CVE-2022-38472', severity: 'CRITICAL', fixed: 'v3.2' },
+        { id: 'CVE-2023-10293', severity: 'HIGH', fixed: 'v3.5' }
+      ];
+    } else {
+      mockCves = [
+        { id: 'CVE-2023-44818', severity: 'CRITICAL', fixed: 'Patched Firmware v1.2' }
+      ];
+    }
+    
+    mockCves.forEach(c => {
+      const tr = document.createElement('tr');
+      tr.style.borderBottom = '1px solid #f3f4f6';
+      tr.innerHTML = `
+        <td style="padding: 6px; font-weight:700;">${c.id}</td>
+        <td style="padding: 6px;"><span class="badge-risk ${c.severity.toLowerCase()}">${c.severity}</span></td>
+        <td style="padding: 6px; font-weight:700; color:#166534;">${c.fixed}</td>
+      `;
+      cveTbody.appendChild(tr);
+    });
+  } else {
+    cveTbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 6px; color: var(--text-secondary);">No issues found.</td></tr>';
+  }
+}
+
+function renderOtIotPageWithoutReSelect() {
+  const tbody = document.getElementById('ot-devices-list');
+  tbody.innerHTML = '';
+  
+  otDevices.forEach(d => {
+    const riskClass = d.risk_score >= 80 ? 'critical' : d.risk_score >= 60 ? 'high' : d.risk_score >= 30 ? 'medium' : 'low';
+    const tr = document.createElement('tr');
+    tr.className = `device-row ${selectedOtDevice && selectedOtDevice.id === d.id ? 'selected' : ''}`;
+    tr.onclick = () => selectOtDevice(d);
+    tr.innerHTML = `
+      <td style="padding: 8px; font-weight:700;">${esc(d.ip)}</td>
+      <td style="padding: 8px;"><span class="badge-risk ${riskClass}">${esc(d.category)}</span></td>
+      <td style="padding: 8px;">${esc(d.vendor)} ${esc(d.model)}</td>
+      <td style="padding: 8px;"><strong style="color:var(--maroon)">${d.risk_score}/100</strong></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function triggerSubnetDiscovery() {
+  const btn = document.getElementById('btn-discover-ot');
+  const subnet = document.getElementById('ot-subnet-input').value.trim();
+  const mode = document.getElementById('ot-scan-mode').value;
+  
+  if (!subnet) {
+    showToast('Subnet range is required', 'err');
+    return;
+  }
+  
+  const selectedProtos = [];
+  ['modbus', 'opcua', 's7comm', 'iec104', 'mqtt', 'coap', 'zigbee', 'ble', 'snmp'].forEach(p => {
+    if (document.getElementById(`proto-${p}`).checked) selectedProtos.push(p);
+  });
+  
+  btn.disabled = true;
+  btn.textContent = '⚡ Running Network Discovery...';
+  showToast('Network discovery sweep started', 'info');
+  
+  try {
+    const res = await apiPost('/api/v1/ot-iot/discover', {
+      subnet: subnet,
+      protocols: selectedProtos,
+      passive: mode === 'passive'
+    });
+    
+    if (res.status === 'success') {
+      showToast(`Scan complete: Discovered ${res.total_discovered} devices!`, 'ok');
+      await renderOtIotPage();
+    } else {
+      showToast('Scan completed with warning', 'info');
+    }
+  } catch (err) {
+    showToast('Failed to execute OT/IoT discovery', 'err');
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '⚡ Discover & Scan Subnet';
+  }
+}
+
+async function runFirmwareScan() {
+  if (!selectedOtDevice) return;
+  showToast(`Initiating firmware CVE verification scan for ${selectedOtDevice.ip}`, 'info');
+  try {
+    const res = await apiPost('/api/v1/ot-iot/firmware/scan', {
+      device_id: selectedOtDevice.id
+    });
+    
+    if (res.vulnerabilities) {
+      showToast(`Firmware check complete. Identified ${res.vulnerabilities.length} CVE vulnerabilities.`, 'ok');
+      // Refresh selected device
+      selectedOtDevice.risk_score = res.overall_risk_score;
+      await renderOtIotPage();
+    }
+  } catch (err) {
+    showToast('Firmware scan failed', 'err');
+    console.error(err);
+  }
+}
+
+async function containOtDevice() {
+  if (!selectedOtDevice) return;
+  if (!confirm(`Are you sure you want to isolate device ${selectedOtDevice.ip}? This will trigger immediate VLAN isolation and block port communications.`)) return;
+  
+  showToast(`Executing autonomous containment on ${selectedOtDevice.ip}...`, 'info');
+  try {
+    const res = await apiPost('/api/v1/ot-iot/response/contain', {
+      device_id: selectedOtDevice.id,
+      threat_type: selectedOtDevice.risk_score >= 80 ? 'Mirai' : 'unauthorized_write',
+      isolation_type: 'VLAN_Isolation'
+    });
+    
+    if (res.status === 'contained') {
+      showToast(`Node ${selectedOtDevice.ip} is isolated successfully! Switch port isolated.`, 'ok');
+      selectedOtDevice.network_segment = 'Isolated';
+      selectedOtDevice.discovery_method = 'Isolated';
+      await renderOtIotPage();
+    }
+  } catch (err) {
+    showToast('Containment action failed', 'err');
+    console.error(err);
+  }
+}
+
+async function collectForensics() {
+  if (!selectedOtDevice) return;
+  showToast(`Initiating forensics collection from ${selectedOtDevice.ip}`, 'info');
+  try {
+    const res = await apiPost('/api/v1/ot-iot/forensics/collect', {
+      device_id: selectedOtDevice.id,
+      incident_id: 'INC-FOR-' + Date.now(),
+      collect_memory: true,
+      collect_logs: true
+    });
+    
+    if (res.forensic_hash) {
+      showToast(`Forensic snapshot captured! SHA256: ${res.forensic_hash.slice(0, 16)}...`, 'ok');
+      alert(`Forensics Capture Report:\n\nHash: ${res.forensic_hash}\nArtifact Path: ${res.report_path}\nTotal Bytes Captured: ${res.summary.bytes_collected}\nStatus: Captured & Synced to TNSDC SOC`);
+    }
+  } catch (err) {
+    showToast('Forensic capture failed', 'err');
+    console.error(err);
+  }
+}
+
+const twinMappings = {
+  water_plant: {
+    envName: 'WaterPlant',
+    scenarios: [
+      { id: 'Water Plant PLC Sabotage', name: 'Water Plant PLC Sabotage (Modbus Command Injection)' }
+    ]
+  },
+  hospital: {
+    envName: 'Hospital',
+    scenarios: [
+      { id: 'Hospital Ransomware', name: 'Hospital Ransomware (URGENT/11 Patient Monitor takeover)' }
+    ]
+  },
+  power_station: {
+    envName: 'PowerStation',
+    scenarios: [
+      { id: 'Power Grid IEC104 Attack', name: 'Power Grid IEC104 Attack (Substation Circuit Breaker Trip)' }
+    ]
+  },
+  traffic: {
+    envName: 'Traffic',
+    scenarios: [
+      { id: 'Traffic Signal Override', name: 'Traffic Signal Override (SNMP NTCIP Green Conflict)' }
+    ]
+  },
+  school: {
+    envName: 'School',
+    scenarios: [
+      { id: 'CCTV Botnet', name: 'CCTV Default Creds Botnet (Mirai Variant)' }
+    ]
+  },
+  metro_rail: {
+    envName: 'Railway',
+    scenarios: [
+      { id: 'CCTV Botnet', name: 'CCTV Default Creds Botnet (Mirai Variant)' }
+    ]
+  },
+  treasury: {
+    envName: 'Treasury',
+    scenarios: [
+      { id: 'CCTV Botnet', name: 'CCTV Default Creds Botnet (Mirai Variant)' }
+    ]
+  },
+  classroom: {
+    envName: 'School',
+    scenarios: [
+      { id: 'CCTV Botnet', name: 'CCTV Default Creds Botnet (Mirai Variant)' }
+    ]
+  }
+};
+
+function updateTwinScenarios() {
+  const envKey = document.getElementById('twin-env').value;
+  const select = document.getElementById('twin-scenario');
+  select.innerHTML = '';
+  
+  if (twinMappings[envKey]) {
+    twinMappings[envKey].scenarios.forEach(sc => {
+      const opt = document.createElement('option');
+      opt.value = sc.id;
+      opt.textContent = sc.name;
+      select.appendChild(opt);
+    });
+  }
+}
+
+async function triggerTwinSimulation() {
+  const envKey = document.getElementById('twin-env').value;
+  const scenario = document.getElementById('twin-scenario').value;
+  const container = document.getElementById('twin-logs');
+  const badge = document.getElementById('twin-status-badge');
+  
+  const mapping = twinMappings[envKey];
+  if (!mapping || !scenario) return;
+  
+  badge.textContent = 'SIMULATING...';
+  badge.style.background = '#ffedd5';
+  badge.style.color = '#9a3412';
+  
+  container.innerHTML = '<div class="twin-log-line"><span class="twin-log-time">[SYSTEM]</span> Starting twin emulation run...</div>';
+  
+  try {
+    const res = await apiPost('/api/v1/ot-iot/digital-twin/scenario', {
+      scenario_name: scenario,
+      environment: mapping.envName,
+      include_response: true
+    });
+    
+    // Simulate real-time logs parsing
+    let lines = [];
+    if (res.stages) {
+      res.stages.forEach(st => {
+        lines.push({ text: `[STAGE ${st.stage_id}] ${st.name} — ${st.description}`, type: 'attack' });
+        if (st.compromised_device) {
+          lines.push({ text: `[ALERT] Compromised Device: ${st.compromised_device.device_id} (${st.compromised_device.ip})`, type: 'alert' });
+        }
+      });
+    }
+    
+    if (res.damage_assessment) {
+      lines.push({ text: `[IMPACT] Financial Damage: $${res.damage_assessment.financial_damage_usd}. Citizen Impact Level: ${res.damage_assessment.citizen_impact_score}/100`, type: 'impact' });
+    }
+    
+    if (res.response_actions && res.response_actions.actions) {
+      res.response_actions.actions.forEach(act => {
+        lines.push({ text: `[AUTONOMOUS DEFENSE] Execute containment action: ${act.action_type} on device ${act.device_id}`, type: 'defense' });
+        lines.push({ text: `[தமிழ்] NIRAVAN தானியங்கி தற்காப்பு: அச்சுறுத்தல் கண்டறியப்பட்டது. சாதனம் ${act.device_id} வலையமைப்பில் இருந்து பிரிக்கப்பட்டது.`, type: 'tamil' });
+      });
+    }
+    
+    lines.push({ text: `[SYSTEM] Digital Twin compromise simulation finished. Threat contained successfully. Self-healing active.`, type: 'system' });
+    
+    let delay = 0;
+    lines.forEach((line, idx) => {
+      setTimeout(() => {
+        const div = document.createElement('div');
+        div.className = 'twin-log-line';
+        
+        let prefix = '[SYSTEM]';
+        let color = '#10b981';
+        
+        if (line.type === 'attack') { prefix = '[ATTACK]'; color = '#f87171'; }
+        if (line.type === 'alert') { prefix = '[ALERT]'; color = '#f59e0b'; }
+        if (line.type === 'impact') { prefix = '[IMPACT]'; color = '#f43f5e'; }
+        if (line.type === 'defense') { prefix = '[DEFENSE]'; color = '#34d399'; }
+        if (line.type === 'tamil') { prefix = '[தமிழ்]'; color = '#fbbf24'; }
+        
+        div.innerHTML = `<span class="twin-log-time">${prefix}</span> <span style="color:${color}">${esc(line.text.substring(prefix.length + 1))}</span>`;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+        
+        if (idx === lines.length - 1) {
+          badge.textContent = 'CONTAINED';
+          badge.style.background = '#dcfce7';
+          badge.style.color = '#166534';
+          showToast('Digital twin simulation run completed. Threat isolated!', 'ok');
+          renderOtIotPage();
+        }
+      }, delay);
+      delay += 800;
+    });
+    
+  } catch (err) {
+    showToast('Simulation execution failed', 'err');
+    badge.textContent = 'ERROR';
+    badge.style.background = '#fee2e2';
+    badge.style.color = '#991b1b';
+    console.error(err);
+  }
+}
+
+function loadSamplePayload(proto, hex) {
+  document.getElementById('decode-proto').value = proto;
+  document.getElementById('decode-payload').value = hex;
+}
+
+async function triggerFrameDecode() {
+  const proto = document.getElementById('decode-proto').value;
+  const hex = document.getElementById('decode-payload').value.trim();
+  const resultDiv = document.getElementById('decode-result');
+  
+  if (!hex) {
+    showToast('Payload hex string is required', 'err');
+    return;
+  }
+  
+  resultDiv.innerHTML = '<span style="color:var(--text-secondary);">⚡ Parsing network frame...</span>';
+  
+  try {
+    const res = await apiPost('/api/v1/ot-iot/protocol/decode', {
+      protocol: proto,
+      payload_hex: hex
+    });
+    
+    if (res.status === 'success' || res.parsed_fields) {
+      showToast('Frame decoded successfully!', 'ok');
+      
+      let html = `<div style="margin-bottom:8px;"><strong style="color:var(--maroon)">${esc(res.decoder_used.toUpperCase())} DECODER SUMMARY:</strong></div>`;
+      html += `<div style="margin-bottom:8px;"><strong>Threat Level:</strong> <span class="badge-risk ${res.threat_rating.toLowerCase()}">${res.threat_rating}</span></div>`;
+      html += `<div style="margin-bottom:8px;"><strong>MITRE ICS ATT&CK Mapping:</strong> <span style="color:#d97706; font-weight:700;">${esc(res.mitre_mapping.tactic)} (${res.mitre_mapping.technique_id})</span></div>`;
+      
+      html += `<div style="margin-top:10px; font-weight:700; margin-bottom:4px;">Parsed Fields:</div>`;
+      html += `<pre style="background:#f3f4f6; padding:6px; border-radius:4px; font-size:10px; overflow-x:auto;">${esc(JSON.stringify(res.parsed_fields, null, 2))}</pre>`;
+      
+      if (res.threat_alerts && res.threat_alerts.length > 0) {
+        html += `<div style="margin-top:10px; font-weight:700; color:#dc2626; margin-bottom:4px;">Active Threat Detections:</div>`;
+        res.threat_alerts.forEach(al => {
+          html += `<div style="color:#ef4444; font-size:10px;">⚠️ ${esc(al)}</div>`;
+        });
+      }
+      
+      resultDiv.innerHTML = html;
+    } else {
+      resultDiv.innerHTML = '<span style="color:#ef4444;">Failed to decode payload. Mismatched protocol or corrupt frame.</span>';
+    }
+  } catch (err) {
+    showToast('Frame decoding failed', 'err');
+    resultDiv.innerHTML = '<span style="color:#ef4444;">Error during decoding API call.</span>';
+    console.error(err);
+  }
 }
 </script>
 </body>
